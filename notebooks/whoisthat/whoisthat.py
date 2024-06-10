@@ -6,7 +6,6 @@ import yaml
 with open('whoisthat/database.yml', 'r') as file:
   db = yaml.safe_load(file)
 
-# TODO: add warnings for characters and books that are not in the database
 
 def get_summary(book, bookmark, character):
   query = "I have up to the end of " + bookmark
@@ -23,6 +22,8 @@ def get_summary(book, bookmark, character):
 
 
 def spoiler_check(book, bookmark, character, summary):
+  if book not in db or character not in db[book]['characters']:
+    return "No spoilers in the database for " + character + " in " + book + "."
   query = "Read the following summary of " + character
   query += " from '" +  book + "' by " +  db[book]['author'] + ": '" + summary
   query += "'. The reader has only read up to the end of " +  bookmark
