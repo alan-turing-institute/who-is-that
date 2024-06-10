@@ -12,6 +12,7 @@ python = "^3.9"
 ollama = "^0.2.1"
 ebooklib = "^0.18"
 bs4 = "^0.0.2"
+jupyterlab = "^4.2.2"
 
 [tool.poetry.scripts]
 extract = "who_is_that.entrypoint:extract"
