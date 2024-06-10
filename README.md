@@ -11,6 +11,14 @@ Generate spoiler-free summaries of characters up-to-a-given-point in a text
 $ poetry install
 ```
 
+## VSCode
+
+To show the virtualenv in VSCode:
+
+```shell
+poetry config virtualenvs.in-project true
+```
+
 # Extract text
 
 To extract text from an EPUB
