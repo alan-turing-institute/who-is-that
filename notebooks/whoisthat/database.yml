@@ -1,10 +1,12 @@
 "Pride and Prejudice": 
   author: "Jane Austen"
-  character: 
-    name: "Mr. Wickham"
-    spoiler: "Mr. Wickham betrays the trust of the Bennet family by eloping with Lydia Bennet, the youngest daughter."
+  characters: 
+    "Mr. Wickham":
+      spoilers:
+        - "Mr. Wickham betrays the trust of the Bennet family by eloping with Lydia Bennet, the youngest daughter."
 "A Game of Thrones": 
   author: "George R. R. Martin"
-  character: 
-    name: "Jon Snow"
-    spoiler: "Jon Snow is the son of Lyanna Stark and Rhaegar Targaryen, making him the legitimate heir to the Iron Throne; Aegon Targaryen."
+  characters: 
+    "Jon Snow":
+      spoilers:
+        - "Jon Snow is the son of Lyanna Stark and Rhaegar Targaryen, making him the legitimate heir to the Iron Throne; Aegon Targaryen."
