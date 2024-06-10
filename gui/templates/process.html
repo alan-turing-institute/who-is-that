@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Process file</title>
+  </head>
+  <body>
+    <h1>Process file</h1>
+    <div class="book">
+      {% if text_items %}
+        {% for text_item in text_items%}
+          <details>
+            <summary>{{ text_item[0] }}</summary>
+            <p>{{ text_item[1] }}</p>
+          </details>
+        {% endfor %}
+      {% endif %}
+    </div>
+
+    <form method="POST" action="" enctype="multipart/form-data">
+      <select id="latest-chapter" name="latest-chapter">
+        {% for text_item in text_items%}
+        <option value="{{ text_item[0] }}">{{ text_item[0] }}</option>
+        {% endfor %}
+      </select>
+      <p><input type="submit" value="Summarise"></p>
+    </form>
+  </body>
+</html>
