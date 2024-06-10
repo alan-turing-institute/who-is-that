@@ -3,13 +3,24 @@ name = "who-is-that"
 version = "0.1.0"
 description = "Generate spoiler-free summaries of characters up-to-a-given-point in a text"
 authors = [
-    "James Robinson <james.em.robinson@gmail.com>"
+    "Edward Chalstrey <echalstrey@turing.ac.uk>",
+    "Lydia France <lfrance@turing.ac.uk>",
+    "Radka Jersakova <r.jersakova@gmail.com>",
+    "Federico Nanni <nanni.federico@gmail.com>",
+    "Camila Rangel Smith <camila.rangel.smith@gmail.com>",
+    "James Robinson <james.em.robinson@gmail.com>",
 ]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "^3.9"
+bs4 = "^0.0.2"
+ebooklib = "^0.18"
+jupyterlab = "^4.2.2"
 ollama = "^0.2.1"
+pyperclip = "^1.8.2"
+tkhtmlview = "^0.3.0"
+flask = "^3.0.3"
 
 [tool.poetry.scripts]
 extract = "who_is_that.entrypoint:extract"
