@@ -8,11 +8,34 @@ with open('whoisthat/database.yml', 'r') as file:
 
 
 def get_summary(book, bookmark, character):
+  """
+    Get a summary of the character's actions up to the bookmark in the book.
+    This function uses the LLM to generate a summary from a famous book.
+  """
   query = "I have read up to the end of " + bookmark
   query += " in the book '" +  book + "' by " +  db[book]['author']
   query += ". Describle what " +  character + " has done so far in 15 word or less."
   query += " Focus on key events and actions taken by this character."
   query += "Do not reveal spoilers for later sections of the book."
+  response = client.chat(model='llama3', messages=[
+    {
+      'role': 'user',
+      'content': query,
+    },
+  ])
+  return response['message']['content']
+
+
+def get_summary_from_text(text, bookmark, character):
+  """
+    Get a summary of the character's actions up to the bookmark in the text.
+    This function uses the LLM to generate a summary from the supplied text.
+  """
+  query = "I have written the following story: '" + text + "'."
+  query += " Read up to the end of " + bookmark + "."
+  query += " Describle what " +  character + " has done so far in 15 word or less."
+  query += " Focus on key events and actions taken by this character."
+  query += "Do not reveal spoilers for later sections of the story."
   response = client.chat(model='llama3', messages=[
     {
       'role': 'user',
