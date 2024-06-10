@@ -21,13 +21,12 @@ def get_summary(book, bookmark, character):
   return response['message']['content']
 
 
-def spoiler_check(book, bookmark, character, summary):
+def spoiler_check(book, character, summary):
   if book not in db or character not in db[book]['characters']:
     return "No spoilers in the database for " + character + " in " + book + "."
   query = "Read the following summary of " + character
   query += " from '" +  book + "' by " +  db[book]['author'] + ": '" + summary
-  query += "'. The reader has only read up to the end of " +  bookmark
-  query += ". Considering this, check to see whether the following spoiler is present: '"
+  query += "'. Check to see whether the following spoiler is present: '"
   query += db[book]['characters'][character]['spoilers'][0] + "'. "
   query += "Give me a yes or no answer and a short one-sentence explanation for that decision."
   response = client.chat(model='llama3', messages=[
@@ -43,3 +42,4 @@ def spoiler_check(book, bookmark, character, summary):
 # 2. Spoiler check with a book text as an input
 # 3. Spoiler check that doesn't use LLM
 # 4. Use Lydia's story and character, bookmark and spoiler
+# 5. Make sure you can check for multiple spoilers
