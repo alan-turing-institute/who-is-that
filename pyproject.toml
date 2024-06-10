@@ -9,6 +9,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
+ollama = "^0.2.1"
 
 [tool.poetry.scripts]
 extract = "who_is_that.entrypoint:extract"
