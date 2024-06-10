@@ -11,7 +11,7 @@ def get_summary(book, bookmark, character):
   query = "I have up to the end of " + bookmark
   query += " in the book '" +  book + "' by " +  db[book]['author']
   query += ". Can you summarize the character of " +  character
-  query += " for me? I don't want any spoilers."
+  query += " for me in one sentence? I don't want any spoilers."
   response = client.chat(model='llama3', messages=[
     {
       'role': 'user',
@@ -28,7 +28,8 @@ def spoiler_check(book, bookmark, character, summary):
   query += " from '" +  book + "' by " +  db[book]['author'] + ": '" + summary
   query += "'. The reader has only read up to the end of " +  bookmark
   query += ". Considering this, check to see whether the following spoiler is present: '"
-  query += db[book]['characters'][character]['spoilers'][0] + "'."
+  query += db[book]['characters'][character]['spoilers'][0] + "'. "
+  query += "Give me a yes or no answer and a short one-sentence explanation for that decision."
   response = client.chat(model='llama3', messages=[
     {
       'role': 'user',
