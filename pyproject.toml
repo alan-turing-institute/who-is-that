@@ -18,6 +18,9 @@ bs4 = "^0.0.2"
 ebooklib = "^0.18"
 jupyterlab = "^4.2.2"
 ollama = "^0.2.1"
+pyperclip = "^1.8.2"
+tkhtmlview = "^0.3.0"
+flask = "^3.0.3"
 
 [tool.poetry.scripts]
 extract = "who_is_that.entrypoint:extract"
