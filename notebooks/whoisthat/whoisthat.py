@@ -36,3 +36,9 @@ def spoiler_check(book, bookmark, character, summary):
     },
   ])
   return response['message']['content']
+
+# TODO: Implement the following functions
+# 1. Summary generation with a book text as an input
+# 2. Spoiler check with a book text as an input
+# 3. Spoiler check that doesn't use LLM
+# 4. Use Lydia's story and character, bookmark and spoiler
