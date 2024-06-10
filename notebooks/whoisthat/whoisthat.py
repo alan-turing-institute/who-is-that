@@ -11,7 +11,7 @@ def get_summary(book, bookmark, character):
   query = "I have read up to the end of " + bookmark
   query += " in the book '" +  book + "' by " +  db[book]['author']
   query += ". Can you summarize the character of " +  character
-  query += " for me in one sentence? Focus on key things they have done, not just how they are described."
+  query += " for me 20 words or less? Focus on key things they have done, not just how they are described."
   query += "Do not reveal spoilers for later sections of the book."
   response = client.chat(model='llama3', messages=[
     {
