@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "who-is-that"
+version = "0.1.0"
+description = "Generate spoiler-free summaries of characters up-to-a-given-point in a text"
+authors = [
+    "James Robinson <james.em.robinson@gmail.com>"
+]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
