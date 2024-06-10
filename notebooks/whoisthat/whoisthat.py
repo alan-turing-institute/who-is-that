@@ -23,9 +23,6 @@ def get_summary(book, bookmark, character):
 
 
 def spoiler_check(book, bookmark, character, summary):
-  # Load the db
-  with open('whoisthat/database.yml', 'r') as file:
-    db[book] = yaml.safe_load(file)[book]
   query = "Read the following summary of " + character
   query += " from '" +  book + "' by " +  db[book]['author'] + ": '" + summary
   query += "'. The reader has only read up to the end of " +  bookmark
