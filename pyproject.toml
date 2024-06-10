@@ -17,6 +17,9 @@ bs4 = "^0.0.2"
 extract = "who_is_that.entrypoint:extract"
 summarise = "who_is_that.entrypoint:summarise"
 
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^6.29.4"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
