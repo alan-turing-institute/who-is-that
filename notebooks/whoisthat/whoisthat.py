@@ -10,8 +10,8 @@ with open('whoisthat/database.yml', 'r') as file:
 def get_summary(book, bookmark, character):
   query = "I have read up to the end of " + bookmark
   query += " in the book '" +  book + "' by " +  db[book]['author']
-  query += ". Can you summarize the character of " +  character
-  query += " for me 20 words or less? Focus on key things they have done, not just how they are described."
+  query += ". Describle what " +  character + " has done so far in 15 word or less."
+  query += " Focus on key events and actions taken by this character."
   query += "Do not reveal spoilers for later sections of the book."
   response = client.chat(model='llama3', messages=[
     {
