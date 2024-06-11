@@ -27,7 +27,7 @@ def load_file():
     concatenated_text = "\n".join(text_items)  # Concatenate all text content into a single string
 
     # Pass concatenated text as a hidden form input
-    return render_template("process.html", text_items=[(str(i), content) for i, content in enumerate(text_items)], concatenated_text=concatenated_text, title=title, author=author)
+    return render_template("process.html", text_items=[(str(i+1), content) for i, content in enumerate(text_items)], concatenated_text=concatenated_text, title=title, author=author)
 
 @app.route("/summarise", methods=["POST"])
 def summarise():
