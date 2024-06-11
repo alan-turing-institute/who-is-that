@@ -62,8 +62,10 @@ def spoiler_check(book, character, summary):
   return response['message']['content']
 
 # TODO: Implement the following functions
-# 1. Summary generation with a book text as an input
-# 2. Spoiler check with a book text as an input
-# 3. Spoiler check that doesn't use LLM
-# 4. Use Lydia's story and character, bookmark and spoiler
-# 5. Make sure you can check for multiple spoilers
+# 0. [ ] Try with Gemma 2b or something smaller
+# 1. [x] Summary generation with a book text as an input
+# 2. [ ] Spoiler check with a book text as an input
+# 3. [ ] Spoiler check that doesn't use LLM
+# 4. [ ] Use Lydia's story and character, bookmark and spoiler
+# 5. [ ] Make sure you can check for multiple spoilers
+# 6. [ ] Alternative spoiler check that does sentiment analysis
