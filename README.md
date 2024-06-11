@@ -38,3 +38,12 @@ If viewing notebook in VSCode, you need to update the config to show the poetry 
 ```shell
 poetry config virtualenvs.in-project true
 ```
+
+# To run the Flask app
+
+Make sure to have llama runnning and:
+
+```shell
+cd who_is_that
+poetry run python backend.py
+```
