@@ -1,15 +1,15 @@
 FROM ollama/ollama as base
 
 #
-# Stage 1: Setup Ollama with requested model
+# Stage 1: Setup Ollama with supported models
 #
 FROM base as builder
 
-ENV MODEL="llama3:8b"
-
+# Install requested models
 RUN /bin/ollama serve & \
     sleep 5; \
-    /bin/ollama run ${MODEL}
+    /bin/ollama run llama3:8b; \
+    /bin/ollama run gemma:2b;
 
 #
 # Stage 2: Run Ollama with the pre-downloaded model

@@ -29,7 +29,9 @@ RUN apk add --no-cache libffi
 COPY --from=builder /app/venv /app/venv
 COPY backend backend
 
+# Which model to use
+ENV OLLAMA_MODEL "llama3:8b"
+
 EXPOSE 5000
 
 CMD ["venv/bin/python", "-m", "flask", "--app", "backend/app", "run", "--host", "0.0.0.0", "--debug"]
-# CMD ["tail", "-f", "/dev/null"]
