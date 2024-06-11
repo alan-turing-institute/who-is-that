@@ -6,6 +6,9 @@ import yaml
 with open('whoisthat/database.yml', 'r') as file:
   db = yaml.safe_load(file)
 
+# Set the model
+# model = 'llama3'
+model = 'gemma:2b'
 
 def get_summary(book, bookmark, character):
   """
@@ -17,7 +20,7 @@ def get_summary(book, bookmark, character):
   query += ". Describle what " +  character + " has done so far in 15 word or less."
   query += " Focus on key events and actions taken by this character."
   query += "Do not reveal spoilers for later sections of the book."
-  response = client.chat(model='llama3', messages=[
+  response = client.chat(model=model, messages=[
     {
       'role': 'user',
       'content': query,
@@ -36,7 +39,7 @@ def get_summary_from_text(text, bookmark, character):
   query += " Describle what " +  character + " has done so far in 15 word or less."
   query += " Focus on key events and actions taken by this character."
   query += "Do not reveal spoilers for later sections of the story."
-  response = client.chat(model='llama3', messages=[
+  response = client.chat(model=model, messages=[
     {
       'role': 'user',
       'content': query,
@@ -53,7 +56,7 @@ def spoiler_check(book, character, summary):
   query += "'. Check to see whether the following spoiler is present: '"
   query += db[book]['characters'][character]['spoilers'][0] + "'. "
   query += "Give me a yes or no answer and a short one-sentence explanation for that decision."
-  response = client.chat(model='llama3', messages=[
+  response = client.chat(model=model, messages=[
     {
       'role': 'user',
       'content': query,
@@ -64,7 +67,7 @@ def spoiler_check(book, character, summary):
 # TODO: Implement the following functions
 # 0. [ ] Try with Gemma 2b or something smaller
 # 1. [x] Summary generation with a book text as an input
-# 2. [ ] Spoiler check with a book text as an input
+# 2. [ ] Summary function runs spoiler check inside and iterates until no spoilers are found
 # 3. [ ] Spoiler check that doesn't use LLM
 # 4. [ ] Use Lydia's story and character, bookmark and spoiler
 # 5. [ ] Make sure you can check for multiple spoilers
