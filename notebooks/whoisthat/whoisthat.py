@@ -61,6 +61,28 @@ def spoiler_check(book, character, summary, model):
     return False
   else:
     raise Exception("Unexpected response from spoiler detection: " + answer)
+  
+def character_or_place(model, word, text):
+  """
+    Determine whether the word in the text is about a character or a place.
+  """
+  query = "I have written the following story: '" + text + "'."
+  query += " I have used the word '" + word + "' in the story."
+  query += " Determine whether this word refers to a character or a place."
+  query += " Provide a simple answer of 'character' or 'place' or 'neither'."
+  response = client.chat(model=model, messages=[
+    {
+      'role': 'user',
+      'content': query,
+    },
+  ])
+  if 'character' in response['message']['content']:
+    return 'character'
+  elif 'place' in response['message']['content']:
+    return 'place'
+  else:
+    return 'neither'
+
 
 # TODO: Implement the following functions
 # 0. [x] Try with Gemma 2b or something smaller
@@ -71,3 +93,5 @@ def spoiler_check(book, character, summary, model):
 # 5. [ ] Use Lydia's story and character, bookmark and spoiler
 # 6. [ ] Make sure you can check for multiple spoilers
 # 7. [ ] Alternative spoiler check that does sentiment analysis
+# 8. [ ] Implement character_or_place function
+# 9. [ ] Fact extraction function instead of spoiler db
