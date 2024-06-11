@@ -7,7 +7,7 @@ import time
 with open('whoisthat/database.yml', 'r') as file:
   db = yaml.safe_load(file)
 
-# TODO: implement clicked parameter
+
 def who_is_that_really(model, text, book, bookmark, word, clicked='whoisthat'):
   """
     Get a summary of the character's actions up to the bookmark in the text.
