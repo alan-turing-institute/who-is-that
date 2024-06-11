@@ -44,3 +44,17 @@ $ poetry config virtualenvs.in-project true
 ```shell
 $ poetry run flask --app frontend/app ru
 ```
+
+# Run the apps in Docker
+
+From the main directory run the following:
+
+```shell
+$ docker compose -f docker/docker-compose.yaml up --build
+```
+
+to run:
+
+- `backend` (exposed on `localhost:3000`)
+- `frontend` (exposed on `localhost:4000`)
+- `ollama` (exposed on `localhost:11434`)
