@@ -32,7 +32,7 @@ def who_is_that(context, prompt_template, character):
     return response["message"]["content"]
 
 
-def who_is_that_really(text, book, bookmark, character, model):
+def who_is_that_really(model, text, book, bookmark, character=None, place=None):
   """
     Get a summary of the character's actions up to the bookmark in the text.
     This function uses the LLM to generate a summary from the supplied text.
@@ -40,9 +40,14 @@ def who_is_that_really(text, book, bookmark, character, model):
   def generate_summary():
     query = "I have written the following story: '" + text + "'."
     query += " Read up to the end of " + bookmark + "."
-    query += " Describle what " +  character + " has done so far in 15 word or less."
-    query += " Focus on key events and actions taken by this character."
-    query += "Do not reveal spoilers for later sections of the story."
+    if character:
+      query += " Describe what " +  character + " has done so far in 15 word or less."
+      query += " Focus on key events and actions taken by this character."
+    elif place:
+      query += " Create a description of the location '" +  place + "' in 15 word or less."
+    else:
+      query += " Describe the story so far in 15 word or less."
+    query += " Do not reveal spoilers for later sections of the story."
     response = client.chat(model=model, messages=[
       {
         'role': 'user',
@@ -51,10 +56,11 @@ def who_is_that_really(text, book, bookmark, character, model):
     ])
     return response['message']['content']
   summary = generate_summary()
-  has_spoiler = spoiler_check(book, character, summary, model)
-  while has_spoiler:
-    summary = generate_summary()
+  if character:
     has_spoiler = spoiler_check(book, character, summary, model)
+    while has_spoiler:
+      summary = generate_summary()
+      has_spoiler = spoiler_check(book, character, summary, model)
   return summary
 
 
@@ -74,7 +80,7 @@ def spoiler_check(book, character, summary, model):
   ])
   answer = response['message']['content']
   if 'true' in answer or 'True' in answer or 'TRUE' in answer:
-    print("Spoiler detected!")
+    print("Spoiler detected! Regenerating summary...")
     return True
   elif 'false' in answer or 'False' in answer or 'FALSE' in answer:
     return False
@@ -100,7 +106,7 @@ def api_who_is_that():
         # Fede func
         result = who_is_that(context, prompt_template, character)
         # Ed func
-        # result = who_is_that_really(text, book, bookmark, character, 'llama3')
+        # who_is_that_really('llama3', text, book, bookmark, character=character)
         return jsonify({"result": result})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
