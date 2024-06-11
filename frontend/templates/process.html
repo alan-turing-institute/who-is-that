@@ -1,0 +1,103 @@
+<!doctype html>
+<html>
+<head>
+    <title>Process file</title>
+    <style>
+        #dropdown {
+            display: none;
+            position: absolute;
+            background-color: white;
+            border: 1px solid #ccc;
+            z-index: 1000;
+        }
+        #dropdown ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        #dropdown ul li {
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+        #dropdown ul li:hover {
+            background-color: #eee;
+        }
+    </style>
+</head>
+<body>
+    <h1>{{ title }}</h1>
+    <h2>{{ author }}</h2>
+    <div class="book" id="text-content">
+        {% if text_items %}
+            {% for text_item in text_items %}
+                <details>
+                    <summary>{{ text_item[0] }}</summary>
+                    <p class="text-item">{{ text_item[1] }}</p>
+                </details>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <div id="dropdown">
+        <ul>
+            <li onclick="summarise()">Summarise</li>
+        </ul>
+    </div>
+
+    <form id="summary-form" method="POST" action="/summarise">
+        <input type="hidden" name="selected_text" id="selected-text">
+        <input type="hidden" name="selected_text_start" id="selected-text-start">
+        <input type="hidden" name="concatenated_text" id="concatenated-text" value="{{ concatenated_text }}">
+        <input type="hidden" name="author" id="author" value="{{ author }}">
+        <input type="hidden" name="title" id="title" value="{{ title }}">
+    </form>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const textContent = document.getElementById("text-content");
+        const dropdown = document.getElementById("dropdown");
+        const selectedTextInput = document.getElementById("selected-text");
+        const selectedTextStartInput = document.getElementById("selected-text-start");
+
+        textContent.addEventListener("contextmenu", (event) => {
+            event.preventDefault();
+            const selectedRange = window.getSelection().getRangeAt(0);
+            const selectedText = selectedRange.toString().trim();  // Trim leading and trailing whitespace
+
+            // Strip HTML tags from the selected text
+            const tempDiv = document.createElement("div");
+            tempDiv.appendChild(selectedRange.cloneContents());
+            const strippedText = tempDiv.innerText.trim();
+
+            if (strippedText) {
+                const preRange = document.createRange();
+                preRange.selectNodeContents(textContent);
+                preRange.setEnd(selectedRange.startContainer, selectedRange.startOffset);
+                const selectedTextStart = preRange.toString().length;
+
+                selectedTextInput.value = strippedText;
+                selectedTextStartInput.value = selectedTextStart;
+                dropdown.style.display = "block";
+                dropdown.style.left = `${event.pageX}px`;
+                dropdown.style.top = `${event.pageY}px`;
+            } else {
+                dropdown.style.display = "none";
+            }
+        });
+
+        document.addEventListener("click", (event) => {
+            if (!dropdown.contains(event.target)) {
+                dropdown.style.display = "none";
+            }
+        });
+    });
+
+    function summarise() {
+        document.getElementById("summary-form").submit();
+    }
+    </script>
+
+
+
+</body>
+</html>
