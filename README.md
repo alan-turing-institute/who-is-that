@@ -30,13 +30,19 @@ $ poetry run summarise --chapter <chapter number> --character <name of character
 # Running Notebooks
 
 ```shell
-poetry run jupyter notebook
+$ poetry run jupyter notebook
 ```
 
 If viewing notebook in VSCode, you need to update the config to show the poetry virtualenv:
 
 ```shell
-poetry config virtualenvs.in-project true
+$ poetry config virtualenvs.in-project true
+```
+
+# Run the analysis webapp
+
+```shell
+$ poetry run flask --app gui/app ru
 ```
 
 # To run the Flask app
