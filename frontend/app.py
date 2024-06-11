@@ -25,3 +25,6 @@ def load_file():
 def summarise():
     print("Summarising")
     return render_template("./process.html", text_items=[])
+
+if __name__ == "__main__":
+    app.run(debug=True)
