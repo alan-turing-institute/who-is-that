@@ -1,25 +1,32 @@
 from ollama import Client
 client = Client(host='http://localhost:11434')
 import yaml
+import time
 
 # Load the yaml file as a global variable
 with open('whoisthat/database.yml', 'r') as file:
   db = yaml.safe_load(file)
 
 
-def who_is_that_really(model, text, book, bookmark, character=None, place=None):
+def who_is_that_really(model, text, book, bookmark, word, clicked='whoisthat'):
   """
     Get a summary of the character's actions up to the bookmark in the text.
     This function uses the LLM to generate a summary from the supplied text.
   """
+  word_type = character_or_place(model, word, text)
   def generate_summary():
+    prepend_str = ""
     query = "I have written the following story: '" + text + "'."
     query += " Read up to the end of " + bookmark + "."
-    if character:
-      query += " Describe what " +  character + " has done so far in 15 word or less."
+    if word_type == 'character' and clicked != 'summary':
+      if clicked == 'whatisthat':
+        prepend_str += "Clicked a character, not a place. Running whoisthat instead... "
+      query += " Describe what " +  word + " has done so far in 15 word or less."
       query += " Focus on key events and actions taken by this character."
-    elif place:
-      query += " Create a description of the location '" +  place + "' in 15 word or less."
+    elif word_type == 'place' and clicked != 'summary':
+      if clicked == 'whoisthat':
+        prepend_str = "Clicked a place, not a character. Running whatisthat instead... "
+      query += " Create a description of the location '" +  word + "' in 15 word or less."
     else:
       query += " Describe the story so far in 15 word or less."
     query += " Do not reveal spoilers for later sections of the story."
@@ -29,13 +36,17 @@ def who_is_that_really(model, text, book, bookmark, character=None, place=None):
         'content': query,
       },
     ])
-    return response['message']['content']
+    return prepend_str + response['message']['content']
   summary = generate_summary()
-  if character:
-    has_spoiler = spoiler_check(book, character, summary, model)
+  if word_type == 'character':
+    start_time = time.time()
+    has_spoiler = spoiler_check(book, word, summary, model)
     while has_spoiler:
       summary = generate_summary()
-      has_spoiler = spoiler_check(book, character, summary, model)
+      has_spoiler = spoiler_check(book, word, summary, model)
+      # Check if the time has exceeded 10 seconds
+      if time.time() - start_time >= 10:
+        pass
   return summary
 
 
@@ -61,6 +72,28 @@ def spoiler_check(book, character, summary, model):
     return False
   else:
     raise Exception("Unexpected response from spoiler detection: " + answer)
+  
+def character_or_place(model, word, text):
+  """
+    Determine whether the word in the text is about a character or a place.
+  """
+  query = "I have written the following story: '" + text + "'."
+  query += " I have used the word '" + word + "' in the story."
+  query += " Determine whether this word refers to a character or a place."
+  query += " Provide a simple answer of 'character' or 'place' or 'neither'."
+  response = client.chat(model=model, messages=[
+    {
+      'role': 'user',
+      'content': query,
+    },
+  ])
+  if 'character' in response['message']['content']:
+    return 'character'
+  elif 'place' in response['message']['content']:
+    return 'place'
+  else:
+    return 'neither'
+
 
 # TODO: Implement the following functions
 # 0. [x] Try with Gemma 2b or something smaller
@@ -71,3 +104,5 @@ def spoiler_check(book, character, summary, model):
 # 5. [ ] Use Lydia's story and character, bookmark and spoiler
 # 6. [ ] Make sure you can check for multiple spoilers
 # 7. [ ] Alternative spoiler check that does sentiment analysis
+# 8. [ ] Implement character_or_place function
+# 9. [ ] Fact extraction function instead of spoiler db
