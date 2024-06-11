@@ -28,11 +28,13 @@
     </style>
 </head>
 <body>
-    <h1>{{ title }}</h1>
-    <h2>{{ author }}</h2>
     {% if cover_url %}
         <img src="{{ cover_url }}" alt="EPUB Cover" class="image">
+    {% else %}
+        <h1>{{ title }}</h1>
+        <h2>{{ author }}</h2>
     {% endif %}
+
     <div class="book" id="text-content">
         {% if text_items %}
             {% for text_item in text_items %}
