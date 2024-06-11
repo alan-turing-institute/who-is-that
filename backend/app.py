@@ -1,33 +1,29 @@
-from flask import Flask, request, jsonify
-from .helpers import who_is_that
 import pathlib
+
+from flask import Flask, Response, jsonify, request
+
+from .helpers import who_is_that
 
 app = Flask(__name__)
 
 # Load the prompt template once at the start of the application
 data_dir = pathlib.Path(__file__).parent.resolve()
-with open(data_dir / "prompts" / "input_prompt.txt", "r") as prompt_file:
+with pathlib.Path.open(data_dir / "prompts" / "input_prompt.txt") as prompt_file:
     prompt_template = prompt_file.read()
 
 
 @app.route("/")
-def index():
+def index() -> str:
     return "Backend is running"
 
 
 @app.route("/who_is_that", methods=["POST"])
-def api_who_is_that():
+def api_who_is_that() -> Response:
     data = request.json
     character = data.get("character")
     context = data.get("context")
 
     # TODO: get the text of the book up to this point and the book name for Ed's function
-    # text = data.get("text")
-    # book = data.get("book")
-    # bookmark = data.get("context")
-    # word = data.get("word")
-    # clicked = data.get("clicked")
-
     if not character or not context:
         return jsonify({"error": "Character and context are required"}), 400
 

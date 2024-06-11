@@ -1,18 +1,21 @@
-from ebooklib import epub
+from __future__ import annotations
+
+import pathlib
+import tempfile
+import typing
+
 import ebooklib
 from bs4 import BeautifulSoup
-import tempfile
-import pathlib
-import typing
+from ebooklib import epub
 
 
 class Extractor:
     def __init__(
-        self,
+        self: typing.Self,
         text_content: list[tuple[str, str]],
-        cover: typing.Optional[bytes] = None,
-        authors: typing.Optional[list[str]] = None,
-        title: typing.Optional[str] = None,
+        cover: bytes | None = None,
+        authors: list[str] | None = None,
+        title: str | None = None,
     ) -> None:
         self.text_content = text_content
         self.cover = cover
@@ -25,8 +28,7 @@ class Extractor:
         metadata = book.get_metadata("DC", data_type)
         if metadata:
             return [md[0] for md in metadata]
-        else:
-            return f"{data_type} not found"
+        return f"{data_type} not found"
 
     @staticmethod
     def get_cover(epub_path: pathlib.Path) -> None:
@@ -53,20 +55,19 @@ class Extractor:
         return text_content
 
     @classmethod
-    def from_bytes(cls, epub_contents: bytes) -> "Extractor":
+    def from_bytes(cls: type[typing.Self], epub_contents: bytes) -> Extractor:
         tf = tempfile.NamedTemporaryFile()
         print(f"Writing to {tf.name}")
         tf.write(epub_contents)
-        obj = cls(
+        return cls(
             text_content=cls.process(tf.name),
             cover=cls.get_cover(tf.name),
             authors=cls.get_metadata(tf.name, "creator"),
             title=cls.get_metadata(tf.name, "title")[0],
         )
-        return obj
 
     @classmethod
-    def from_path(cls, epub_path: pathlib.Path) -> "Extractor":
+    def from_path(cls: type[typing.Self], epub_path: pathlib.Path) -> Extractor:
         return cls(
             text_content=cls.process(epub_path),
             cover=cls.get_cover(epub_path),

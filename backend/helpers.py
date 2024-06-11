@@ -1,8 +1,9 @@
-from ollama import Client
 import os
-import time
 import pathlib
+import time
+
 import yaml
+from ollama import Client
 
 ollama_host = os.environ.get("OLLAMA_HOST", "http://localhost")
 ollama_port = os.environ.get("OLLAMA_PORT", "11434")
@@ -10,13 +11,12 @@ client = Client(host=f"{ollama_host}:{ollama_port}")
 
 # Load the yaml file as a global variable
 data_dir = pathlib.Path(__file__).parent.resolve()
-with open(data_dir / "spoilerdb" / "database.yml", "r") as database_file:
+with pathlib.Path.open(data_dir / "spoilerdb" / "database.yml") as database_file:
     db = yaml.safe_load(database_file)
 
 
 def character_or_place(word: str, text: str) -> str:
-    """
-    Determine whether the word in the text is about a character or a place.
+    """Determine whether the word in the text is about a character or a place.
     """
     model = os.environ.get("OLLAMA_MODEL", "llama3:8b")
     query = "I have written the following story: '" + text + "'."
@@ -34,13 +34,12 @@ def character_or_place(word: str, text: str) -> str:
     )
     if "character" in response["message"]["content"]:
         return "character"
-    elif "place" in response["message"]["content"]:
+    if "place" in response["message"]["content"]:
         return "place"
-    else:
-        return "neither"
+    return "neither"
 
 
-def spoiler_check(book, character, summary, model):
+def spoiler_check(book: str, character: str, summary: str, model: str) -> bool:
     if book not in db or character not in db[book]["characters"]:
         return "No spoilers in the database for " + character + " in " + book + "."
     query = "Read the following summary of " + character
@@ -61,17 +60,16 @@ def spoiler_check(book, character, summary, model):
     if "true" in answer or "True" in answer or "TRUE" in answer:
         print("Spoiler detected! Regenerating summary...")
         return True
-    elif "false" in answer or "False" in answer or "FALSE" in answer:
+    if "false" in answer or "False" in answer or "FALSE" in answer:
         return False
-    else:
-        raise Exception("Unexpected response from spoiler detection: " + answer)
+    raise ValueError("Unexpected response from spoiler detection: " + answer)
 
 
 def who_is_that(context: str, prompt_template: str, character: str) -> str:
     prompt = prompt_template.replace("{character}", character)
     concat = f"CONTEXT: {context} \n INSTRUCTIONS: {prompt}"
     try:
-        print(f"Waiting for an Ollama response.", flush=True)
+        print("Waiting for an Ollama response.", flush=True)
         response = client.chat(
             model="llama3:8b",
             messages=[
@@ -83,22 +81,21 @@ def who_is_that(context: str, prompt_template: str, character: str) -> str:
         )
         content = response["message"]["content"]
     except Exception as exc:
-        print(f"Failed to retrieve summary from Ollama {str(exc)}")
+        print(f"Failed to retrieve summary from Ollama {exc!s}")
         response = {"message": {"content": "some text here"}}
         content = "Sorry, I could not answer your query."
     return content
 
 
 def who_is_that_really(
-    text: str, book: str, bookmark: str, word: str, clicked: str = "whoisthat"
+    text: str, book: str, bookmark: str, word: str, clicked: str = "whoisthat",
 ) -> str:
-    """
-    Get a summary of the character's actions up to the bookmark in the text.
+    """Get a summary of the character's actions up to the bookmark in the text.
     This function uses the LLM to generate a summary from the supplied text.
     """
     word_type = character_or_place(word, text)
 
-    def generate_summary():
+    def generate_summary() -> str:
         model = os.environ.get("OLLAMA_MODEL", "llama3:8b")
         print(f"Using model {model}", flush=True)
 
@@ -126,7 +123,7 @@ def who_is_that_really(
             query += " Describe the story so far in 15 word or less."
         query += " Do not reveal spoilers for later sections of the story."
         try:
-            print(f"Waiting for an Ollama response.", flush=True)
+            print("Waiting for an Ollama response.", flush=True)
             response = client.chat(
                 model=model,
                 messages=[
@@ -138,7 +135,7 @@ def who_is_that_really(
             )
             content = response["message"]["content"]
         except Exception as exc:
-            print(f"Failed to retrieve summary from Ollama {str(exc)}", flush=True)
+            print(f"Failed to retrieve summary from Ollama {exc!s}", flush=True)
             response = {"message": {"content": "some text here"}}
             content = "Sorry, I could not answer your query."
         return prepend_str + content
@@ -152,5 +149,5 @@ def who_is_that_really(
             has_spoiler = spoiler_check(book, word, summary)
             # Check if the time has exceeded 10 seconds
             if time.time() - start_time >= 10:
-                pass
+                break
     return summary
