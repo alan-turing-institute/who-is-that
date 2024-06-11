@@ -39,17 +39,30 @@ If viewing notebook in VSCode, you need to update the config to show the poetry 
 $ poetry config virtualenvs.in-project true
 ```
 
-# Run the analysis webapp
+# Run the frontend webapp
 
 ```shell
-$ poetry run flask --app gui/app run
+$ poetry run flask --app frontend/app run
 ```
 
-# To run the Flask app
+# Run the backend webapp
 
-Make sure to have llama runnning and:
+Make sure to have llama running and:
 
 ```shell
-cd who_is_that
-poetry run python backend.py
+$ poetry run flask --app backend/app run
 ```
+
+# Run the apps in Docker
+
+From the main directory run the following:
+
+```shell
+$ docker compose -f docker/docker-compose.yaml up --build
+```
+
+to run:
+
+- `backend` (exposed on `localhost:3000`)
+- `frontend` (exposed on `localhost:4000`)
+- `ollama` (exposed on `localhost:11434`)
