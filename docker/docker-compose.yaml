@@ -5,6 +5,8 @@ services:
     build:
       context: ..
       dockerfile: docker/backend.Dockerfile
+    environment:
+      OLLAMA_MODEL: "gemma"
     ports:
       - "127.0.0.1:3000:5000"
   frontend:
