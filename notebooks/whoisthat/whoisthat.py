@@ -1,38 +1,13 @@
-from flask import Flask, request, jsonify
 from ollama import Client
+client = Client(host='http://localhost:11434')
 import yaml
 
-app = Flask(__name__)
-client = Client(host="http://localhost:11434")
-
-# Load the prompt template once at the start of the application
-with open("prompts/input_prompt.txt", "r") as file:
-    prompt_template = file.read()
-
 # Load the yaml file as a global variable
-with open('spoilerdb/database.yml', 'r') as file:
+with open('whoisthat/database.yml', 'r') as file:
   db = yaml.safe_load(file)
 
-@app.route("/")
-def index():
-    return "Backend is running"
 
-def who_is_that(context, prompt_template, character):
-    prompt = prompt_template.replace("{character}", character)
-    concat = f"CONTEXT: {context} \n INSTRUCTIONS: {prompt}"
-    response = client.chat(
-        model="gemma",
-        messages=[
-            {
-                "role": "user",
-                "content": concat,
-            },
-        ],
-    )
-    return response["message"]["content"]
-
-
-def who_is_that_really(text, book, bookmark, character, model):
+def get_summary_from_text(text, book, bookmark, character, model):
   """
     Get a summary of the character's actions up to the bookmark in the text.
     This function uses the LLM to generate a summary from the supplied text.
@@ -81,30 +56,12 @@ def spoiler_check(book, character, summary, model):
   else:
     raise Exception("Unexpected response from spoiler detection: " + answer)
 
-
-@app.route("/who_is_that", methods=["POST"])
-def api_who_is_that():
-    data = request.json
-    character = data.get("character")
-    context = data.get("context")
-
-    # TODO: get the text of the book up to this point and the book name for Ed's function
-    # text = data.get("text")
-    # book = data.get("book")
-    # bookmark = data.get("context")
-
-    if not character or not context:
-        return jsonify({"error": "Character and context are required"}), 400
-
-    try:
-        # Fede func
-        result = who_is_that(context, prompt_template, character)
-        # Ed func
-        # result = who_is_that_really(text, book, bookmark, character, 'llama3')
-        return jsonify({"result": result})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
+# TODO: Implement the following functions
+# 0. [x] Try with Gemma 2b or something smaller
+# 1. [x] Summary generation with a book text as an input
+# 2. [x] Summary function runs spoiler check inside and iterates until no spoilers are found
+# 3. [ ] Move these functions to backend.py
+# 4. [ ] Spoiler check that doesn't use LLM
+# 5. [ ] Use Lydia's story and character, bookmark and spoiler
+# 6. [ ] Make sure you can check for multiple spoilers
+# 7. [ ] Alternative spoiler check that does sentiment analysis
