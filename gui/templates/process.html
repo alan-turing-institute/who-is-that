@@ -45,38 +45,56 @@
 
     <form id="summary-form" method="POST" action="/summarise">
         <input type="hidden" name="selected_text" id="selected-text">
+        <input type="hidden" name="selected_text_start" id="selected-text-start">
         <input type="hidden" name="concatenated_text" id="concatenated-text" value="{{ concatenated_text }}">
     </form>
 
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const textContent = document.getElementById("text-content");
-            const dropdown = document.getElementById("dropdown");
-            const selectedTextInput = document.getElementById("selected-text");
+    document.addEventListener("DOMContentLoaded", () => {
+        const textContent = document.getElementById("text-content");
+        const dropdown = document.getElementById("dropdown");
+        const selectedTextInput = document.getElementById("selected-text");
+        const selectedTextStartInput = document.getElementById("selected-text-start");
 
-            textContent.addEventListener("contextmenu", (event) => {
-                event.preventDefault();
-                const selectedText = window.getSelection().toString().trim();
-                if (selectedText) {
-                    selectedTextInput.value = selectedText;
-                    dropdown.style.display = "block";
-                    dropdown.style.left = `${event.pageX}px`;
-                    dropdown.style.top = `${event.pageY}px`;
-                } else {
-                    dropdown.style.display = "none";
-                }
-            });
+        textContent.addEventListener("contextmenu", (event) => {
+            event.preventDefault();
+            const selectedRange = window.getSelection().getRangeAt(0);
+            const selectedText = selectedRange.toString().trim();  // Trim leading and trailing whitespace
 
-            document.addEventListener("click", (event) => {
-                if (!dropdown.contains(event.target)) {
-                    dropdown.style.display = "none";
-                }
-            });
+            // Strip HTML tags from the selected text
+            const tempDiv = document.createElement("div");
+            tempDiv.appendChild(selectedRange.cloneContents());
+            const strippedText = tempDiv.innerText.trim();
+
+            if (strippedText) {
+                const preRange = document.createRange();
+                preRange.selectNodeContents(textContent);
+                preRange.setEnd(selectedRange.startContainer, selectedRange.startOffset);
+                const selectedTextStart = preRange.toString().length;
+
+                selectedTextInput.value = strippedText;
+                selectedTextStartInput.value = selectedTextStart;
+                dropdown.style.display = "block";
+                dropdown.style.left = `${event.pageX}px`;
+                dropdown.style.top = `${event.pageY}px`;
+            } else {
+                dropdown.style.display = "none";
+            }
         });
 
-        function summarise() {
-            document.getElementById("summary-form").submit();
-        }
+        document.addEventListener("click", (event) => {
+            if (!dropdown.contains(event.target)) {
+                dropdown.style.display = "none";
+            }
+        });
+    });
+
+    function summarise() {
+        document.getElementById("summary-form").submit();
+    }
     </script>
+
+
+
 </body>
 </html>

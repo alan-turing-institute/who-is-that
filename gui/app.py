@@ -30,15 +30,12 @@ def load_file():
 @app.route("/summarise", methods=["POST"])
 def summarise():
     selected_text = request.form["selected_text"]
+    selected_text_start = int(request.form["selected_text_start"])
     concatenated_text = request.form["concatenated_text"]
-    print(f"Summarising up to: {selected_text}")
+    print(f"Summarising up to: {selected_text} starting at position: {selected_text_start}")
 
-    # Find the selected text in the concatenated content
-    position = concatenated_text.find(selected_text)
-    if position != -1:
-        summary = concatenated_text[:position + len(selected_text)]
-    else:
-        summary = "Selected text not found in content."
+    # Use the start position to slice the concatenated text
+    summary = concatenated_text[:selected_text_start + len(selected_text)]
 
     return render_template("process.html", text_items=[("Summary", summary)], concatenated_text=concatenated_text)
 
