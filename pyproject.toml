@@ -20,6 +20,7 @@ flask = "^3.0.3"
 ollama = "^0.2.1"
 pillow = "^10.3.0"
 PyYAML = "^6.0.1"
+requests = "^2.32.3"
 
 # [tool.poetry.plugins."flask.commands"]
 # "my-command" = "flask_my_extension.commands:cli"

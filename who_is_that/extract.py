@@ -44,7 +44,6 @@ class Extractor:
                 # text_content.append(soup.get_text())
 
                 for container in soup.find_all(attrs={"epub:type": "chapter"}):
-                    print("get_text", container.attrs, container.get_text())
                     text_content.append((container["id"], container.get_text()))
 
         return text_content

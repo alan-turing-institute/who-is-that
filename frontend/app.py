@@ -3,6 +3,8 @@ from who_is_that import Extractor
 from PIL import Image
 import io
 import base64
+import json
+import requests
 
 app = Flask(__name__)
 
@@ -40,11 +42,11 @@ def load_file():
 
     # Pass concatenated text as a hidden form input
     return render_template(
-        "process.html", 
-        text_items=[("Chapter " + str(i+1), content) for i, content in enumerate(text_items)], 
-        concatenated_text=concatenated_text, 
-        title=title, 
-        author=authors, 
+        "process.html",
+        text_items=[("Chapter " + str(i+1), content) for i, content in enumerate(text_items)],
+        concatenated_text=concatenated_text,
+        title=title,
+        author=authors,
         cover_url=cover_url
     )
 
@@ -71,23 +73,34 @@ def summarise():
     summary, concatenated_text = get_context(selected_text, request)
     # Use the start position to slice the concatenated text
 
-    if option == "what_is_this":
-        return render_template(
-            "process.html", 
-            text_items=[("What is this place?", selected_text)], 
-            concatenated_text=concatenated_text, 
-            title=title, 
-            author=author
-        )
+    # Define the URL of your API endpoint
+    url = 'http://localhost:3000/who_is_that'
 
-    elif option == "who_is_that":
-        return render_template(
-            "process.html", 
-            text_items=[("Who is this?", selected_text)], 
-            concatenated_text=concatenated_text, 
-            title=title, 
-            author=author
-        )
+    # Create the payload
+    # Load context from file
+    context = 'EXAMPLSE SOMETHING'
+
+    # Define the character
+    character = "Mr. Wickham"
+
+    payload = {
+        'character': character,
+        'context': context
+    }
+    # Send the POST request
+    try:
+        response_who_is_that = requests.post(url, headers={'Content-Type': 'application/json'}, data=json.dumps(payload))
+    except Exception as exc:
+        print("Exception!!!!!!!!!!!!", flush=True)
+        print(payload["character"], flush=True)
+        print(url, flush=True)
+        print(f"Exception of type {type(exc)}", flush=True)
+
+
+    if option == "what_is_this" or option == "who_is_that":
+
+        result = response_who_is_that.json()
+        return render_template("process.html", text_items=[("What is this place?", result)], concatenated_text=concatenated_text, title=title, author=author)
 
     else:
         return render_template("process.html", text_items=[("Summary", summary)], concatenated_text=concatenated_text, title=title, author=author)
