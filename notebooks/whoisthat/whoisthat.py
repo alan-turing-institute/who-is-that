@@ -8,7 +8,7 @@ with open('whoisthat/database.yml', 'r') as file:
   db = yaml.safe_load(file)
 
 
-def who_is_that_really(model, text, book, bookmark, word, clicked='whoisthat'):
+def who_is_that_really(model, text, bookmark, word, clicked='whoisthat'):
   """
     Get a summary of the character's actions up to the bookmark in the text.
     This function uses the LLM to generate a summary from the supplied text.
