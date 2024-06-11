@@ -16,7 +16,7 @@ def load_file():
     filestream.seek(0)
     extractor = Extractor.from_bytes(filestream.read())
 
-    text_items = [(str(i), content) for i, content in enumerate(extractor.text_content)]
+    text_items = extractor.text_content
     return render_template("process.html", text_items=text_items)
 
 @app.route("/summarise", methods=["POST"])
