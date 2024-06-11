@@ -4,6 +4,7 @@ from PIL import Image
 import io
 import base64
 import json
+import os
 import requests
 
 app = Flask(__name__)
@@ -71,10 +72,11 @@ def summarise():
     author = request.form["author"]
     title = request.form["title"]
     summary, concatenated_text = get_context(selected_text, request)
-    # Use the start position to slice the concatenated text
 
     # Define the URL of your API endpoint
-    url = 'http://localhost:3000/who_is_that'
+    backend_host = os.environ.get("BACKEND_HOST", "http://localhost")
+    backend_port = os.environ.get("BACKEND_PORT", "3000")
+    url = f"{backend_host}:{backend_port}/who_is_that"
 
     # Create the payload
     # Load context from file
@@ -89,6 +91,7 @@ def summarise():
     }
     # Send the POST request
     try:
+        app.logger.info(f"Sending request to backend at '{url}'...")
         response_who_is_that = requests.post(url, headers={'Content-Type': 'application/json'}, data=json.dumps(payload))
     except Exception as exc:
         print("Exception!!!!!!!!!!!!", flush=True)
