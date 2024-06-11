@@ -34,12 +34,15 @@ def summarise():
     selected_text = request.form["selected_text"]
     selected_text_start = int(request.form["selected_text_start"])
     concatenated_text = request.form["concatenated_text"]
+    author = request.form["author"]
+    title = request.form["title"]
+
     print(f"Summarising up to: {selected_text} starting at position: {selected_text_start}")
 
     # Use the start position to slice the concatenated text
     summary = concatenated_text[:selected_text_start + len(selected_text)]
 
-    return render_template("process.html", text_items=[("Summary", summary)], concatenated_text=concatenated_text)
+    return render_template("process.html", text_items=[("Summary", summary)], concatenated_text=concatenated_text, title=title, author=author)
 
 if __name__ == "__main__":
     app.run(debug=True)

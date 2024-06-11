@@ -25,8 +25,8 @@
     </style>
 </head>
 <body>
-    <h1>{{title}}</h1>
-    <h2>{{author}}</h2>
+    <h1>{{ title }}</h1>
+    <h2>{{ author }}</h2>
     <div class="book" id="text-content">
         {% if text_items %}
             {% for text_item in text_items %}
@@ -48,6 +48,8 @@
         <input type="hidden" name="selected_text" id="selected-text">
         <input type="hidden" name="selected_text_start" id="selected-text-start">
         <input type="hidden" name="concatenated_text" id="concatenated-text" value="{{ concatenated_text }}">
+        <input type="hidden" name="author" id="author" value="{{ author }}">
+        <input type="hidden" name="title" id="title" value="{{ title }}">
     </form>
 
     <script>
