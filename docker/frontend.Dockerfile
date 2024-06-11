@@ -31,4 +31,4 @@ COPY frontend frontend
 
 EXPOSE 5000
 
-CMD ["venv/bin/python", "-m", "flask", "--app", "frontend/app", "run", "--host", "0.0.0.0"]
+CMD ["venv/bin/python", "-m", "flask", "--app", "frontend/app", "run", "--host", "0.0.0.0", "--debug"]
