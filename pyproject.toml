@@ -13,7 +13,7 @@ authors = [
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.12"
 bs4 = "^0.0.2"
 ebooklib = "^0.18"
 jupyterlab = "^4.2.2"
@@ -22,9 +22,13 @@ pyperclip = "^1.8.2"
 tkhtmlview = "^0.3.0"
 flask = "^3.0.3"
 
+# [tool.poetry.plugins."flask.commands"]
+# "my-command" = "flask_my_extension.commands:cli"
+
 [tool.poetry.scripts]
 extract = "who_is_that.entrypoint:extract"
 summarise = "who_is_that.entrypoint:summarise"
+# webapp = ""
 
 [build-system]
 requires = ["poetry-core"]
