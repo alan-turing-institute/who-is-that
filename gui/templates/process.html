@@ -31,7 +31,7 @@
             {% for text_item in text_items %}
                 <details>
                     <summary>{{ text_item[0] }}</summary>
-                    <p>{{ text_item[1] }}</p>
+                    <p class="text-item">{{ text_item[1] }}</p>
                 </details>
             {% endfor %}
         {% endif %}
@@ -45,6 +45,7 @@
 
     <form id="summary-form" method="POST" action="/summarise">
         <input type="hidden" name="selected_text" id="selected-text">
+        <input type="hidden" name="concatenated_text" id="concatenated-text" value="{{ concatenated_text }}">
     </form>
 
     <script>
