@@ -1,5 +1,8 @@
-from flask import Flask, render_template, request, send_from_directory
+from flask import Flask, render_template, request
 from who_is_that import Extractor
+from PIL import Image
+import io
+import base64
 
 app = Flask(__name__)
 
@@ -27,8 +30,16 @@ def load_file():
 
     concatenated_text = "\n".join(text_items)  # Concatenate all text content into a single string
 
+    cover_url = None
+    if extractor.cover:
+        image = Image.open(io.BytesIO(extractor.cover))
+        img_io = io.BytesIO()
+        image.save(img_io, 'JPEG')
+        img_io.seek(0)
+        cover_url = f"data:image/jpeg;base64,{base64.b64encode(img_io.getvalue()).decode()}"
+
     # Pass concatenated text as a hidden form input
-    return render_template("process.html", text_items=[("Chapter " + str(i+1), content) for i, content in enumerate(text_items)], concatenated_text=concatenated_text, title=title, author=authors)
+    return render_template("process.html", text_items=[("Chapter " + str(i+1), content) for i, content in enumerate(text_items)], concatenated_text=concatenated_text, title=title, author=authors, cover_url=cover_url)
 
 def get_context(selected_text,request):
     selected_text_start = int(request.form["selected_text_start"])
@@ -61,7 +72,6 @@ def summarise():
 
     else:
         return render_template("process.html", text_items=[("Summary", summary)], concatenated_text=concatenated_text, title=title, author=author)
-
 
 if __name__ == "__main__":
     app.run(debug=True)

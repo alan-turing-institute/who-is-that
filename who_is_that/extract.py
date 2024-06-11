@@ -5,9 +5,11 @@ import tempfile
 import pathlib
 import typing
 
+
 class Extractor:
-    def __init__(self, text_content: list[tuple[str, str]], authors: typing.Optional[list[str]] = None, title: typing.Optional[str] = None) -> None:
+    def __init__(self, text_content: list[tuple[str, str]], cover: typing.Optional[bytes] = None, authors: typing.Optional[list[str]] = None, title: typing.Optional[str] = None) -> None:
         self.text_content = text_content
+        self.cover = cover
         self.authors = authors
         self.title = title
 
@@ -23,8 +25,12 @@ class Extractor:
 
     @staticmethod
     def get_cover(epub_path: pathlib.Path) -> None:
-        pass
-        
+        book = epub.read_epub(epub_path)
+        for item in book.get_items():
+            if item.get_type() == ebooklib.ITEM_COVER:
+                return item.get_content()
+        return None
+    
     @staticmethod
     def process(epub_path: pathlib.Path) -> list[tuple[str, str]]:
         print(f"Extracting text from EPUB {epub_path}")
@@ -50,15 +56,21 @@ class Extractor:
         tf.write(epub_contents)
         obj = cls(
             text_content=cls.process(tf.name), 
+            cover=cls.get_cover(tf.name),
             authors=cls.get_metadata(tf.name, 'creator'), 
-            title=cls.get_metadata(tf.name, 'title')[0]
+            title=cls.get_metadata(tf.name, 'title')[0],
         )
         # tf.delete()
         return obj
 
     @classmethod
     def from_path(cls, epub_path: pathlib.Path) -> "Extractor":
-        return cls(text_content=cls.process(epub_path))
+        return cls(
+            text_content=cls.process(epub_path),
+            cover=cls.get_cover(epub_path),
+            authors=cls.get_metadata(epub_path, 'creator'), 
+            title=cls.get_metadata(epub_path, 'title')[0]
+            )
 
 
 
