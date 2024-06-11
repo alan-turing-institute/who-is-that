@@ -1,11 +1,13 @@
 from flask import Flask, request, jsonify
 from ollama import Client
+import pathlib
 
 app = Flask(__name__)
 client = Client(host="http://localhost:11434")
 
 # Load the prompt template once at the start of the application
-with open("prompts/input_prompt.txt", "r") as file:
+prompts_dir = pathlib.Path(__file__).parent.resolve() / "prompts"
+with open(prompts_dir / "input_prompt.txt", "r") as file:
     prompt_template = file.read()
 
 
