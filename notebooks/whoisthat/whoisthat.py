@@ -18,12 +18,12 @@ def who_is_that_really(model, text, bookmark, word, clicked='whoisthat'):
     prepend_str = ""
     query = "I have written the following story: '" + text + "'."
     query += " Read up to the end of " + bookmark + "."
-    if word_type == 'character' and clicked != 'summary':
+    if word_type == 'character' and (clicked == 'whoisthat' or clicked == 'whatisthat'):
       if clicked == 'whatisthat':
         prepend_str += "Clicked a character, not a place. Running whoisthat instead... "
       query += " Describe what " +  word + " has done so far in 15 word or less."
       query += " Focus on key events and actions taken by this character."
-    elif word_type == 'place' and clicked != 'summary':
+    elif word_type == 'place' and (clicked == 'whoisthat' or clicked == 'whatisthat'):
       if clicked == 'whoisthat':
         prepend_str = "Clicked a place, not a character. Running whatisthat instead... "
       query += " Create a description of the location '" +  word + "' in 15 word or less."
