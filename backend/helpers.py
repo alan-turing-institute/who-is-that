@@ -11,7 +11,7 @@ client = Client(host=f"{ollama_host}:{ollama_port}")
 
 # Load the yaml file as a global variable
 data_dir = pathlib.Path(__file__).parent.resolve()
-with open(data_dir / "spoilerdb" / "database.yml") as database_file:
+with pathlib.Path.open(data_dir / "spoilerdb" / "database.yml") as database_file:
     db = yaml.safe_load(database_file)
 
 
@@ -34,13 +34,12 @@ def character_or_place(word: str, text: str) -> str:
     )
     if "character" in response["message"]["content"]:
         return "character"
-    elif "place" in response["message"]["content"]:
+    if "place" in response["message"]["content"]:
         return "place"
-    else:
-        return "neither"
+    return "neither"
 
 
-def spoiler_check(book, character, summary, model):
+def spoiler_check(book: str, character: str, summary: str, model: str) -> bool:
     if book not in db or character not in db[book]["characters"]:
         return "No spoilers in the database for " + character + " in " + book + "."
     query = "Read the following summary of " + character
@@ -61,10 +60,9 @@ def spoiler_check(book, character, summary, model):
     if "true" in answer or "True" in answer or "TRUE" in answer:
         print("Spoiler detected! Regenerating summary...")
         return True
-    elif "false" in answer or "False" in answer or "FALSE" in answer:
+    if "false" in answer or "False" in answer or "FALSE" in answer:
         return False
-    else:
-        raise Exception("Unexpected response from spoiler detection: " + answer)
+    raise ValueError("Unexpected response from spoiler detection: " + answer)
 
 
 def who_is_that(context: str, prompt_template: str, character: str) -> str:
@@ -97,7 +95,7 @@ def who_is_that_really(
     """
     word_type = character_or_place(word, text)
 
-    def generate_summary():
+    def generate_summary() -> str:
         model = os.environ.get("OLLAMA_MODEL", "llama3:8b")
         print(f"Using model {model}", flush=True)
 
@@ -151,5 +149,5 @@ def who_is_that_really(
             has_spoiler = spoiler_check(book, word, summary)
             # Check if the time has exceeded 10 seconds
             if time.time() - start_time >= 10:
-                pass
+                break
     return summary

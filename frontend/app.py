@@ -14,12 +14,12 @@ app = Flask(__name__)
 
 
 @app.route("/")
-def index():
+def index() -> str:
     return render_template("index.html")
 
 
 @app.route("/", methods=["POST"])
-def load_file():
+def load_file() -> str:
     uploaded_file = request.files["file"]
     print(f"Loading file {uploaded_file.filename}", flush=True)
 
@@ -64,7 +64,7 @@ def load_file():
 
 
 @app.route("/summarise", methods=["POST"])
-def summarise():
+def summarise() -> str:
     option = request.form["option"]
     selected_text = request.form["selected_text"]
     print(f"Calling '{option}' on '{selected_text}'", flush=True)
@@ -101,7 +101,7 @@ def summarise():
             author=author,
         )
 
-    elif option == "what_is_this":
+    if option == "what_is_this":
         return render_template(
             "process.html",
             text_items=[(f"What is {selected_text}?", result)],
@@ -110,14 +110,13 @@ def summarise():
             author=author,
         )
 
-    else:
-        return render_template(
-            "process.html",
-            text_items=[("Summary", result)],
-            concatenated_text=concatenated_text,
-            title=title,
-            author=author,
-        )
+    return render_template(
+        "process.html",
+        text_items=[("Summary", result)],
+        concatenated_text=concatenated_text,
+        title=title,
+        author=author,
+    )
 
 
 if __name__ == "__main__":
