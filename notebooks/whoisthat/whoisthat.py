@@ -38,15 +38,16 @@ def who_is_that_really(model, text, book, bookmark, word, clicked='whoisthat'):
     ])
     return prepend_str + response['message']['content']
   summary = generate_summary()
-  if word_type == 'character':
-    start_time = time.time()
-    has_spoiler = spoiler_check(book, word, summary, model)
-    while has_spoiler:
-      summary = generate_summary()
-      has_spoiler = spoiler_check(book, word, summary, model)
-      # Check if the time has exceeded 10 seconds
-      if time.time() - start_time >= 10:
-        pass
+
+  # Check for spoilers in the summary and regenerate if necessary
+  start_time = time.time()
+  has_spoiler = hallucinate_check(model, text, summary)
+  while has_spoiler:
+    summary = generate_summary()
+    has_spoiler = hallucinate_check(model, text, summary)
+    # Give up if the time has exceeded 10 seconds
+    if time.time() - start_time >= 10:
+      break
   return summary
 
 
