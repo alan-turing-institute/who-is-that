@@ -1,15 +1,16 @@
-"Pride and Prejudice": 
+---
+"Pride and Prejudice":
   author: "Jane Austen"
-  characters: 
+  characters:
     "Mr. Wickham":
       spoilers:
-        - "Mr. Wickham betrays the trust of the Bennet family by eloping with Lydia Bennet, the youngest daughter."
-"A Game of Thrones": 
+        - "Mr. Wickham betrays the trust of the Bennet family by eloping with Lydia Bennet, the youngest daughter."  # yamllint disable-line rule:line-length
+"A Game of Thrones":
   author: "George R. R. Martin"
-  characters: 
+  characters:
     "Jon Snow":
       spoilers:
-        - "Jon Snow is the son of Lyanna Stark and Rhaegar Targaryen, making him the legitimate heir to the Iron Throne; Aegon Targaryen."
+        - "Jon Snow is the son of Lyanna Stark and Rhaegar Targaryen, making him the legitimate heir to the Iron Throne; Aegon Targaryen."  # yamllint disable-line rule:line-length
 "Harry Potter and the Half-Blood Prince":
   author: "J. K. Rowling"
   characters:
@@ -21,4 +22,4 @@
   characters:
     "Draco":
       spoilers:
-        - "Sylvia was the initial saboteur, working with Draco to undermine both teams for her gain."
+        - "Sylvia was the initial saboteur, working with Draco to undermine both teams for her gain."  # yamllint disable-line rule:line-length
