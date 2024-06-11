@@ -50,6 +50,30 @@ def who_is_that_really(model, text, book, bookmark, word, clicked='whoisthat'):
   return summary
 
 
+def hallucinate_check(model, text, summary):
+  """
+    Check if the summary contains any information not present in the text.
+  """
+  query = "I have written the following story: '" + text + "'."
+  query += " I have generated the following summary: '" + summary + "'."
+  query += " Determine if the summary contains any information not present in the text."
+  query += " Provide a simple answer of 'true' or 'false'."
+  response = client.chat(model=model, messages=[
+    {
+      'role': 'user',
+      'content': query,
+    },
+  ])
+  answer = response['message']['content']
+  if 'true' in answer or 'True' in answer or 'TRUE' in answer:
+    print("Spoiler detected! Regenerating summary...")
+    return True
+  elif 'false' in answer or 'False' in answer or 'FALSE' in answer:
+    return False
+  else:
+    raise Exception("Unexpected response from spoiler detection: " + answer)
+
+
 def spoiler_check(book, character, summary, model):
   if book not in db or character not in db[book]['characters']:
     return "No spoilers in the database for " + character + " in " + book + "."
