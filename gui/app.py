@@ -3,11 +3,9 @@ from who_is_that import Extractor
 
 app = Flask(__name__)
 
-
 @app.route("/")
 def index():
-    return render_template("./index.html")
-
+    return render_template("index.html")
 
 @app.route("/", methods=["POST"])
 def load_file():
@@ -18,10 +16,16 @@ def load_file():
     filestream.seek(0)
     extractor = Extractor.from_bytes(filestream.read())
 
-    return render_template("./process.html", text_items=extractor.text_content)
+    text_items = [(str(i), content) for i, content in enumerate(extractor.text_content)]
+    return render_template("process.html", text_items=text_items)
 
-
-@app.route("/process", methods=["POST"])
+@app.route("/summarise", methods=["POST"])
 def summarise():
-    print("Summarising")
-    return render_template("./process.html", text_items=[])
+    selected_text = request.form["selected_text"]
+    print(f"Summarising: {selected_text}")
+    # Add your summarisation logic here
+    summary = f"Summary of: {selected_text}"  # Placeholder summary
+    return render_template("process.html", text_items=[("Summary", summary)])
+
+if __name__ == "__main__":
+    app.run(debug=True)
