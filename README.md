@@ -42,5 +42,5 @@ $ poetry config virtualenvs.in-project true
 # Run the analysis webapp
 
 ```shell
-$ poetry run flask --app gui/app ru
+$ poetry run flask --app frontend/app ru
 ```
