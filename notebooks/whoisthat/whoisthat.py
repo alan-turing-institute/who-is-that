@@ -6,30 +6,8 @@ import yaml
 with open('whoisthat/database.yml', 'r') as file:
   db = yaml.safe_load(file)
 
-# Set the model
-# model = 'llama3'
-model = 'gemma:2b'
 
-def get_summary(book, bookmark, character):
-  """
-    Get a summary of the character's actions up to the bookmark in the book.
-    This function uses the LLM to generate a summary from a famous book.
-  """
-  query = "I have read up to the end of " + bookmark
-  query += " in the book '" +  book + "' by " +  db[book]['author']
-  query += ". Describle what " +  character + " has done so far in 15 word or less."
-  query += " Focus on key events and actions taken by this character."
-  query += "Do not reveal spoilers for later sections of the book."
-  response = client.chat(model=model, messages=[
-    {
-      'role': 'user',
-      'content': query,
-    },
-  ])
-  return response['message']['content']
-
-
-def get_summary_from_text(text, bookmark, character):
+def get_summary_from_text(text, bookmark, character, model):
   """
     Get a summary of the character's actions up to the bookmark in the text.
     This function uses the LLM to generate a summary from the supplied text.
@@ -48,7 +26,7 @@ def get_summary_from_text(text, bookmark, character):
   return response['message']['content']
 
 
-def spoiler_check(book, character, summary):
+def spoiler_check(book, character, summary, model):
   if book not in db or character not in db[book]['characters']:
     return "No spoilers in the database for " + character + " in " + book + "."
   query = "Read the following summary of " + character
