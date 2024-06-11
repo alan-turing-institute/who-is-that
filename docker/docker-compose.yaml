@@ -1,14 +1,21 @@
 ---
 services:
   backend:
+    container_name: backend
     build:
       context: ..
       dockerfile: docker/backend.Dockerfile
     ports:
       - "127.0.0.1:3000:5000"
   frontend:
+    container_name: frontend
     build:
       context: ..
       dockerfile: docker/frontend.Dockerfile
     ports:
       - "127.0.0.1:4000:5000"
+  ollama:
+    container_name: ollama
+    image: ollama/ollama
+    ports:
+      - "127.0.0.1:11434:11434"

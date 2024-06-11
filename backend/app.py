@@ -11,6 +11,10 @@ with open(prompts_dir / "input_prompt.txt", "r") as file:
     prompt_template = file.read()
 
 
+@app.route("/")
+def index():
+    return "Backend is running"
+
 def who_is_that(context, prompt_template, character):
     prompt = prompt_template.replace("{character}", character)
     concat = f"CONTEXT: {context} \n INSTRUCTIONS: {prompt}"
