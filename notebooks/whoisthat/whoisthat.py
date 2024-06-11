@@ -1,17 +1,17 @@
 from ollama import Client
 
 client = Client(host="http://localhost:11434")
-import yaml
 import time
 
+import yaml
+
 # Load the yaml file as a global variable
-with open("whoisthat/database.yml", "r") as file:
+with open("whoisthat/database.yml") as file:
     db = yaml.safe_load(file)
 
 
 def who_is_that_really(model, text, book, bookmark, word, clicked="whoisthat"):
-    """
-    Get a summary of the character's actions up to the bookmark in the text.
+    """Get a summary of the character's actions up to the bookmark in the text.
     This function uses the LLM to generate a summary from the supplied text.
     """
     word_type = character_or_place(model, word, text)
@@ -92,8 +92,7 @@ def spoiler_check(book, character, summary, model):
 
 
 def character_or_place(model, word, text):
-    """
-    Determine whether the word in the text is about a character or a place.
+    """Determine whether the word in the text is about a character or a place.
     """
     query = "I have written the following story: '" + text + "'."
     query += " I have used the word '" + word + "' in the story."

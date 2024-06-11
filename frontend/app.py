@@ -1,11 +1,13 @@
-from flask import Flask, render_template, request
-from .extract import Extractor
-from PIL import Image
-import io
 import base64
+import io
 import json
 import os
+
 import requests
+from flask import Flask, render_template, request
+from PIL import Image
+
+from .extract import Extractor
 from .summarise import get_context
 
 app = Flask(__name__)
@@ -83,11 +85,11 @@ def summarise():
     try:
         print(f"Sending request to backend at '{url}'...", flush=True)
         response_who_is_that = requests.post(
-            url, headers={"Content-Type": "application/json"}, data=json.dumps(payload)
+            url, headers={"Content-Type": "application/json"}, data=json.dumps(payload),
         )
         result = response_who_is_that.json()
     except Exception as exc:
-        print(f"Failed to extract output {str(exc)}")
+        print(f"Failed to extract output {exc!s}")
         result = "Unknown"
 
     if option == "who_is_that":

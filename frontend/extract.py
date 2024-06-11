@@ -1,9 +1,10 @@
-from ebooklib import epub
+import pathlib
+import tempfile
+import typing
+
 import ebooklib
 from bs4 import BeautifulSoup
-import tempfile
-import pathlib
-import typing
+from ebooklib import epub
 
 
 class Extractor:

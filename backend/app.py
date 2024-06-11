@@ -1,12 +1,14 @@
-from flask import Flask, request, jsonify
-from .helpers import who_is_that
 import pathlib
+
+from flask import Flask, jsonify, request
+
+from .helpers import who_is_that
 
 app = Flask(__name__)
 
 # Load the prompt template once at the start of the application
 data_dir = pathlib.Path(__file__).parent.resolve()
-with open(data_dir / "prompts" / "input_prompt.txt", "r") as prompt_file:
+with open(data_dir / "prompts" / "input_prompt.txt") as prompt_file:
     prompt_template = prompt_file.read()
 
 
