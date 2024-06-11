@@ -13,9 +13,7 @@ with pathlib.Path.open(data_dir / "spoilerdb" / "database.yml") as database_file
 
 
 def character_or_place(word: str, text: str) -> str:
-    """Determine whether the word in the text is about a character or a place.
-    """
-    # model = os.environ.get("OLLAMA_MODEL", "llama3:8b")
+    """Determine whether the word in the text is about a character or a place."""
     query = "I have written the following story: '" + text + "'."
     query += " I have used the word '" + word + "' in the story."
     query += " Determine whether this word refers to a character or a place."
@@ -85,7 +83,11 @@ def who_is_that(context: str, prompt_template: str, character: str) -> str:
 
 
 def who_is_that_really(
-    text: str, book: str, bookmark: str, word: str, clicked: str = "whoisthat",
+    text: str,
+    book: str,
+    bookmark: str,
+    word: str,
+    clicked: str = "whoisthat",
 ) -> str:
     """Get a summary of the character's actions up to the bookmark in the text.
     This function uses the LLM to generate a summary from the supplied text.
