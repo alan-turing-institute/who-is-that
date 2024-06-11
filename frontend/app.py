@@ -65,7 +65,7 @@ def load_file():
 def summarise():
     option = request.form["option"]
     selected_text = request.form["selected_text"]
-    print(f"Summarising up to: {selected_text}", flush=True)
+    print(f"Calling '{option}' on '{selected_text}'", flush=True)
 
     author = request.form["author"]
     title = request.form["title"]
@@ -90,10 +90,19 @@ def summarise():
         print(f"Failed to extract output {str(exc)}")
         result = "Unknown"
 
-    if option == "what_is_this" or option == "who_is_that":
+    if option == "who_is_that":
         return render_template(
             "process.html",
-            text_items=[("What is this place?", result)],
+            text_items=[(f"Who is {selected_text}", result)],
+            concatenated_text=concatenated_text,
+            title=title,
+            author=author,
+        )
+
+    elif option == "what_is_this":
+        return render_template(
+            "process.html",
+            text_items=[(f"What is {selected_text}?", result)],
             concatenated_text=concatenated_text,
             title=title,
             author=author,
