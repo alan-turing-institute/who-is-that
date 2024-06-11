@@ -16,7 +16,6 @@ class Extractor:
     @staticmethod
     def get_metadata(epub_path: pathlib.Path, data_type: str) -> str:
         book = epub.read_epub(epub_path)
-        # book.add_author("Radka Jersakova")
         metadata = book.get_metadata('DC', data_type)
         if metadata:
             return [md[0] for md in metadata]
@@ -41,7 +40,6 @@ class Extractor:
         for item in book.get_items():
             if item.get_type() == ebooklib.ITEM_DOCUMENT:
                 soup = BeautifulSoup(item.get_content(), "lxml")
-                # text_content.append(soup.get_text())
 
                 for container in soup.find_all(attrs={"epub:type": "chapter"}):
                     text_content.append((container["id"], container.get_text()))
@@ -59,7 +57,6 @@ class Extractor:
             authors=cls.get_metadata(tf.name, 'creator'),
             title=cls.get_metadata(tf.name, 'title')[0],
         )
-        # tf.delete()
         return obj
 
     @classmethod
