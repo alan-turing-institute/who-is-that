@@ -23,7 +23,7 @@ jobs:
         run: poetry install
       - name: Lint Python
         run: |
-          poetry run ruff check .
+          poetry run ruff check --preview .
           poetry run black check .
 
   lint_yaml:
