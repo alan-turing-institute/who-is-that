@@ -39,10 +39,18 @@ If viewing notebook in VSCode, you need to update the config to show the poetry 
 $ poetry config virtualenvs.in-project true
 ```
 
-# Run the analysis webapp
+# Run the frontend webapp
 
 ```shell
-$ poetry run flask --app frontend/app ru
+$ poetry run flask --app frontend/app run
+```
+
+# Run the backend webapp
+
+Make sure to have llama running and:
+
+```shell
+$ poetry run flask --app backend/app run
 ```
 
 # Run the apps in Docker
