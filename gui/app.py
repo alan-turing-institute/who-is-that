@@ -29,10 +29,9 @@ def load_file():
     # Pass concatenated text as a hidden form input
     return render_template("process.html", text_items=[("Chapter " + str(i+1), content) for i, content in enumerate(text_items)], concatenated_text=concatenated_text, title=title, author=author)
 
-@app.route("/summarise", methods=["POST"])
-def summarise():
-    selected_text = request.form["selected_text"]
+def get_context(selected_text,request):
     selected_text_start = int(request.form["selected_text_start"])
+    print(f"Finishing at position: {selected_text_start}")
     concatenated_text = request.form["concatenated_text"]
     author = request.form["author"]
     title = request.form["title"]
@@ -42,7 +41,27 @@ def summarise():
     # Use the start position to slice the concatenated text
     summary = concatenated_text[:selected_text_start + len(selected_text)]
 
-    return render_template("process.html", text_items=[("Summary", summary)], concatenated_text=concatenated_text, title=title, author=author)
+    return summary, concatenated_text
+
+@app.route("/summarise", methods=["POST"])
+def summarise():
+    option = request.form["option"]
+    selected_text = request.form["selected_text"]
+    print(f"Summarising up to: {selected_text}")
+
+    summary, concatenated_text = get_context(selected_text, request)
+    # Use the start position to slice the concatenated text
+
+    if option == "what_is_this":
+        return render_template("process.html", text_items=[("What is this place?", selected_text)], concatenated_text=concatenated_text)
+
+    elif option == "who_is_that":
+        return render_template("process.html", text_items=[("Who is this?", selected_text)], concatenated_text=concatenated_text)
+
+    else:
+        return render_template("process.html", text_items=[("Summary", summary)], concatenated_text=concatenated_text)
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)

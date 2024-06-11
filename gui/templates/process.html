@@ -25,8 +25,7 @@
     </style>
 </head>
 <body>
-    <h1>{{ title }}</h1>
-    <h2>{{ author }}</h2>
+    <h1>Process file</h1>
     <div class="book" id="text-content">
         {% if text_items %}
             {% for text_item in text_items %}
@@ -40,7 +39,9 @@
 
     <div id="dropdown">
         <ul>
-            <li onclick="summarise()">Summarise</li>
+            <li onclick="summarise('summary')">Summarise</li>
+            <li onclick="summarise('who_is_that')">Who is that?</li>
+            <li onclick="summarise('what_is_this')">What is that place?</li>
         </ul>
     </div>
 
@@ -50,54 +51,53 @@
         <input type="hidden" name="concatenated_text" id="concatenated-text" value="{{ concatenated_text }}">
         <input type="hidden" name="author" id="author" value="{{ author }}">
         <input type="hidden" name="title" id="title" value="{{ title }}">
+        <input type="hidden" name="option" id="option">
     </form>
 
     <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const textContent = document.getElementById("text-content");
-        const dropdown = document.getElementById("dropdown");
-        const selectedTextInput = document.getElementById("selected-text");
-        const selectedTextStartInput = document.getElementById("selected-text-start");
+        document.addEventListener("DOMContentLoaded", () => {
+            const textContent = document.getElementById("text-content");
+            const dropdown = document.getElementById("dropdown");
+            const selectedTextInput = document.getElementById("selected-text");
+            const selectedTextStartInput = document.getElementById("selected-text-start");
 
-        textContent.addEventListener("contextmenu", (event) => {
-            event.preventDefault();
-            const selectedRange = window.getSelection().getRangeAt(0);
-            const selectedText = selectedRange.toString().trim();  // Trim leading and trailing whitespace
+            textContent.addEventListener("contextmenu", (event) => {
+                event.preventDefault();
+                const selectedRange = window.getSelection().getRangeAt(0);
+                const selectedText = selectedRange.toString().trim();  // Trim leading and trailing whitespace
 
-            // Strip HTML tags from the selected text
-            const tempDiv = document.createElement("div");
-            tempDiv.appendChild(selectedRange.cloneContents());
-            const strippedText = tempDiv.innerText.trim();
+                // Strip HTML tags from the selected text
+                const tempDiv = document.createElement("div");
+                tempDiv.appendChild(selectedRange.cloneContents());
+                const strippedText = tempDiv.innerText.trim();
 
-            if (strippedText) {
-                const preRange = document.createRange();
-                preRange.selectNodeContents(textContent);
-                preRange.setEnd(selectedRange.startContainer, selectedRange.startOffset);
-                const selectedTextStart = preRange.toString().length;
+                if (strippedText) {
+                    const preRange = document.createRange();
+                    preRange.selectNodeContents(textContent);
+                    preRange.setEnd(selectedRange.startContainer, selectedRange.startOffset);
+                    const selectedTextStart = preRange.toString().length;
 
-                selectedTextInput.value = strippedText;
-                selectedTextStartInput.value = selectedTextStart;
-                dropdown.style.display = "block";
-                dropdown.style.left = `${event.pageX}px`;
-                dropdown.style.top = `${event.pageY}px`;
-            } else {
-                dropdown.style.display = "none";
-            }
+                    selectedTextInput.value = strippedText;
+                    selectedTextStartInput.value = selectedTextStart;
+                    dropdown.style.display = "block";
+                    dropdown.style.left = `${event.pageX}px`;
+                    dropdown.style.top = `${event.pageY}px`;
+                } else {
+                    dropdown.style.display = "none";
+                }
+            });
+
+            document.addEventListener("click", (event) => {
+                if (!dropdown.contains(event.target)) {
+                    dropdown.style.display = "none";
+                }
+            });
         });
 
-        document.addEventListener("click", (event) => {
-            if (!dropdown.contains(event.target)) {
-                dropdown.style.display = "none";
-            }
-        });
-    });
-
-    function summarise() {
-        document.getElementById("summary-form").submit();
-    }
+        function summarise(option) {
+            document.getElementById("option").value = option;
+            document.getElementById("summary-form").submit();
+        }
     </script>
-
-
-
 </body>
 </html>
