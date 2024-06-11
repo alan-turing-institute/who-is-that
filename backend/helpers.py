@@ -36,7 +36,7 @@ def character_or_place(word: str, text: str) -> str:
     return "neither"
 
 
-def spoiler_check(book: str, character: str, summary: str, model: str) -> bool:
+def spoiler_check(book: str, character: str, summary: str) -> bool:
     if book not in db or character not in db[book]["characters"]:
         return "No spoilers in the database for " + character + " in " + book + "."
     query = "Read the following summary of " + character
@@ -44,9 +44,9 @@ def spoiler_check(book: str, character: str, summary: str, model: str) -> bool:
     query += "'. Check to see whether the following spoiler is present: '"
     query += db[book]["characters"][character]["spoilers"][0] + "'. "
     query += "Give me a simple true or false answer."
-    response = client.chat(
-        model=model,
-        messages=[
+    client = OllamaQuery()
+    response = client.query(
+        [
             {
                 "role": "user",
                 "content": query,
@@ -67,9 +67,9 @@ def who_is_that(context: str, prompt_template: str, character: str) -> str:
     concat = f"CONTEXT: {context} \n INSTRUCTIONS: {prompt}"
     try:
         print("Waiting for an Ollama response.", flush=True)
-        response = client.chat(
-            model="llama3:8b",
-            messages=[
+        client = OllamaQuery()
+        response = client.query(
+            [
                 {
                     "role": "user",
                     "content": concat,
@@ -121,9 +121,9 @@ def who_is_that_really(
         query += " Do not reveal spoilers for later sections of the story."
         try:
             print("Waiting for an Ollama response.", flush=True)
-            response = client.chat(
-                model=model,
-                messages=[
+            client = OllamaQuery()
+            response = client.query(
+                [
                     {
                         "role": "user",
                         "content": query,
