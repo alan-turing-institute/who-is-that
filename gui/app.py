@@ -17,6 +17,8 @@ def load_file():
     extractor = Extractor.from_bytes(filestream.read())
 
     text_items = extractor.text_content  # This should be a list of tuples or strings
+    author = extractor.author
+    title = extractor.title
 
     # If text_items is a list of tuples, extract the text
     if isinstance(text_items[0], tuple):
@@ -25,7 +27,7 @@ def load_file():
     concatenated_text = "\n".join(text_items)  # Concatenate all text content into a single string
 
     # Pass concatenated text as a hidden form input
-    return render_template("process.html", text_items=[(str(i), content) for i, content in enumerate(text_items)], concatenated_text=concatenated_text)
+    return render_template("process.html", text_items=[(str(i), content) for i, content in enumerate(text_items)], concatenated_text=concatenated_text, title=title, author=author)
 
 @app.route("/summarise", methods=["POST"])
 def summarise():
