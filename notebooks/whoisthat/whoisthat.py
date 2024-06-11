@@ -100,9 +100,5 @@ def character_or_place(model, word, text):
 # 1. [x] Summary generation with a book text as an input
 # 2. [x] Summary function runs spoiler check inside and iterates until no spoilers are found
 # 3. [x] Move these functions to backend.py
-# 4. [ ] Spoiler check that doesn't use LLM
-# 5. [ ] Use Lydia's story and character, bookmark and spoiler
-# 6. [ ] Make sure you can check for multiple spoilers
-# 7. [ ] Alternative spoiler check that does sentiment analysis
-# 8. [ ] Implement character_or_place function
-# 9. [ ] Fact extraction function instead of spoiler db
+# 4. [x] Implement character_or_place function
+# 5. [ ] Alternative spoiler check that sees if any information in the summary is not in the text
