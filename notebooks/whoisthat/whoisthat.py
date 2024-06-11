@@ -16,11 +16,12 @@ def who_is_that_really(model, text, book, bookmark, character=None, place=None):
     query = "I have written the following story: '" + text + "'."
     query += " Read up to the end of " + bookmark + "."
     if character:
-      query += " Describle what " +  character + " has done so far in 15 word or less."
+      query += " Describe what " +  character + " has done so far in 15 word or less."
       query += " Focus on key events and actions taken by this character."
-    if place:
-      query += " Describle what has happened at " +  place + " so far in 15 word or less."
-      query += " Focus on key events and actions taken at this location."
+    elif place:
+      query += " Create a description of the location '" +  place + "' in 15 word or less."
+    else:
+      query += " Describe the story so far in 15 word or less."
     query += " Do not reveal spoilers for later sections of the story."
     response = client.chat(model=model, messages=[
       {
@@ -54,7 +55,7 @@ def spoiler_check(book, character, summary, model):
   ])
   answer = response['message']['content']
   if 'true' in answer or 'True' in answer or 'TRUE' in answer:
-    print("Spoiler detected!")
+    print("Spoiler detected! Regenerating summary...")
     return True
   elif 'false' in answer or 'False' in answer or 'FALSE' in answer:
     return False
