@@ -16,6 +16,8 @@ services:
       - "127.0.0.1:4000:5000"
   ollama:
     container_name: ollama
-    image: ollama/ollama
+    build:
+      context: ..
+      dockerfile: docker/ollama.Dockerfile
     ports:
       - "127.0.0.1:11434:11434"
