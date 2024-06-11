@@ -39,7 +39,14 @@ def load_file():
         cover_url = f"data:image/jpeg;base64,{base64.b64encode(img_io.getvalue()).decode()}"
 
     # Pass concatenated text as a hidden form input
-    return render_template("process.html", text_items=[("Chapter " + str(i+1), content) for i, content in enumerate(text_items)], concatenated_text=concatenated_text, title=title, author=authors, cover_url=cover_url)
+    return render_template(
+        "process.html", 
+        text_items=[("Chapter " + str(i+1), content) for i, content in enumerate(text_items)], 
+        concatenated_text=concatenated_text, 
+        title=title, 
+        author=authors, 
+        cover_url=cover_url
+    )
 
 def get_context(selected_text,request):
     selected_text_start = int(request.form["selected_text_start"])
@@ -65,10 +72,22 @@ def summarise():
     # Use the start position to slice the concatenated text
 
     if option == "what_is_this":
-        return render_template("process.html", text_items=[("What is this place?", selected_text)], concatenated_text=concatenated_text, title=title, author=author)
+        return render_template(
+            "process.html", 
+            text_items=[("What is this place?", selected_text)], 
+            concatenated_text=concatenated_text, 
+            title=title, 
+            author=author
+        )
 
     elif option == "who_is_that":
-        return render_template("process.html", text_items=[("Who is this?", selected_text)], concatenated_text=concatenated_text, title=title, author=author)
+        return render_template(
+            "process.html", 
+            text_items=[("Who is this?", selected_text)], 
+            concatenated_text=concatenated_text, 
+            title=title, 
+            author=author
+        )
 
     else:
         return render_template("process.html", text_items=[("Summary", summary)], concatenated_text=concatenated_text, title=title, author=author)
