@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_from_directory
 from who_is_that import Extractor
 
 app = Flask(__name__)
@@ -17,7 +17,8 @@ def load_file():
     extractor = Extractor.from_bytes(filestream.read())
 
     text_items = extractor.text_content  # This should be a list of tuples or strings
-    author = extractor.author
+    authors_list = extractor.authors
+    authors = ", ".join(authors_list)
     title = extractor.title
 
     # If text_items is a list of tuples, extract the text
@@ -27,7 +28,7 @@ def load_file():
     concatenated_text = "\n".join(text_items)  # Concatenate all text content into a single string
 
     # Pass concatenated text as a hidden form input
-    return render_template("process.html", text_items=[("Chapter " + str(i+1), content) for i, content in enumerate(text_items)], concatenated_text=concatenated_text, title=title, author=author)
+    return render_template("process.html", text_items=[("Chapter " + str(i+1), content) for i, content in enumerate(text_items)], concatenated_text=concatenated_text, title=title, author=authors)
 
 def get_context(selected_text,request):
     selected_text_start = int(request.form["selected_text_start"])
@@ -60,7 +61,6 @@ def summarise():
 
     else:
         return render_template("process.html", text_items=[("Summary", summary)], concatenated_text=concatenated_text, title=title, author=author)
-
 
 
 if __name__ == "__main__":
