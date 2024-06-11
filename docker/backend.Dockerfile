@@ -31,5 +31,5 @@ COPY backend backend
 
 EXPOSE 5000
 
-CMD ["venv/bin/python", "-m", "flask", "--app", "backend/app", "run", "--host", "0.0.0.0"]
+CMD ["venv/bin/python", "-m", "flask", "--app", "backend/app", "run", "--host", "0.0.0.0", "--debug"]
 # CMD ["tail", "-f", "/dev/null"]
