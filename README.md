@@ -11,6 +11,9 @@ Generate spoiler-free summaries of characters up-to-a-given-point in a text
 $ poetry install
 ```
 
+Download example epub file such as [Pride and Prejudice](https://standardebooks.org/ebooks/jane-austen/pride-and-prejudice)
+
+
 # Extract text
 
 To extract text from an EPUB
