@@ -9,9 +9,11 @@ import requests
 
 app = Flask(__name__)
 
+
 @app.route("/")
 def index():
     return render_template("index.html")
+
 
 @app.route("/", methods=["POST"])
 def load_file():
@@ -31,37 +33,47 @@ def load_file():
     if isinstance(text_items[0], tuple):
         text_items = [content for _, content in text_items]
 
-    concatenated_text = "\n".join(text_items)  # Concatenate all text content into a single string
+    concatenated_text = "\n".join(
+        text_items
+    )  # Concatenate all text content into a single string
 
     cover_url = None
     if extractor.cover:
         image = Image.open(io.BytesIO(extractor.cover))
         img_io = io.BytesIO()
-        image.save(img_io, 'JPEG')
+        image.save(img_io, "JPEG")
         img_io.seek(0)
-        cover_url = f"data:image/jpeg;base64,{base64.b64encode(img_io.getvalue()).decode()}"
+        cover_url = (
+            f"data:image/jpeg;base64,{base64.b64encode(img_io.getvalue()).decode()}"
+        )
 
     # Pass concatenated text as a hidden form input
     return render_template(
         "process.html",
-        text_items=[("Chapter " + str(i+1), content) for i, content in enumerate(text_items)],
+        text_items=[
+            ("Chapter " + str(i + 1), content) for i, content in enumerate(text_items)
+        ],
         concatenated_text=concatenated_text,
         title=title,
         author=authors,
-        cover_url=cover_url
+        cover_url=cover_url,
     )
 
-def get_context(selected_text,request):
+
+def get_context(selected_text, request):
     selected_text_start = int(request.form["selected_text_start"])
     print(f"Finishing at position: {selected_text_start}")
     concatenated_text = request.form["concatenated_text"]
 
-    print(f"Summarising up to: {selected_text} starting at position: {selected_text_start}")
+    print(
+        f"Summarising up to: {selected_text} starting at position: {selected_text_start}"
+    )
 
     # Use the start position to slice the concatenated text
-    summary = concatenated_text[:selected_text_start + len(selected_text)]
+    summary = concatenated_text[: selected_text_start + len(selected_text)]
 
     return summary, concatenated_text
+
 
 @app.route("/summarise", methods=["POST"])
 def summarise():
@@ -80,33 +92,44 @@ def summarise():
 
     # Create the payload
     # Load context from file
-    context = 'EXAMPLSE SOMETHING'
+    context = "EXAMPLSE SOMETHING"
 
     # Define the character
     character = "Mr. Wickham"
 
-    payload = {
-        'character': character,
-        'context': context
-    }
+    payload = {"character": character, "context": context}
     # Send the POST request
     try:
         app.logger.info(f"Sending request to backend at '{url}'...")
-        response_who_is_that = requests.post(url, headers={'Content-Type': 'application/json'}, data=json.dumps(payload))
+        response_who_is_that = requests.post(
+            url, headers={"Content-Type": "application/json"}, data=json.dumps(payload)
+        )
     except Exception as exc:
         print("Exception!!!!!!!!!!!!", flush=True)
         print(payload["character"], flush=True)
         print(url, flush=True)
         print(f"Exception of type {type(exc)}", flush=True)
 
-
     if option == "what_is_this" or option == "who_is_that":
 
         result = response_who_is_that.json()
-        return render_template("process.html", text_items=[("What is this place?", result)], concatenated_text=concatenated_text, title=title, author=author)
+        return render_template(
+            "process.html",
+            text_items=[("What is this place?", result)],
+            concatenated_text=concatenated_text,
+            title=title,
+            author=author,
+        )
 
     else:
-        return render_template("process.html", text_items=[("Summary", summary)], concatenated_text=concatenated_text, title=title, author=author)
+        return render_template(
+            "process.html",
+            text_items=[("Summary", summary)],
+            concatenated_text=concatenated_text,
+            title=title,
+            author=author,
+        )
+
 
 if __name__ == "__main__":
     app.run(debug=True)

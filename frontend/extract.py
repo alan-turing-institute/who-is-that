@@ -7,7 +7,13 @@ import typing
 
 
 class Extractor:
-    def __init__(self, text_content: list[tuple[str, str]], cover: typing.Optional[bytes] = None, authors: typing.Optional[list[str]] = None, title: typing.Optional[str] = None) -> None:
+    def __init__(
+        self,
+        text_content: list[tuple[str, str]],
+        cover: typing.Optional[bytes] = None,
+        authors: typing.Optional[list[str]] = None,
+        title: typing.Optional[str] = None,
+    ) -> None:
         self.text_content = text_content
         self.cover = cover
         self.authors = authors
@@ -16,7 +22,7 @@ class Extractor:
     @staticmethod
     def get_metadata(epub_path: pathlib.Path, data_type: str) -> str:
         book = epub.read_epub(epub_path)
-        metadata = book.get_metadata('DC', data_type)
+        metadata = book.get_metadata("DC", data_type)
         if metadata:
             return [md[0] for md in metadata]
         else:
@@ -54,8 +60,8 @@ class Extractor:
         obj = cls(
             text_content=cls.process(tf.name),
             cover=cls.get_cover(tf.name),
-            authors=cls.get_metadata(tf.name, 'creator'),
-            title=cls.get_metadata(tf.name, 'title')[0],
+            authors=cls.get_metadata(tf.name, "creator"),
+            title=cls.get_metadata(tf.name, "title")[0],
         )
         return obj
 
@@ -64,6 +70,6 @@ class Extractor:
         return cls(
             text_content=cls.process(epub_path),
             cover=cls.get_cover(epub_path),
-            authors=cls.get_metadata(epub_path, 'creator'),
-            title=cls.get_metadata(epub_path, 'title')[0]
-            )
+            authors=cls.get_metadata(epub_path, "creator"),
+            title=cls.get_metadata(epub_path, "title")[0],
+        )
