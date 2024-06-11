@@ -3,11 +3,8 @@ import pathlib
 import time
 
 import yaml
-from ollama import Client
 
-ollama_host = os.environ.get("OLLAMA_HOST", "http://localhost")
-ollama_port = os.environ.get("OLLAMA_PORT", "11434")
-client = Client(host=f"{ollama_host}:{ollama_port}")
+from .ollama_query import OllamaQuery
 
 # Load the yaml file as a global variable
 data_dir = pathlib.Path(__file__).parent.resolve()
@@ -18,14 +15,14 @@ with pathlib.Path.open(data_dir / "spoilerdb" / "database.yml") as database_file
 def character_or_place(word: str, text: str) -> str:
     """Determine whether the word in the text is about a character or a place.
     """
-    model = os.environ.get("OLLAMA_MODEL", "llama3:8b")
+    # model = os.environ.get("OLLAMA_MODEL", "llama3:8b")
     query = "I have written the following story: '" + text + "'."
     query += " I have used the word '" + word + "' in the story."
     query += " Determine whether this word refers to a character or a place."
     query += " Provide a simple answer of 'character' or 'place' or 'neither'."
-    response = client.chat(
-        model=model,
-        messages=[
+    client = OllamaQuery()
+    response = client.query(
+        [
             {
                 "role": "user",
                 "content": query,
