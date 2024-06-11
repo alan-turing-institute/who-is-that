@@ -128,3 +128,4 @@ def character_or_place(model, word, text):
 # 4. [x] Implement character_or_place function
 # 5. [x] Alternative spoiler check that sees if any information in the summary is not in the text
 # 6. [ ] Update the app.py version of who_is_that_really to be in line with this script
+# 7. [ ] Remove the spoiler db from the app.py version of who_is_that_really
