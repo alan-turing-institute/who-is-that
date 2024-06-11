@@ -3,11 +3,8 @@ import pathlib
 import time
 
 import yaml
-from ollama import Client
 
-ollama_host = os.environ.get("OLLAMA_HOST", "http://localhost")
-ollama_port = os.environ.get("OLLAMA_PORT", "11434")
-client = Client(host=f"{ollama_host}:{ollama_port}")
+from .ollama_query import OllamaQuery
 
 # Load the yaml file as a global variable
 data_dir = pathlib.Path(__file__).parent.resolve()
@@ -16,16 +13,14 @@ with pathlib.Path.open(data_dir / "spoilerdb" / "database.yml") as database_file
 
 
 def character_or_place(word: str, text: str) -> str:
-    """Determine whether the word in the text is about a character or a place.
-    """
-    model = os.environ.get("OLLAMA_MODEL", "llama3:8b")
+    """Determine whether the word in the text is about a character or a place."""
     query = "I have written the following story: '" + text + "'."
     query += " I have used the word '" + word + "' in the story."
     query += " Determine whether this word refers to a character or a place."
     query += " Provide a simple answer of 'character' or 'place' or 'neither'."
-    response = client.chat(
-        model=model,
-        messages=[
+    client = OllamaQuery()
+    response = client.query(
+        [
             {
                 "role": "user",
                 "content": query,
@@ -39,7 +34,7 @@ def character_or_place(word: str, text: str) -> str:
     return "neither"
 
 
-def spoiler_check(book: str, character: str, summary: str, model: str) -> bool:
+def spoiler_check(book: str, character: str, summary: str) -> bool:
     if book not in db or character not in db[book]["characters"]:
         return "No spoilers in the database for " + character + " in " + book + "."
     query = "Read the following summary of " + character
@@ -47,9 +42,9 @@ def spoiler_check(book: str, character: str, summary: str, model: str) -> bool:
     query += "'. Check to see whether the following spoiler is present: '"
     query += db[book]["characters"][character]["spoilers"][0] + "'. "
     query += "Give me a simple true or false answer."
-    response = client.chat(
-        model=model,
-        messages=[
+    client = OllamaQuery()
+    response = client.query(
+        [
             {
                 "role": "user",
                 "content": query,
@@ -70,9 +65,9 @@ def who_is_that(context: str, prompt_template: str, character: str) -> str:
     concat = f"CONTEXT: {context} \n INSTRUCTIONS: {prompt}"
     try:
         print("Waiting for an Ollama response.", flush=True)
-        response = client.chat(
-            model="llama3:8b",
-            messages=[
+        client = OllamaQuery()
+        response = client.query(
+            [
                 {
                     "role": "user",
                     "content": concat,
@@ -88,7 +83,11 @@ def who_is_that(context: str, prompt_template: str, character: str) -> str:
 
 
 def who_is_that_really(
-    text: str, book: str, bookmark: str, word: str, clicked: str = "whoisthat",
+    text: str,
+    book: str,
+    bookmark: str,
+    word: str,
+    clicked: str = "whoisthat",
 ) -> str:
     """Get a summary of the character's actions up to the bookmark in the text.
     This function uses the LLM to generate a summary from the supplied text.
@@ -124,9 +123,9 @@ def who_is_that_really(
         query += " Do not reveal spoilers for later sections of the story."
         try:
             print("Waiting for an Ollama response.", flush=True)
-            response = client.chat(
-                model=model,
-                messages=[
+            client = OllamaQuery()
+            response = client.query(
+                [
                     {
                         "role": "user",
                         "content": query,

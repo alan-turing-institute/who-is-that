@@ -23,8 +23,8 @@ jobs:
         run: poetry install
       - name: Lint Python
         run: |
-          poetry run ruff check .
-          poetry run black check .
+          poetry run ruff check --preview .
+          poetry run black --check .
 
   lint_yaml:
     runs-on: ubuntu-latest
@@ -32,7 +32,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Lint YAML
-        uses: karancode/yamllint-github-action@v2
+        uses: karancode/yamllint-github-action@v2.1.1
         with:
           yamllint_strict: true
           yamllint_comment: false

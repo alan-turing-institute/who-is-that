@@ -85,7 +85,9 @@ def summarise() -> str:
     try:
         print(f"Sending request to backend at '{url}'...", flush=True)
         response_who_is_that = requests.post(
-            url, headers={"Content-Type": "application/json"}, data=json.dumps(payload),
+            url,
+            headers={"Content-Type": "application/json"},
+            data=json.dumps(payload),
         )
         result = response_who_is_that.json()
     except Exception as exc:
