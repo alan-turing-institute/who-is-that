@@ -7,7 +7,7 @@ with open('whoisthat/database.yml', 'r') as file:
   db = yaml.safe_load(file)
 
 
-def get_summary_from_text(text, book, bookmark, character, model):
+def who_is_that_really(model, text, book, bookmark, character=None, place=None):
   """
     Get a summary of the character's actions up to the bookmark in the text.
     This function uses the LLM to generate a summary from the supplied text.
@@ -15,9 +15,13 @@ def get_summary_from_text(text, book, bookmark, character, model):
   def generate_summary():
     query = "I have written the following story: '" + text + "'."
     query += " Read up to the end of " + bookmark + "."
-    query += " Describle what " +  character + " has done so far in 15 word or less."
-    query += " Focus on key events and actions taken by this character."
-    query += "Do not reveal spoilers for later sections of the story."
+    if character:
+      query += " Describle what " +  character + " has done so far in 15 word or less."
+      query += " Focus on key events and actions taken by this character."
+    if place:
+      query += " Describle what has happened at " +  place + " so far in 15 word or less."
+      query += " Focus on key events and actions taken at this location."
+    query += " Do not reveal spoilers for later sections of the story."
     response = client.chat(model=model, messages=[
       {
         'role': 'user',
@@ -26,10 +30,11 @@ def get_summary_from_text(text, book, bookmark, character, model):
     ])
     return response['message']['content']
   summary = generate_summary()
-  has_spoiler = spoiler_check(book, character, summary, model)
-  while has_spoiler:
-    summary = generate_summary()
+  if character:
     has_spoiler = spoiler_check(book, character, summary, model)
+    while has_spoiler:
+      summary = generate_summary()
+      has_spoiler = spoiler_check(book, character, summary, model)
   return summary
 
 
@@ -60,7 +65,7 @@ def spoiler_check(book, character, summary, model):
 # 0. [x] Try with Gemma 2b or something smaller
 # 1. [x] Summary generation with a book text as an input
 # 2. [x] Summary function runs spoiler check inside and iterates until no spoilers are found
-# 3. [ ] Move these functions to backend.py
+# 3. [x] Move these functions to backend.py
 # 4. [ ] Spoiler check that doesn't use LLM
 # 5. [ ] Use Lydia's story and character, bookmark and spoiler
 # 6. [ ] Make sure you can check for multiple spoilers
