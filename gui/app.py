@@ -16,6 +16,8 @@ def load_file():
     filestream.seek(0)
     extractor = Extractor.from_bytes(filestream.read())
 
+    text_items = extractor.text_content
+    return render_template("process.html", text_items=text_items)
     text_items = extractor.text_content  # This should be a list of tuples or strings
 
     # If text_items is a list of tuples, extract the text
