@@ -6,7 +6,9 @@ import pathlib
 import time
 
 app = Flask(__name__)
-client = Client(host="http://ollama:11434")
+ollama_host = os.environ.get("OLLAMA_HOST", "http://localhost")
+ollama_port = os.environ.get("OLLAMA_PORT", "11434")
+client = Client(host=f"{ollama_host}:{ollama_port}")
 
 
 # Load the prompt template once at the start of the application
