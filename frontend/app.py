@@ -1,22 +1,25 @@
 from flask import Flask, render_template, request
-from who_is_that import Extractor
+from .extract import Extractor
 from PIL import Image
 import io
 import base64
 import json
 import os
 import requests
+from .summarise import get_context
 
 app = Flask(__name__)
+
 
 @app.route("/")
 def index():
     return render_template("index.html")
 
+
 @app.route("/", methods=["POST"])
 def load_file():
     uploaded_file = request.files["file"]
-    print(f"Loading file {uploaded_file.filename}")
+    print(f"Loading file {uploaded_file.filename}", flush=True)
 
     filestream = uploaded_file.stream
     filestream.seek(0)
@@ -31,43 +34,38 @@ def load_file():
     if isinstance(text_items[0], tuple):
         text_items = [content for _, content in text_items]
 
-    concatenated_text = "\n".join(text_items)  # Concatenate all text content into a single string
+    # Concatenate all text content into a single string
+    concatenated_text = "\n".join(text_items)
 
     cover_url = None
     if extractor.cover:
         image = Image.open(io.BytesIO(extractor.cover))
         img_io = io.BytesIO()
-        image.save(img_io, 'JPEG')
+        image.save(img_io, "JPEG")
         img_io.seek(0)
-        cover_url = f"data:image/jpeg;base64,{base64.b64encode(img_io.getvalue()).decode()}"
+        cover_url = (
+            f"data:image/jpeg;base64,{base64.b64encode(img_io.getvalue()).decode()}"
+        )
 
     # Pass concatenated text as a hidden form input
     return render_template(
         "process.html",
-        text_items=[("Chapter " + str(i+1), content) for i, content in enumerate(text_items)],
+        text_items=[
+            ("Chapter " + str(idx), content)
+            for idx, content in enumerate(text_items, start=1)
+        ],
         concatenated_text=concatenated_text,
         title=title,
         author=authors,
-        cover_url=cover_url
+        cover_url=cover_url,
     )
 
-def get_context(selected_text,request):
-    selected_text_start = int(request.form["selected_text_start"])
-    print(f"Finishing at position: {selected_text_start}")
-    concatenated_text = request.form["concatenated_text"]
-
-    print(f"Summarising up to: {selected_text} starting at position: {selected_text_start}")
-
-    # Use the start position to slice the concatenated text
-    summary = concatenated_text[:selected_text_start + len(selected_text)]
-
-    return summary, concatenated_text
 
 @app.route("/summarise", methods=["POST"])
 def summarise():
     option = request.form["option"]
     selected_text = request.form["selected_text"]
-    print(f"Summarising up to: {selected_text}")
+    print(f"Calling '{option}' on '{selected_text}'", flush=True)
 
     author = request.form["author"]
     title = request.form["title"]
@@ -79,34 +77,46 @@ def summarise():
     url = f"{backend_host}:{backend_port}/who_is_that"
 
     # Create the payload
-    # Load context from file
-    context = 'EXAMPLSE SOMETHING'
+    payload = {"character": selected_text, "context": summary}
 
-    # Define the character
-    character = "Mr. Wickham"
-
-    payload = {
-        'character': character,
-        'context': context
-    }
     # Send the POST request
     try:
-        app.logger.info(f"Sending request to backend at '{url}'...")
-        response_who_is_that = requests.post(url, headers={'Content-Type': 'application/json'}, data=json.dumps(payload))
-    except Exception as exc:
-        print("Exception!!!!!!!!!!!!", flush=True)
-        print(payload["character"], flush=True)
-        print(url, flush=True)
-        print(f"Exception of type {type(exc)}", flush=True)
-
-
-    if option == "what_is_this" or option == "who_is_that":
-
+        print(f"Sending request to backend at '{url}'...", flush=True)
+        response_who_is_that = requests.post(
+            url, headers={"Content-Type": "application/json"}, data=json.dumps(payload)
+        )
         result = response_who_is_that.json()
-        return render_template("process.html", text_items=[("What is this place?", result)], concatenated_text=concatenated_text, title=title, author=author)
+    except Exception as exc:
+        print(f"Failed to extract output {str(exc)}")
+        result = "Unknown"
+
+    if option == "who_is_that":
+        return render_template(
+            "process.html",
+            text_items=[(f"Who is {selected_text}", result)],
+            concatenated_text=concatenated_text,
+            title=title,
+            author=author,
+        )
+
+    elif option == "what_is_this":
+        return render_template(
+            "process.html",
+            text_items=[(f"What is {selected_text}?", result)],
+            concatenated_text=concatenated_text,
+            title=title,
+            author=author,
+        )
 
     else:
-        return render_template("process.html", text_items=[("Summary", summary)], concatenated_text=concatenated_text, title=title, author=author)
+        return render_template(
+            "process.html",
+            text_items=[("Summary", result)],
+            concatenated_text=concatenated_text,
+            title=title,
+            author=author,
+        )
+
 
 if __name__ == "__main__":
     app.run(debug=True)

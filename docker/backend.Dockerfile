@@ -14,11 +14,7 @@ RUN python -m venv /app/venv
 
 # Install dependencies into virtual environment
 COPY . .
-# RUN poetry lock
 RUN poetry export -f requirements.txt | /app/venv/bin/pip install -r /dev/stdin
-
-# Install local package into virtual environment
-RUN poetry build && /app/venv/bin/pip install dist/*.whl
 
 #
 # Stage 2: Run flask from virtual environment
