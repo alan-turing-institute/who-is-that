@@ -14,13 +14,11 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
-bs4 = "^0.0.2"
+beautifulsoup4 = "^4.12.3"
 ebooklib = "^0.18"
-jupyterlab = "^4.2.2"
-ollama = "^0.2.1"
-pyperclip = "^1.8.2"
-tkhtmlview = "^0.3.0"
 flask = "^3.0.3"
+ollama = "^0.2.1"
+PyYAML = "^6.0.1"
 
 # [tool.poetry.plugins."flask.commands"]
 # "my-command" = "flask_my_extension.commands:cli"
