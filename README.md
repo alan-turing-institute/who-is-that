@@ -19,14 +19,6 @@ To extract text from an EPUB
 $ poetry run extract --path <path to EPUB>
 ```
 
-# Summarise character
-
-To summarise a character up to a given chapter
-
-```shell
-$ poetry run summarise --chapter <chapter number> --character <name of character>
-```
-
 # Running Notebooks
 
 ```shell
