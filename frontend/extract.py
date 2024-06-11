@@ -30,7 +30,7 @@ class Extractor:
             if item.get_type() == ebooklib.ITEM_COVER:
                 return item.get_content()
         return None
-    
+
     @staticmethod
     def process(epub_path: pathlib.Path) -> list[tuple[str, str]]:
         print(f"Extracting text from EPUB {epub_path}")
@@ -54,9 +54,9 @@ class Extractor:
         print(f"Writing to {tf.name}")
         tf.write(epub_contents)
         obj = cls(
-            text_content=cls.process(tf.name), 
+            text_content=cls.process(tf.name),
             cover=cls.get_cover(tf.name),
-            authors=cls.get_metadata(tf.name, 'creator'), 
+            authors=cls.get_metadata(tf.name, 'creator'),
             title=cls.get_metadata(tf.name, 'title')[0],
         )
         # tf.delete()
@@ -67,12 +67,6 @@ class Extractor:
         return cls(
             text_content=cls.process(epub_path),
             cover=cls.get_cover(epub_path),
-            authors=cls.get_metadata(epub_path, 'creator'), 
+            authors=cls.get_metadata(epub_path, 'creator'),
             title=cls.get_metadata(epub_path, 'title')[0]
             )
-
-
-
-    # @classmethod
-    # def from_diameter(cls, diameter):
-    #     return cls(radius=diameter / 2)

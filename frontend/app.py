@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-from who_is_that import Extractor
+from .extract import Extractor
 from PIL import Image
 import io
 import base64
