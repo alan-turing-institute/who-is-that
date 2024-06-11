@@ -1,17 +1,19 @@
 from flask import Flask, request, jsonify
 from ollama import Client
 import yaml
+import pathlib
 
 app = Flask(__name__)
 client = Client(host="http://localhost:11434")
 
 # Load the prompt template once at the start of the application
-with open("prompts/input_prompt.txt", "r") as file:
-    prompt_template = file.read()
+data_dir = pathlib.Path(__file__).parent.resolve()
+with open(data_dir / "prompts" / "input_prompt.txt", "r") as prompt_file:
+    prompt_template = prompt_file.read()
 
 # Load the yaml file as a global variable
-with open('spoilerdb/database.yml', 'r') as file:
-  db = yaml.safe_load(file)
+with open(data_dir / "spoilerdb" / "database.yml", 'r') as database_file:
+    db = yaml.safe_load(database_file)
 
 @app.route("/")
 def index():
