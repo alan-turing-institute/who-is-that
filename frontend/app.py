@@ -30,7 +30,6 @@ def load_file() -> str:
     title = extractor.title
 
     # Concatenate all text content into a single string
-    concatenated_text = "\n".join(chapter.text for chapter in chapters)
     concatenated_html = "\n".join(chapter.html for chapter in chapters)
 
     cover_url = None
@@ -55,11 +54,10 @@ def load_file() -> str:
     _ = query_backend("", "")
     app.logger.info("Ollama model is ready")
 
-    # Pass concatenated text as a hidden form input
+    # Render the template with appropriate inputs
     return render_template(
         "process.html",
         html_user_content=concatenated_html,
-        concatenated_text=concatenated_text,
         title=title,
         author=authors,
         cover_url=cover_url,
