@@ -56,7 +56,7 @@ def api_what_is_this() -> Response:
         return jsonify({"result": result})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-    
+
 
 @app.route("/summarise", methods=["POST"])
 def api_summarise() -> Response:
