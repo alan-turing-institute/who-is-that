@@ -6,8 +6,8 @@ services:
       context: ..
       dockerfile: docker/backend.Dockerfile
     environment:
-      OLLAMA_HOST: "http://ollama"
-      OLLAMA_MODEL: "phi3:14b"
+      OLLAMA_HOST: "http://host.docker.internal"
+      OLLAMA_MODEL: "gemma:2b"
       OLLAMA_PORT: "11434"
     ports:
       - "127.0.0.1:3000:5000"
@@ -21,10 +21,3 @@ services:
       BACKEND_PORT: "5000"
     ports:
       - "127.0.0.1:4000:5000"
-  ollama:
-    container_name: ollama
-    build:
-      context: ..
-      dockerfile: docker/ollama.Dockerfile
-    ports:
-      - "127.0.0.1:11434:11434"
