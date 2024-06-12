@@ -77,9 +77,9 @@ def summarise() -> str:
     title = request.form["title"]
     summary, concatenated_text = get_context(selected_text, request)
 
-    result = query_ollama(character=selected_text, context=summary)["result"]
-
     if option == "who_is_that":
+        result = query_ollama(character=selected_text, context=summary)["result"]
+
         return render_template(
             "process.html",
             text_items=[(f"Who is {selected_text}", result)],
@@ -89,6 +89,8 @@ def summarise() -> str:
         )
 
     if option == "what_is_this":
+        result = query_ollama(character=selected_text, context=summary)["result"]
+
         return render_template(
             "process.html",
             text_items=[(f"What is {selected_text}?", result)],
@@ -96,6 +98,9 @@ def summarise() -> str:
             title=title,
             author=author,
         )
+    result = query_ollama(character=selected_text, context=summary, action="summarise")[
+        "result"
+    ]
 
     return render_template(
         "process.html",
@@ -106,11 +111,15 @@ def summarise() -> str:
     )
 
 
-def query_ollama(character: str, context: str) -> dict:
+def query_ollama(character: str, context: str, action: str = "who_is_that") -> dict:
     # Define the URL of your API endpoint
     backend_host = os.environ.get("BACKEND_HOST", "http://localhost")
     backend_port = os.environ.get("BACKEND_PORT", "3000")
-    url = f"{backend_host}:{backend_port}/who_is_that"
+
+    if action == "who_is_that":
+        url = f"{backend_host}:{backend_port}/who_is_that"
+    else:
+        url = f"{backend_host}:{backend_port}/summarise"
 
     # Create the payload
     payload = {"character": character, "context": context}
