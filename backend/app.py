@@ -1,3 +1,4 @@
+import logging
 import pathlib
 
 from flask import Flask, Response, jsonify, request
@@ -5,6 +6,11 @@ from flask import Flask, Response, jsonify, request
 from .helpers import generate_summary, who_is_that
 
 app = Flask(__name__)
+for handler in app.logger.handlers:
+    handler.setFormatter(
+        logging.Formatter(r"%(asctime)s %(message)s", r"[%d/%b/%Y %H:%M:%S]")
+    )
+
 
 # Load the prompt template once at the start of the application
 data_dir = pathlib.Path(__file__).parent.resolve()
@@ -80,7 +86,3 @@ def api_summarise() -> Response:
         return jsonify({"result": result})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-
-if __name__ == "__main__":
-    app.run(debug=True)

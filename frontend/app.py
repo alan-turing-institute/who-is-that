@@ -1,5 +1,6 @@
 import base64
 import io
+import logging
 
 from flask import Flask, render_template, request
 from PIL import Image
@@ -8,6 +9,10 @@ from .extract import Extractor
 from .utility import query_backend
 
 app = Flask(__name__)
+for handler in app.logger.handlers:
+    handler.setFormatter(
+        logging.Formatter(r"%(asctime)s %(message)s", r"[%d/%b/%Y %H:%M:%S]")
+    )
 
 
 @app.route("/")
@@ -119,7 +124,3 @@ def summarise() -> str:
         title=title,
         author=author,
     )
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
