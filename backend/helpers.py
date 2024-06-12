@@ -18,14 +18,7 @@ def character_or_place(word: str, text: str) -> str:
     query += " I have used the word '" + word + "' in the story."
     query += " Determine whether this word refers to a character or a place."
     query += " Provide a simple answer of 'character' or 'place' or 'neither'."
-    response = OllamaQuery.query(
-        [
-            {
-                "role": "user",
-                "content": query,
-            },
-        ],
-    )
+    response = OllamaQuery.query(context=query)
     if "character" in response["message"]["content"]:
         return "character"
     if "place" in response["message"]["content"]:
@@ -46,14 +39,7 @@ def spoiler_check(book: str, character: str, summary: str) -> str:
     query += " Provide a simple answer of 'true' or 'false'."
     query += " If so, please provide another summary without spoilers."
 
-    response = OllamaQuery.query(
-        [
-            {
-                "role": "user",
-                "content": query,
-            },
-        ],
-    )
+    response = OllamaQuery.query(context=query)
     answer = response["message"]["content"]
     if "true" in answer or "True" in answer or "TRUE" in answer:
         print("Spoiler detected! Regenerating summary...")
@@ -68,14 +54,7 @@ def who_is_that(context: str, prompt_template: str, character: str) -> str:
     prompt = prompt_template.replace("{character}", character)
     concat = f"CONTEXT: {context} \n INSTRUCTIONS: {prompt}"
     try:
-        response = OllamaQuery.query(
-            [
-                {
-                    "role": "user",
-                    "content": concat,
-                },
-            ],
-        )
+        response = OllamaQuery.query(context=concat)
         content = response["message"]["content"]
 
         # content = spoiler_check(context, character, content)
@@ -91,14 +70,7 @@ def generate_summary(context: str) -> str:
     prompt = f"CONTEXT: {context}. \n INSTRUCTIONS: Summarize the story so far in 100 words or less. Do not reveal spoilers for later sections of the story."
     try:
         print("Waiting for an Ollama response.", flush=True)
-        response = OllamaQuery.query(
-            [
-                {
-                    "role": "user",
-                    "content": prompt,
-                },
-            ],
-        )
+        response = OllamaQuery.query(context=prompt)
         content = response["message"]["content"]
 
     except Exception as exc:
