@@ -5,7 +5,7 @@ from flask import Flask, render_template, request
 from PIL import Image
 
 from .extract import Extractor
-from .utility import get_context, query_backend
+from .utility import query_backend
 
 app = Flask(__name__)
 
@@ -68,36 +68,38 @@ def load_file() -> str:
 
 @app.route("/summarise", methods=["POST"])
 def summarise() -> str:
+    author = request.form["author"]
     option = request.form["option"]
     selected_text = request.form["selected_text"]
-    app.logger.info("Calling '%s' on '%s'", option, selected_text)
-
-    author = request.form["author"]
+    selected_text_context = request.form["selected_text_context"]
     title = request.form["title"]
-    summary, concatenated_text = get_context(selected_text, request)
+    app.logger.info(
+        "Calling '%s' on '%s' with a %s character context",
+        option,
+        selected_text,
+        len(selected_text_context),
+    )
 
     # Who is that?
     if option == "who_is_that":
-        result = query_backend(character=selected_text, context=summary, action=option)[
-            "result"
-        ]
+        result = query_backend(
+            character=selected_text, context=selected_text_context, action=option
+        )["result"]
         return render_template(
             "process.html",
             html_user_content=f"<h1>Who is {selected_text}</h1><p>{result}</p>",
-            concatenated_text=concatenated_text,
             title=title,
             author=author,
         )
 
     # What is this?
     if option == "what_is_this":
-        result = query_backend(character=selected_text, context=summary, action=option)[
-            "result"
-        ]
+        result = query_backend(
+            character=selected_text, context=selected_text_context, action=option
+        )["result"]
         return render_template(
             "process.html",
             html_user_content=f"<h1>What is {selected_text}</h1><p>{result}</p>",
-            concatenated_text=concatenated_text,
             title=title,
             author=author,
         )
@@ -105,14 +107,13 @@ def summarise() -> str:
     # Summarise
     result = query_backend(
         character=selected_text,
-        context=summary,
+        context=selected_text_context,
         action="summarise",
     )["result"]
 
     return render_template(
         "process.html",
         html_user_content=f"<h1>Summary</h1><p>{result}</p>",
-        concatenated_text=concatenated_text,
         title=title,
         author=author,
     )

@@ -12,7 +12,7 @@
 <h2>{{ author }}</h2>
 {% endif %}
 
-<div class="book" id="text-content">
+<div id="dynamic-content">
 {% if html_user_content %}
     {{ html_user_content|safe }}
 {% endif %}
@@ -27,39 +27,42 @@
 </div>
 
 <form id="summary-form" method="POST" action="/summarise">
-    <input type="hidden" name="selected_text" id="selected-text">
-    <input type="hidden" name="selected_text_start" id="selected-text-start">
-    <input type="hidden" name="concatenated_text" id="concatenated-text" value="{{ concatenated_text }}">
     <input type="hidden" name="author" id="author" value="{{ author }}">
-    <input type="hidden" name="title" id="title" value="{{ title }}">
     <input type="hidden" name="option" id="option">
+    <input type="hidden" name="selected_text_context" id="selected-text-context">
+    <input type="hidden" name="selected_text" id="selected-text">
+    <input type="hidden" name="title" id="title" value="{{ title }}">
 </form>
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-    const textContent = document.getElementById("text-content");
+    // Load the DOM elements we want to manipulate later
     const dropdown = document.getElementById("dropdown");
-    const selectedTextInput = document.getElementById("selected-text");
-    const selectedTextStartInput = document.getElementById("selected-text-start");
+    const dynamicContent = document.getElementById("dynamic-content");
+    const elemSelectedText = document.getElementById("selected-text");
+    const elemSelectedTextContext = document.getElementById("selected-text-context");
 
-    textContent.addEventListener("contextmenu", (event) => {
+    // Add a context menu to the dynamic-content div
+    dynamicContent.addEventListener("contextmenu", (event) => {
         event.preventDefault();
+
+        // Extract and trim selected text
         const selectedRange = window.getSelection().getRangeAt(0);
-        const selectedText = selectedRange.toString().trim();  // Trim leading and trailing whitespace
-
-        // Strip HTML tags from the selected text
-        const tempDiv = document.createElement("div");
-        tempDiv.appendChild(selectedRange.cloneContents());
-        const strippedText = tempDiv.innerText.trim();
-
-        if (strippedText) {
+        const selectedText = selectedRange.toString().replace(/\s\s+/g, " ").trim()
+        if (selectedText) {
+            // Extract text up to selection
             const preRange = document.createRange();
-            preRange.selectNodeContents(textContent);
+            preRange.selectNodeContents(dynamicContent);
             preRange.setEnd(selectedRange.startContainer, selectedRange.startOffset);
-            const selectedTextStart = preRange.toString().length;
 
-            selectedTextInput.value = strippedText;
-            selectedTextStartInput.value = selectedTextStart;
+            // Replace repeated whitespace with a single space and trim
+            const selectedTextContext = preRange.toString().replace(/\s\s+/g, " ").trim()
+
+            // Save the selection and context into hidden DOM elements
+            elemSelectedTextContext.value = selectedTextContext
+            elemSelectedText.value = selectedText
+
+            // Show the dropdown
             dropdown.style.display = "block";
             dropdown.style.left = `${event.pageX}px`;
             dropdown.style.top = `${event.pageY}px`;

@@ -17,6 +17,7 @@ class Chapter:
     html: str
     text: str
 
+
 class Extractor:
     def __init__(
         self: typing.Self,
@@ -58,10 +59,12 @@ class Extractor:
                     soup = BeautifulSoup(item.get_content(), features="lxml")
                 for container in soup.find_all(attrs={"epub:type": "chapter"}):
                     chapters.append(
-                        Chapter(name=container["id"], html=container.prettify(), text=container.get_text())
+                        Chapter(
+                            name=container["id"],
+                            html=container.prettify(),
+                            text=container.get_text(),
+                        ),
                     )
-        for chapter in chapters:
-            print(chapter)
         return chapters
 
     @classmethod
