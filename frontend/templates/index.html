@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
-    <title>Upload EPUB</title>
+    <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <link
       rel="stylesheet"
@@ -17,32 +17,8 @@
         <div class="column is-half-desktop is-full-mobile">
           <div class="container content">
             
-              <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="image">
-  
-              <h1 class="title is-large">Who is that?</h1>
-
-              <h2>Upload an EPUB file</h2>
-              <form action="/" method="post" enctype="multipart/form-data">
-                  <input type="file" name="file">
-                  <!-- <div class="file has-name">
-                    <label class="file-label">
-                      <input class="file-input" type="file" name="resume" />
-                      <span class="file-cta">
-                        <span class="file-icon">
-                          <i class="fas fa-upload"></i>
-                        </span>
-                        <span class="file-label"> Choose a file… </span>
-                      </span>
-                      <span class="file-name"> bookname.epub </span>
-                    </label>
-                  </div> -->
-                  <button class="button" type="submit">Upload</button>
-              </form>
-          
-
-
-
-
+              {% block content %}
+              {% endblock %}
 
           </div>
         </div>

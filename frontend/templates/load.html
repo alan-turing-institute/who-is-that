@@ -1,0 +1,15 @@
+{% extends "index.html" %}
+
+{% block title %}
+    Upload EPUB
+{% endblock %}
+
+{% block content %}
+    <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="image">
+    <h1 class="title is-large">Who is that?</h1>
+    <h2>Upload an EPUB file</h2>
+    <form action="/" method="post" enctype="multipart/form-data">
+        <input type="file" name="file">
+        <button class="button" type="submit">Upload</button>
+    </form>
+{% endblock %}
