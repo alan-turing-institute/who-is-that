@@ -15,6 +15,8 @@ def query_backend(character: str, context: str, action: str = "who_is_that") -> 
     backend_port = os.environ.get("BACKEND_PORT", "3000")
     if action == "who_is_that":
         url = f"{backend_host}:{backend_port}/who_is_that"
+    elif action == "what_is_this":
+        url = f"{backend_host}:{backend_port}/what_is_this"
     else:
         url = f"{backend_host}:{backend_port}/summarise"
 

@@ -42,10 +42,34 @@ def api_who_is_that() -> Response:
         return jsonify({"error": str(e)}), 500
 
 
+@app.route("/what_is_this", methods=["POST"])
+def api_what_is_this() -> Response:
+    data = request.json
+    context = data.get("context")
+    app.logger.info(
+        "Received 'what_is_this' request given %s tokens of context.",
+        len(context.split()),
+    )
+
+    # TODO: get the text of the book up to this point and the book name for Ed's function
+    if not context:
+        return jsonify({"error": "Context is required"}), 400
+    try:
+        # Fede func
+        result = generate_summary(context)
+        return jsonify({"result": result})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 @app.route("/summarise", methods=["POST"])
 def api_summarise() -> Response:
     data = request.json
     context = data.get("context")
+    app.logger.info(
+        "Received 'summary' request given %s tokens of context.",
+        len(context.split()),
+    )
 
     # TODO: get the text of the book up to this point and the book name for Ed's function
     if not context:
