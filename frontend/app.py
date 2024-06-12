@@ -1,14 +1,11 @@
 import base64
 import io
-import json
-import os
 
-import requests
 from flask import Flask, render_template, request
 from PIL import Image
 
 from .extract import Extractor
-from .summarise import get_context
+from .utility import get_context, query_backend
 
 app = Flask(__name__)
 
@@ -78,27 +75,8 @@ def summarise() -> str:
     title = request.form["title"]
     summary, concatenated_text = get_context(selected_text, request)
 
-    # Define the URL of your API endpoint
-    backend_host = os.environ.get("BACKEND_HOST", "http://localhost")
-    backend_port = os.environ.get("BACKEND_PORT", "3000")
-    url = f"{backend_host}:{backend_port}/who_is_that"
-
-    # Create the payload
-    payload = {"character": selected_text, "context": summary}
-
-    # Send the POST request
-    try:
-        app.logger.info(f"Sending request to backend at '{url}'...")
-        response_who_is_that = requests.post(
-            url,
-            headers={"Content-Type": "application/json"},
-            data=json.dumps(payload),
-        )
-        result = response_who_is_that.json()
-    except Exception as exc:
-        app.logger.info(f"Failed to extract output {exc!s}")
-        result = "Unknown"
-    # result = query_backend(character=selected_text, context=summary)["result"]
+    # Query the backend
+    result = query_backend(character=selected_text, context=summary)["result"]
 
     if option == "who_is_that":
         return render_template(
@@ -125,31 +103,6 @@ def summarise() -> str:
         title=title,
         author=author,
     )
-
-
-def query_backend(character: str, context: str) -> dict:
-    # Define the URL of your API endpoint
-    backend_host = os.environ.get("BACKEND_HOST", "http://localhost")
-    backend_port = os.environ.get("BACKEND_PORT", "3000")
-    url = f"{backend_host}:{backend_port}/who_is_that"
-
-    # Create the payload
-    payload = {"character": character, "context": context}
-
-    # Send the POST request
-    try:
-        app.logger.info(f"Sending request to backend at '{url}'...")
-        response = requests.post(
-            url,
-            headers={"Content-Type": "application/json"},
-            data=json.dumps(payload),
-        )
-        result = response.json()
-    except Exception as exc:
-        app.logger.warning(f"Failed to extract output {exc}.")
-        result = {"result": "Unknown"}
-
-    return result
 
 if __name__ == "__main__":
     app.run(debug=True)
