@@ -46,12 +46,14 @@ def load_file() -> str:
             f"data:image/jpeg;base64,{base64.b64encode(img_io.getvalue()).decode()}"
         )
 
+    # Finished loading file
+    app.logger.info(f"Identified {uploaded_file.filename} as '{title}' with {len(text_items)} chapters.")
+
     # Dummy Ollama query for the first time to load model into memory
     _ = query_backend("", "")
-    print("Ollama model is ready", flush=True)
+    app.logger.info("Ollama model is ready")
 
     # Pass concatenated text as a hidden form input
-    app.logger.info(f"Identified {uploaded_file.filename} as '{title}' with {len(text_items)} chapters.")
     return render_template(
         "process.html",
         text_items=[
