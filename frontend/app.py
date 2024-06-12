@@ -49,6 +49,10 @@ def load_file() -> str:
             f"data:image/jpeg;base64,{base64.b64encode(img_io.getvalue()).decode()}"
         )
 
+    # Dummy Ollama query for the first time to load model into memory
+    _ = query_ollama("", "")
+    print('Ollama model is ready', flush=True)
+
     # Pass concatenated text as a hidden form input
     return render_template(
         "process.html",
