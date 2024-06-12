@@ -8,7 +8,7 @@ Generate spoiler-free summaries of characters up-to-a-given-point in a text
 From the main directory run the following:
 
 ```shell
-$ docker compose -f docker/docker-compose.yaml up --build
+$ docker compose -f docker/docker-compose-integrated-ollama.yaml up --build
 ```
 
 to run:
@@ -17,6 +17,23 @@ to run:
 - `frontend` (exposed on `localhost:4000`)
 - `ollama` (exposed on `localhost:11434`)
 
+## Native Ollama
+
+If you want to use a native Ollama installation instead of a Dockerised version, do the following (assuming `gemma:2b` is your desired model)
+
+- Install `ollama` (e.g. with `brew install ollama`).
+-
+
+```shell
+$ ollama serve &
+$ ollama run gemma:2b
+$ docker compose -f docker/docker-compose-external-ollama.yaml up --build
+```
+
+to run:
+
+- `backend` (exposed on `localhost:3000`)
+- `frontend` (exposed on `localhost:4000`)
 
 # Running notebooks
 
