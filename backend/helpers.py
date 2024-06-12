@@ -87,6 +87,7 @@ def who_is_that(context: str, prompt_template: str, character: str) -> str:
 def generate_summary(context: str) -> str:
     prompt = f"CONTEXT: {context}. \n INSTRUCTIONS: Summarize the story so far in 100 words or less. Do not reveal spoilers for later sections of the story."
     try:
+        print("Generating summary...", flush=True)
         print("Waiting for an Ollama response.", flush=True)
         client = OllamaQuery()
         response = client.query(
