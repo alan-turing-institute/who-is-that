@@ -15,7 +15,7 @@ class BackendQuery:
     base_url = f"{backend_host}:{backend_port}"
 
     @classmethod
-    def query(cls: type[Self], selected_text: str, context: str, action: str = "summarise") -> dict[str, Any]:
+    def query(cls: type[Self], selected_text: str, context: str, action: str = "summarise") -> str:
         logger = logging.getLogger("frontend.app")
 
         # Define the URL and payload for your API endpoint
@@ -37,9 +37,9 @@ class BackendQuery:
                 headers={"Content-Type": "application/json"},
                 data=json.dumps(payload),
             )
-            result = response.json()
+            result = response.json()["result"]
         except Exception as exc:
             logger.warning("Failed to extract output: %s", exc)
-            result = {"result": "Unknown"}
+            result = "Unknown"
 
         return result

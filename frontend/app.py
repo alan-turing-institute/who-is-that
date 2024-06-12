@@ -88,19 +88,19 @@ def summarise() -> str:
         selected_text=selected_text,
         context=selected_text_context,
         action=option,
-    )["result"]
+    )
 
     # Who is that?
     if option == "who_is_that":
-        html_response=f"<h1>Who is {selected_text}?</h1><p>{result}</p>",
+        html_response=f"<h1>Who is {selected_text}?</h1><p>{result}</p>"
 
     # What is this?
     elif option == "what_is_this":
-        html_response=f"<h1>What is {selected_text}?</h1><p>{result}</p>",
+        html_response=f"<h1>What is {selected_text}?</h1><p>{result}</p>"
 
     # Summarise
     else:
-        html_response=f"<h1>Summary</h1><p>{result}</p>",
+        html_response=f"<h1>Summary</h1><p>{result}</p>"
 
     return render_template(
         "process.html",
