@@ -18,7 +18,7 @@ def index() -> str:
 @app.route("/", methods=["POST"])
 def load_file() -> str:
     uploaded_file = request.files["file"]
-    app.logger.info(f"Loading file '{uploaded_file.filename}'")
+    app.logger.info("Loading file '%s'", uploaded_file.filename)
 
     filestream = uploaded_file.stream
     filestream.seek(0)
@@ -47,7 +47,12 @@ def load_file() -> str:
         )
 
     # Finished loading file
-    app.logger.info(f"Identified {uploaded_file.filename} as '{title}' with {len(text_items)} chapters.")
+    app.logger.info(
+        "Identified %s as '%s' with %s chapters.",
+        uploaded_file.filename,
+        title,
+        len(text_items),
+    )
 
     # Dummy Ollama query for the first time to load model into memory
     _ = query_backend("", "")
@@ -71,7 +76,7 @@ def load_file() -> str:
 def summarise() -> str:
     option = request.form["option"]
     selected_text = request.form["selected_text"]
-    app.logger.info(f"Calling '{option}' on '{selected_text}'")
+    app.logger.info("Calling '%s' on '%s'", option, selected_text)
 
     author = request.form["author"]
     title = request.form["title"]
@@ -105,6 +110,7 @@ def summarise() -> str:
         title=title,
         author=author,
     )
+
 
 if __name__ == "__main__":
     app.run(debug=True)

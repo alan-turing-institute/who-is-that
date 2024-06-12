@@ -1,9 +1,9 @@
 from __future__ import annotations
-import warnings
 
 import pathlib
 import tempfile
 import typing
+import warnings
 
 import ebooklib
 from bs4 import BeautifulSoup, XMLParsedAsHTMLWarning
@@ -44,7 +44,9 @@ class Extractor:
         for item in book.get_items():
             if item.get_type() == ebooklib.ITEM_DOCUMENT:
                 with warnings.catch_warnings():
-                    warnings.filterwarnings(action="ignore", category=XMLParsedAsHTMLWarning)
+                    warnings.filterwarnings(
+                        action="ignore", category=XMLParsedAsHTMLWarning
+                    )
                     soup = BeautifulSoup(item.get_content(), features="lxml")
                 for container in soup.find_all(attrs={"epub:type": "chapter"}):
                     text_content.append((container["id"], container.get_text()))

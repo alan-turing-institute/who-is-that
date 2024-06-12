@@ -1,21 +1,23 @@
 from __future__ import annotations
+
 import json
 import logging
 import os
-import requests
 
+import requests
 from flask import Request
 
 
 def get_context(selected_text: str, request: Request) -> tuple[str, str]:
     logger = logging.getLogger("frontend.app")
-    logger.info(f"Constructing context up to: '{selected_text}'")
+    logger.info("Constructing context up to: '%s'", selected_text)
     selected_text_start = int(request.form["selected_text_start"])
     concatenated_text = request.form["concatenated_text"]
     # Use the start position to slice the concatenated text
     summary = concatenated_text[: selected_text_start + len(selected_text)]
-    logger.info(f"Constructed context of {len(summary)} characters.")
+    logger.info("Constructed context of %s characters.", len(summary))
     return summary, concatenated_text
+
 
 def query_backend(character: str, context: str) -> dict:
     logger = logging.getLogger("frontend.app")
@@ -30,7 +32,7 @@ def query_backend(character: str, context: str) -> dict:
 
     # Send the POST request
     try:
-        logger.info(f"Sending request to backend at '{url}'...")
+        logger.info("Sending request to backend at '%s'", url)
         response = requests.post(
             url,
             headers={"Content-Type": "application/json"},
@@ -38,7 +40,7 @@ def query_backend(character: str, context: str) -> dict:
         )
         result = response.json()
     except Exception as exc:
-        logger.warning(f"Failed to extract output {exc}.")
+        logger.warning("Failed to extract output: %s", exc)
         result = {"result": "Unknown"}
 
     return result

@@ -16,7 +16,7 @@ def spoiler_check(book: str, character: str, summary: str) -> str:
     query += " Provide a simple answer of 'true' or 'false'."
     query += " If so, please provide another summary without spoilers."
 
-    logger.info(f"Check for spoilers using a {len(query)} character context...")
+    logger.info("Check for spoilers using a %s character context...", len(query))
     response = OllamaQuery.query(context=query)
     answer = response["message"]["content"]
     if "true" in answer or "True" in answer or "TRUE" in answer:
@@ -32,7 +32,9 @@ def who_is_that(context: str, prompt_template: str, character: str) -> str:
     logger = logging.getLogger("backend.app")
     prompt = prompt_template.replace("{character}", character)
     concat = f"CONTEXT: {context} \n INSTRUCTIONS: {prompt}"
-    logger.info(f"Answer 'Who is {character}?' using a {len(concat)} character context...")
+    logger.info(
+        "Answer 'Who is %s?' using a %s character context...", character, len(concat)
+    )
     try:
         response = OllamaQuery.query(context=concat)
         content = response["message"]["content"]
@@ -40,7 +42,7 @@ def who_is_that(context: str, prompt_template: str, character: str) -> str:
         # content = spoiler_check(context, character, content)
 
     except Exception as exc:
-        logger.info(f"Failed to retrieve summary from Ollama {exc!s}")
+        logger.info("Failed to retrieve summary from Ollama: %s", exc)
         content = "Sorry, I could not answer your query."
 
     return content
@@ -48,14 +50,14 @@ def who_is_that(context: str, prompt_template: str, character: str) -> str:
 
 def generate_summary(context: str) -> str:
     logger = logging.getLogger("backend.app")
-    logger.info(f"Generating a summary for {len(context)} character context...")
+    logger.info("Generating a summary for %s character context...", len(context))
     prompt = f"CONTEXT: {context}. \n INSTRUCTIONS: Summarize the story so far in 100 words or less. Do not reveal spoilers for later sections of the story."
     try:
         response = OllamaQuery.query(context=prompt)
         content = response["message"]["content"]
 
     except Exception as exc:
-        logger.info(f"Failed to retrieve summary from Ollama {exc!s}")
+        logger.info("Failed to retrieve summary from Ollama %s", exc)
         content = "Sorry, I could not answer your query."
 
     return content
