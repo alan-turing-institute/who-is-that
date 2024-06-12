@@ -18,8 +18,7 @@ def character_or_place(word: str, text: str) -> str:
     query += " I have used the word '" + word + "' in the story."
     query += " Determine whether this word refers to a character or a place."
     query += " Provide a simple answer of 'character' or 'place' or 'neither'."
-    client = OllamaQuery()
-    response = client.query(
+    response = OllamaQuery.query(
         [
             {
                 "role": "user",
@@ -47,8 +46,7 @@ def spoiler_check(book: str, character: str, summary: str) -> str:
     query += " Provide a simple answer of 'true' or 'false'."
     query += " If so, please provide another summary without spoilers."
 
-    client = OllamaQuery()
-    response = client.query(
+    response = OllamaQuery.query(
         [
             {
                 "role": "user",
@@ -70,8 +68,7 @@ def who_is_that(context: str, prompt_template: str, character: str) -> str:
     prompt = prompt_template.replace("{character}", character)
     concat = f"CONTEXT: {context} \n INSTRUCTIONS: {prompt}"
     try:
-        client = OllamaQuery()
-        response = client.query(
+        response = OllamaQuery.query(
             [
                 {
                     "role": "user",
@@ -94,8 +91,7 @@ def generate_summary(context: str) -> str:
     prompt = f"CONTEXT: {context}. \n INSTRUCTIONS: Summarize the story so far in 100 words or less. Do not reveal spoilers for later sections of the story."
     try:
         print("Waiting for an Ollama response.", flush=True)
-        client = OllamaQuery()
-        response = client.query(
+        response = OllamaQuery.query(
             [
                 {
                     "role": "user",
