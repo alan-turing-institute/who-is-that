@@ -19,13 +19,16 @@ def get_context(selected_text: str, request: Request) -> tuple[str, str]:
     return summary, concatenated_text
 
 
-def query_backend(character: str, context: str) -> dict:
+def query_backend(character: str, context: str, action: str = "who_is_that") -> dict:
     logger = logging.getLogger("frontend.app")
 
     # Define the URL of your API endpoint
     backend_host = os.environ.get("BACKEND_HOST", "http://localhost")
     backend_port = os.environ.get("BACKEND_PORT", "3000")
-    url = f"{backend_host}:{backend_port}/who_is_that"
+    if action == "who_is_that":
+        url = f"{backend_host}:{backend_port}/who_is_that"
+    else:
+        url = f"{backend_host}:{backend_port}/summarise"
 
     # Create the payload
     payload = {"character": character, "context": context}

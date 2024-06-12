@@ -2,7 +2,7 @@ import pathlib
 
 from flask import Flask, Response, jsonify, request
 
-from .helpers import who_is_that
+from .helpers import generate_summary, who_is_that
 
 app = Flask(__name__)
 
@@ -37,6 +37,22 @@ def api_who_is_that() -> Response:
         result = who_is_that(context, prompt_template, character)
         # Ed func
         # who_is_that_really('llama3', text, book, bookmark, word, clicked=clicked)
+        return jsonify({"result": result})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/summarise", methods=["POST"])
+def api_summarise() -> Response:
+    data = request.json
+    context = data.get("context")
+
+    # TODO: get the text of the book up to this point and the book name for Ed's function
+    if not context:
+        return jsonify({"error": "Character and context are required"}), 400
+    try:
+        # Fede func
+        result = generate_summary(context)
         return jsonify({"result": result})
     except Exception as e:
         return jsonify({"error": str(e)}), 500

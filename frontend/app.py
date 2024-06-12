@@ -82,10 +82,9 @@ def summarise() -> str:
     title = request.form["title"]
     summary, concatenated_text = get_context(selected_text, request)
 
-    # Query the backend
-    result = query_backend(character=selected_text, context=summary)["result"]
-
+    # Who is that?
     if option == "who_is_that":
+        result = query_backend(character=selected_text, context=summary, action=option)["result"]
         return render_template(
             "process.html",
             text_items=[(f"Who is {selected_text}", result)],
@@ -94,7 +93,9 @@ def summarise() -> str:
             author=author,
         )
 
+    # What is this?
     if option == "what_is_this":
+        result = query_backend(character=selected_text, context=summary, action=option)["result"]
         return render_template(
             "process.html",
             text_items=[(f"What is {selected_text}?", result)],
@@ -102,6 +103,13 @@ def summarise() -> str:
             title=title,
             author=author,
         )
+
+    # Summarise
+    result = query_backend(
+        character=selected_text,
+        context=summary,
+        action="summarise"
+    )["result"]
 
     return render_template(
         "process.html",
