@@ -1,11 +1,10 @@
 from .ollama_query import OllamaQuery
 
-# # Load the yaml file as a global variable
-# data_dir = pathlib.Path(__file__).parent.resolve()
-# with pathlib.Path.open(data_dir / "spoilerdb" / "database.yml") as database_file:
-#     db = yaml.safe_load(database_file)
+""" # # Load the yaml file as a global variable
+data_dir = pathlib.Path(__file__).parent.resolve()
+with pathlib.Path.open(data_dir / "spoilerdb" / "database.yml") as database_file:
+    db = yaml.safe_load(database_file)
 
-""" 
 def character_or_place(word: str, text: str) -> str:
    Determine whether the word in the text is about a character or a place.
     query = "I have written the following story: '" + text + "'."
