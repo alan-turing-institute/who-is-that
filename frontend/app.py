@@ -1,14 +1,11 @@
 import base64
 import io
-import json
-import os
 
-import requests
 from flask import Flask, render_template, request
 from PIL import Image
 
 from .extract import Extractor
-from .summarise import get_context
+from .utility import get_context, query_backend
 
 app = Flask(__name__)
 
@@ -21,7 +18,7 @@ def index() -> str:
 @app.route("/", methods=["POST"])
 def load_file() -> str:
     uploaded_file = request.files["file"]
-    print(f"Loading file {uploaded_file.filename}", flush=True)
+    app.logger.info("Loading file '%s'", uploaded_file.filename)
 
     filestream = uploaded_file.stream
     filestream.seek(0)
@@ -49,9 +46,17 @@ def load_file() -> str:
             f"data:image/jpeg;base64,{base64.b64encode(img_io.getvalue()).decode()}"
         )
 
+    # Finished loading file
+    app.logger.info(
+        "Identified %s as '%s' with %s chapters.",
+        uploaded_file.filename,
+        title,
+        len(text_items),
+    )
+
     # Dummy Ollama query for the first time to load model into memory
-    _ = query_ollama("", "")
-    print("Ollama model is ready", flush=True)
+    _ = query_backend("", "")
+    app.logger.info("Ollama model is ready")
 
     # Pass concatenated text as a hidden form input
     return render_template(
@@ -71,15 +76,17 @@ def load_file() -> str:
 def summarise() -> str:
     option = request.form["option"]
     selected_text = request.form["selected_text"]
-    print(f"Calling '{option}' on '{selected_text}'", flush=True)
+    app.logger.info("Calling '%s' on '%s'", option, selected_text)
 
     author = request.form["author"]
     title = request.form["title"]
     summary, concatenated_text = get_context(selected_text, request)
 
+    # Who is that?
     if option == "who_is_that":
-        result = query_ollama(character=selected_text, context=summary)["result"]
-
+        result = query_backend(character=selected_text, context=summary, action=option)[
+            "result"
+        ]
         return render_template(
             "process.html",
             text_items=[(f"Who is {selected_text}", result)],
@@ -88,9 +95,11 @@ def summarise() -> str:
             author=author,
         )
 
+    # What is this?
     if option == "what_is_this":
-        result = query_ollama(character=selected_text, context=summary)["result"]
-
+        result = query_backend(character=selected_text, context=summary, action=option)[
+            "result"
+        ]
         return render_template(
             "process.html",
             text_items=[(f"What is {selected_text}?", result)],
@@ -98,9 +107,13 @@ def summarise() -> str:
             title=title,
             author=author,
         )
-    result = query_ollama(character=selected_text, context=summary, action="summarise")[
-        "result"
-    ]
+
+    # Summarise
+    result = query_backend(
+        character=selected_text,
+        context=summary,
+        action="summarise",
+    )["result"]
 
     return render_template(
         "process.html",
@@ -109,35 +122,6 @@ def summarise() -> str:
         title=title,
         author=author,
     )
-
-
-def query_ollama(character: str, context: str, action: str = "who_is_that") -> dict:
-    # Define the URL of your API endpoint
-    backend_host = os.environ.get("BACKEND_HOST", "http://localhost")
-    backend_port = os.environ.get("BACKEND_PORT", "3000")
-
-    if action == "who_is_that":
-        url = f"{backend_host}:{backend_port}/who_is_that"
-    else:
-        url = f"{backend_host}:{backend_port}/summarise"
-
-    # Create the payload
-    payload = {"character": character, "context": context}
-
-    # Send the POST request
-    try:
-        print(f"Sending request to backend at '{url}'...", flush=True)
-        response_who_is_that = requests.post(
-            url,
-            headers={"Content-Type": "application/json"},
-            data=json.dumps(payload),
-        )
-        result = response_who_is_that.json()
-    except Exception as exc:
-        print(f"Failed to extract output {exc!s}")
-        result = {"result": "Unknown"}
-
-    return result
 
 
 if __name__ == "__main__":

@@ -1,25 +1,53 @@
 from __future__ import annotations
 
+import logging
 import os
 from collections.abc import Iterator
 from typing import Any, Mapping, Self
 
-from ollama import Client
+from ollama import Client, ResponseError
 
 
 class OllamaQuery:
-    def __init__(self: Self) -> None:
+    logger = logging.getLogger("backend.app")
+
+    @classmethod
+    def query(
+        cls: type[Self],
+        context: str,
+    ) -> Mapping[str, Any] | Iterator[Mapping[str, Any]]:
+
+        # Load the model
+        model = os.environ.get("OLLAMA_MODEL", "llama3:8b")
+        cls.logger.info("Querying Ollama using model '%s'", model)
+
+        # Set up connection to Ollama
         ollama_host = os.environ.get("OLLAMA_HOST", "http://localhost")
         ollama_port = os.environ.get("OLLAMA_PORT", "11434")
-        self.client = Client(host=f"{ollama_host}:{ollama_port}")
-        self.model = os.environ.get("OLLAMA_MODEL", "llama3:8b")
+        ollama_server = f"{ollama_host}:{ollama_port}"
+        client = Client(host=ollama_server)
+        cls.logger.info("Using Ollama server at %s", ollama_server)
 
-    def query(
-        self: Self,
-        messages: list[dict[str, str]],
-    ) -> Mapping[str, Any] | Iterator[Mapping[str, Any]]:
-        print(f"Querying Ollama using model {self.model}", flush=True)
-        return self.client.chat(
-            model=self.model,
-            messages=messages,
-        )
+        # Query Ollama
+        try:
+            response = client.chat(
+                model=model,
+                messages=[
+                    {
+                        "role": "user",
+                        "content": context,
+                    },
+                ],
+            )
+            load_duration = f"{response['load_duration'] / 1e9:.2f}s"
+            prompt_eval_duration = f"{response['prompt_eval_duration'] / 1e9:.2f}s"
+            eval_duration = f"{response['eval_duration'] / 1e9:.2f}s"
+            total_duration = f" {response['total_duration'] / 1e9:.2f}s"
+            cls.logger.info("Loading the model: %s", load_duration)
+            cls.logger.info("Evaluating the prompt: %s", prompt_eval_duration)
+            cls.logger.info("Evaluating the response: %s", eval_duration)
+            cls.logger.info("Total time: %s", total_duration)
+        except ResponseError as exc:
+            cls.logger.info("No response from Ollama server: '%s'", exc)
+            response = {"message": {"content": "No response from Ollama server."}}
+        return response
