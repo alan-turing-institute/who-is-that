@@ -27,6 +27,7 @@ If you want to use a native Ollama installation instead of a Dockerised version,
 ```shell
 $ ollama serve &
 $ ollama pull llama3:8b & 
+$ ollama pull yarn-mistral:7b-128k & 
 $ docker compose -f docker/docker-compose-native-ollama.yaml up --build
 ```
 

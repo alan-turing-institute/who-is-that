@@ -18,7 +18,12 @@ class OllamaQuery:
     ) -> Mapping[str, Any] | Iterator[Mapping[str, Any]]:
 
         # Load the model
-        model = os.environ.get("OLLAMA_MODEL", "llama3:8b")
+        context_length = len(context.split())
+        if context_length > 8000:
+            model = os.environ.get("OLLAMA_MODEL", "yarn-mistral:7b-128k")
+        else:
+            model = os.environ.get("OLLAMA_MODEL", "llama3:8b")
+
         cls.logger.info("Querying Ollama using model '%s'", model)
 
         # Set up connection to Ollama

@@ -10,7 +10,7 @@ FROM base as builder
 # - gemma:2b
 RUN /bin/ollama serve & sleep 5; \
     /bin/ollama run llama3:8b; \
-    /bin/ollama run phi3:14b;
+    /bin/ollama run yarn-mistral:7b-128k;
 
 #
 # Stage 2: Run Ollama with one of the pre-downloaded models
