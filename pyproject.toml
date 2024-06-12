@@ -20,14 +20,83 @@ flask = "^3.0.3"
 ollama = "^0.2.1"
 pillow = "^10.3.0"
 PyYAML = "^6.0.1"
+requests = "^2.32.3"
 
-# [tool.poetry.plugins."flask.commands"]
-# "my-command" = "flask_my_extension.commands:cli"
+[tool.poetry.group.dev.dependencies]
+black = "^24.4.2"
+ruff = "^0.4.8"
 
-[tool.poetry.scripts]
-extract = "who_is_that.entrypoint:extract"
-summarise = "who_is_that.entrypoint:summarise"
-# webapp = ""
+[tool.ruff.lint]
+select = [
+  # See https://beta.ruff.rs/docs/rules/
+  "A",     # flake8-builtins
+  "AIR",   # Airflow
+  "ANN",   # flake8-annotations
+  "ARG",   # flake8-unused-arguments
+  "ASYNC", # flake8-async
+  "B",     # flake8-bugbear
+  "C",     # complexity, mcabe and flake8-comprehensions
+  "COM",   # flake8-commas
+  "DTZ",   # flake8-datetimez
+  "E",     # pycodestyle errors
+  "EM",    # flake8-errmsg
+  "ERA",   # eradicate
+  "EXE",   # flake8-executable
+  "F",     # pyflakes
+  "FA",    # flake8-future-annotations
+  "FBT",   # flake8-boolean-trap
+  "FLY",   # flynt
+  "FURB",  # refurb
+  "G",     # flake8-logging-format
+  "I",     # isort
+  "ICN",   # flake8-import-conventions
+  "INP",   # flake8-no-pep420
+  "INT",   # flake8-gettext
+  "ISC",   # flake8-implicit-str-concat
+  "LOG",   # flake8-logging
+  "N",     # pep8-naming
+  "NPY",   # numpy-specific-rules
+  "PD",    # pandas-vet
+  "PGH",   # pygrep-hooks
+  "PIE",   # flake8-pie
+  "PLC",   # pylint convention
+  "PLE",   # pylint error
+  "PLR",   # pylint refactor
+  "PLW",   # pylint warning
+  "PT",    # flake8-pytest-style
+  "PTH",   # flake8-use-pathlib
+  "PYI",   # flake8-pyi
+  "Q",     # flake8-quotes
+  "RET",   # flake8-return
+  "RSE",   # flake8-raise
+  "RUF",   # ruff rules
+  "SIM",   # flake8-simplify
+  "SLOT",  # flake8-slot
+  "TID",   # flake8-tidy-imports
+  "TRIO",  # flake8-trio
+  "TRY",   # tryceratops
+  "UP",    # pyupgrade
+  "W",     # pycodestyle warnings
+  "YTT",   # flake8-2020
+]
+ignore = [
+  "E501",     # line length
+  "ERA001",   # commented-out code
+  "C901",     # complex-structure
+  "PLR0912",  # too-many-branches
+  "PLR0913",  # too-many-arguments
+  "PLR0917",  # too-many-positional-arguments
+  "PLR2004",  # magic values
+]
+
+[tool.ruff.lint.flake8-annotations]
+allow-star-arg-any = true
+
+# [tool.ruff.lint.flake8-tidy-imports]
+# ban-relative-imports = "parents"
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
 
 [build-system]
 requires = ["poetry-core"]

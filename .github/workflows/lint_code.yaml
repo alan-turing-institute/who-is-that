@@ -1,0 +1,38 @@
+---
+name: Lint code
+
+# Run workflow on pushes to matching branches
+on:  # yamllint disable-line rule:truthy
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint_python:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+      - name: Install poetry
+        run: pip install poetry
+      - name: Install dependencies
+        run: poetry install
+      - name: Lint Python
+        run: |
+          poetry run ruff check --preview .
+          poetry run black --check .
+
+  lint_yaml:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Lint YAML
+        uses: karancode/yamllint-github-action@v2.1.1
+        with:
+          yamllint_strict: true
+          yamllint_comment: false
