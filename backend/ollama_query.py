@@ -19,7 +19,12 @@ class OllamaQuery:
         messages: list[dict[str, str]],
     ) -> Mapping[str, Any] | Iterator[Mapping[str, Any]]:
         print(f"Querying Ollama using model {self.model}", flush=True)
-        return self.client.chat(
+        response = self.client.chat(
             model=self.model,
             messages=messages,
         )
+        print(f"Loading the model: {response['load_duration']/1e9:.2f}s", flush=True)
+        print(f"Evaluating the prompt: {response['prompt_eval_duration']/1e9:.2f}s", flush=True)
+        print(f"Evaluating the response: {response['eval_duration']/1e9:.2f}s", flush=True)
+        print(f"Total time: {response['total_duration']/1e9:.2f}s", flush=True)
+        return response
