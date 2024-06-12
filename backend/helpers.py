@@ -32,7 +32,7 @@ def summarise(context: str, prompt_template: str) -> str:
     logger = logging.getLogger("backend.app")
     concat = f"CONTEXT: {context} \n INSTRUCTIONS: {prompt_template}"
     logger.info(
-        "Preparing 'summarise' request using %s tokens of context...",
+        "Sending 'summarise' request using %s tokens of context...",
         len(concat.split()),
     )
     response = OllamaQuery.query(context=concat)
@@ -44,7 +44,7 @@ def what_is_this(context: str, prompt_template: str, thing: str) -> str:
     prompt = prompt_template.replace(r"{thing}", thing)
     concat = f"CONTEXT: {context} \n INSTRUCTIONS: {prompt}"
     logger.info(
-        "Preparing 'What is %s?' request using %s tokens of context...",
+        "Sending 'What is %s?' request using %s tokens of context...",
         thing,
         len(concat.split()),
     )
@@ -57,7 +57,7 @@ def who_is_that(context: str, prompt_template: str, character: str) -> str:
     prompt = prompt_template.replace(r"{character}", character)
     concat = f"CONTEXT: {context} \n INSTRUCTIONS: {prompt}"
     logger.info(
-        "Preparing 'Who is %s?' request using %s tokens of context...",
+        "Sending 'Who is %s?' request using %s tokens of context...",
         character,
         len(concat.split()),
     )

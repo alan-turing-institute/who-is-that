@@ -70,7 +70,7 @@ def api_summarise() -> Response:
     data = request.json
     context: str = data.get("context", "")
     app.logger.info(
-        "Received 'summary' request given %s tokens of context.",
+        "Received 'summarise' request given %s tokens of context.",
         len(context.split()),
     )
 

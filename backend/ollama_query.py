@@ -29,7 +29,7 @@ class OllamaQuery:
         ollama_port = os.environ.get("OLLAMA_PORT", "11434")
         ollama_server = f"{ollama_host}:{ollama_port}"
         client = Client(host=ollama_server)
-        cls.logger.info("Preparing to query Ollama using:")
+        cls.logger.info("Querying Ollama using:")
         cls.logger.info("... model: %s", model)
         cls.logger.info("... server: %s", ollama_server)
 
