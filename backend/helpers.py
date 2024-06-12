@@ -91,6 +91,28 @@ def who_is_that(context: str, prompt_template: str, character: str) -> str:
     return content
 
 
+def generate_summary(context: str) -> str:
+    prompt = f"Summarize the story up to this point {context}"
+    try:
+        print("Waiting for an Ollama response.", flush=True)
+        client = OllamaQuery()
+        response = client.query(
+            [
+                {
+                    "role": "user",
+                    "content": prompt,
+                },
+            ],
+        )
+        content = response["message"]["content"]
+
+    except Exception as exc:
+        print(f"Failed to retrieve summary from Ollama {exc!s}")
+        content = "Sorry, I could not answer your query."
+
+    return content
+
+
 # def who_is_that_really(
 #     text: str,
 #     word: str,
