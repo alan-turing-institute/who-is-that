@@ -18,7 +18,7 @@ class OllamaQuery:
         self: Self,
         messages: list[dict[str, str]],
     ) -> Mapping[str, Any] | Iterator[Mapping[str, Any]]:
-        print(f"Querying Ollama using model {self.model}")
+        print(f"Querying Ollama using model {self.model}", flush=True)
         return self.client.chat(
             model=self.model,
             messages=messages,
