@@ -47,7 +47,7 @@ def api_what_is_this() -> Response:
     data = request.json
     context = data.get("context")
     app.logger.info(
-        "Received 'what_is_this' request for given %s tokens of context.",
+        "Received 'what_is_this' request given %s tokens of context.",
         len(context.split()),
     )
 
@@ -67,7 +67,7 @@ def api_summarise() -> Response:
     data = request.json
     context = data.get("context")
     app.logger.info(
-        "Received 'summary' request for given %s tokens of context.",
+        "Received 'summary' request given %s tokens of context.",
         len(context.split()),
     )
 
