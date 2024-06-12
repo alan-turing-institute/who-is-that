@@ -7,21 +7,24 @@ import os
 import requests
 
 
-def query_backend(character: str, context: str, action: str = "who_is_that") -> dict:
+def query_backend(selected_text: str, context: str, action: str = "who_is_that") -> dict:
     logger = logging.getLogger("frontend.app")
 
-    # Define the URL of your API endpoint
+    # Define the base URL of your API endpoint
     backend_host = os.environ.get("BACKEND_HOST", "http://localhost")
     backend_port = os.environ.get("BACKEND_PORT", "3000")
-    if action == "who_is_that":
-        url = f"{backend_host}:{backend_port}/who_is_that"
-    elif action == "what_is_this":
-        url = f"{backend_host}:{backend_port}/what_is_this"
-    else:
-        url = f"{backend_host}:{backend_port}/summarise"
+    base_url = f"{backend_host}:{backend_port}"
 
-    # Create the payload
-    payload = {"character": character, "context": context}
+    # Define the URL and payload for your API endpoint
+    if action == "who_is_that":
+        url = f"{base_url}/who_is_that"
+        payload = {"character": selected_text, "context": context}
+    elif action == "what_is_this":
+        url = f"{base_url}/what_is_this"
+        payload = {"thing": selected_text, "context": context}
+    else:
+        url = f"{base_url}/summarise"
+        payload = {"character": selected_text, "context": context}
 
     # Send the POST request
     try:

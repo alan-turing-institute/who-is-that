@@ -83,13 +83,15 @@ def summarise() -> str:
         len(selected_text_context.split()),
     )
 
+    # Run the query against the backend
+    result = query_backend(
+        selected_text=selected_text,
+        context=selected_text_context,
+        action=option,
+    )["result"]
+
     # Who is that?
     if option == "who_is_that":
-        result = query_backend(
-            character=selected_text,
-            context=selected_text_context,
-            action=option,
-        )["result"]
         return render_template(
             "process.html",
             html_user_content=f"<h1>Who is {selected_text}?</h1><p>{result}</p>",
@@ -99,11 +101,6 @@ def summarise() -> str:
 
     # What is this?
     if option == "what_is_this":
-        result = query_backend(
-            character=selected_text,
-            context=selected_text_context,
-            action=option,
-        )["result"]
         return render_template(
             "process.html",
             html_user_content=f"<h1>What is {selected_text}?</h1><p>{result}</p>",
@@ -112,12 +109,6 @@ def summarise() -> str:
         )
 
     # Summarise
-    result = query_backend(
-        character=selected_text,
-        context=selected_text_context,
-        action="summarise",
-    )["result"]
-
     return render_template(
         "process.html",
         html_user_content=f"<h1>Summary</h1><p>{result}</p>",
