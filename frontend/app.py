@@ -72,10 +72,10 @@ def summarise() -> str:
     selected_text_context = request.form["selected_text_context"]
     title = request.form["title"]
     app.logger.info(
-        "Calling '%s' on '%s' with a %s character context",
+        "Calling '%s' on '%s' with %s tokens of context",
         option,
         selected_text,
-        len(selected_text_context),
+        len(selected_text_context.split()),
     )
 
     # Who is that?

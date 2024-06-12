@@ -20,12 +20,12 @@ def index() -> str:
 @app.route("/who_is_that", methods=["POST"])
 def api_who_is_that() -> Response:
     data = request.json
-    character = data.get("character")
-    context = data.get("context")
+    character: str = data.get("character", "")
+    context: str = data.get("context", "")
     app.logger.info(
-        "Received 'who_is_that' request for %s given %s characters of context.",
+        "Received 'who_is_that' request for '%s' given %s tokens of context.",
         character,
-        len(context),
+        len(context.split()),
     )
 
     # TODO: get the text of the book up to this point and the book name for Ed's function
