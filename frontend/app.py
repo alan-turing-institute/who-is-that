@@ -73,26 +73,7 @@ def summarise() -> str:
     title = request.form["title"]
     summary, concatenated_text = get_context(selected_text, request)
 
-    # Define the URL of your API endpoint
-    backend_host = os.environ.get("BACKEND_HOST", "http://localhost")
-    backend_port = os.environ.get("BACKEND_PORT", "3000")
-    url = f"{backend_host}:{backend_port}/who_is_that"
-
-    # Create the payload
-    payload = {"character": selected_text, "context": summary}
-
-    # Send the POST request
-    try:
-        print(f"Sending request to backend at '{url}'...", flush=True)
-        response_who_is_that = requests.post(
-            url,
-            headers={"Content-Type": "application/json"},
-            data=json.dumps(payload),
-        )
-        result = response_who_is_that.json()
-    except Exception as exc:
-        print(f"Failed to extract output {exc!s}")
-        result = "Unknown"
+    result = query_ollama(character=selected_text, context=summary)['result']
 
     if option == "who_is_that":
         return render_template(
@@ -119,6 +100,31 @@ def summarise() -> str:
         title=title,
         author=author,
     )
+
+
+def query_ollama(character: str, context: str) -> dict:
+    # Define the URL of your API endpoint
+    backend_host = os.environ.get("BACKEND_HOST", "http://localhost")
+    backend_port = os.environ.get("BACKEND_PORT", "3000")
+    url = f"{backend_host}:{backend_port}/who_is_that"
+
+    # Create the payload
+    payload = {"character": character, "context": context}
+
+    # Send the POST request
+    try:
+        print(f"Sending request to backend at '{url}'...", flush=True)
+        response_who_is_that = requests.post(
+            url,
+            headers={"Content-Type": "application/json"},
+            data=json.dumps(payload),
+        )
+        result = response_who_is_that.json()
+    except Exception as exc:
+        print(f"Failed to extract output {exc!s}")
+        result = {'result': "Unknown"}
+
+    return result
 
 
 if __name__ == "__main__":
