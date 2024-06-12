@@ -1,7 +1,7 @@
 {% extends "index.html" %}
 
 {% block title %}
-    Proecss File
+    Process File
 {% endblock %}
 
 {% block content %}
@@ -13,31 +13,26 @@
 {% endif %}
 
 <div class="book" id="text-content">
-{% if text_items %}
-    {% for text_item in text_items %}
-        <details>
-            <summary>{{ text_item[0] }}</summary>
-            <p class="text-item">{{ text_item[1] }}</p>
-        </details>
-    {% endfor %}
+{% if html_user_content %}
+    {{ html_user_content|safe }}
 {% endif %}
 </div>
 
 <div id="dropdown">
-<ul>
-    <li onclick="summarise('summary')">Summarise</li>
-    <li onclick="summarise('who_is_that')">Who is that?</li>
-    <li onclick="summarise('what_is_this')">What is that place?</li>
-</ul>
+    <ul>
+        <li onclick="summarise('summary')">Summarise</li>
+        <li onclick="summarise('who_is_that')">Who is that?</li>
+        <li onclick="summarise('what_is_this')">What is that place?</li>
+    </ul>
 </div>
 
 <form id="summary-form" method="POST" action="/summarise">
-<input type="hidden" name="selected_text" id="selected-text">
-<input type="hidden" name="selected_text_start" id="selected-text-start">
-<input type="hidden" name="concatenated_text" id="concatenated-text" value="{{ concatenated_text }}">
-<input type="hidden" name="author" id="author" value="{{ author }}">
-<input type="hidden" name="title" id="title" value="{{ title }}">
-<input type="hidden" name="option" id="option">
+    <input type="hidden" name="selected_text" id="selected-text">
+    <input type="hidden" name="selected_text_start" id="selected-text-start">
+    <input type="hidden" name="concatenated_text" id="concatenated-text" value="{{ concatenated_text }}">
+    <input type="hidden" name="author" id="author" value="{{ author }}">
+    <input type="hidden" name="title" id="title" value="{{ title }}">
+    <input type="hidden" name="option" id="option">
 </form>
 
 <script>

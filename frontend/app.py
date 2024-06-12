@@ -58,10 +58,7 @@ def load_file() -> str:
     # Pass concatenated text as a hidden form input
     return render_template(
         "process.html",
-        text_items=[
-            ("Chapter " + str(idx), content)
-            for idx, content in enumerate(chapters, start=1)
-        ],
+        html_user_content=concatenated_html,
         concatenated_text=concatenated_text,
         title=title,
         author=authors,
@@ -86,7 +83,7 @@ def summarise() -> str:
         ]
         return render_template(
             "process.html",
-            text_items=[(f"Who is {selected_text}", result)],
+            html_user_content=f"<h1>Who is {selected_text}</h1><p>{result}</p>",
             concatenated_text=concatenated_text,
             title=title,
             author=author,
@@ -99,7 +96,7 @@ def summarise() -> str:
         ]
         return render_template(
             "process.html",
-            text_items=[(f"What is {selected_text}?", result)],
+            html_user_content=f"<h1>What is {selected_text}</h1><p>{result}</p>",
             concatenated_text=concatenated_text,
             title=title,
             author=author,
@@ -114,7 +111,7 @@ def summarise() -> str:
 
     return render_template(
         "process.html",
-        text_items=[("Summary", result)],
+        html_user_content=f"<h1>Summary</h1><p>{result}</p>",
         concatenated_text=concatenated_text,
         title=title,
         author=author,
