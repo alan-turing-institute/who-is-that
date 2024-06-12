@@ -21,7 +21,7 @@ def index() -> str:
 @app.route("/", methods=["POST"])
 def load_file() -> str:
     uploaded_file = request.files["file"]
-    print(f"Loading file {uploaded_file.filename}", flush=True)
+    app.logger.info(f"Loading file '{uploaded_file.filename}'")
 
     filestream = uploaded_file.stream
     filestream.seek(0)
@@ -50,6 +50,7 @@ def load_file() -> str:
         )
 
     # Pass concatenated text as a hidden form input
+    app.logger.info(f"Identified {uploaded_file.filename} as '{title}' with {len(text_items)} chapters.")
     return render_template(
         "process.html",
         text_items=[
@@ -67,7 +68,7 @@ def load_file() -> str:
 def summarise() -> str:
     option = request.form["option"]
     selected_text = request.form["selected_text"]
-    print(f"Calling '{option}' on '{selected_text}'", flush=True)
+    app.logger.info(f"Calling '{option}' on '{selected_text}'")
 
     author = request.form["author"]
     title = request.form["title"]
@@ -83,7 +84,7 @@ def summarise() -> str:
 
     # Send the POST request
     try:
-        print(f"Sending request to backend at '{url}'...", flush=True)
+        app.logger.info(f"Sending request to backend at '{url}'...")
         response_who_is_that = requests.post(
             url,
             headers={"Content-Type": "application/json"},
@@ -91,7 +92,7 @@ def summarise() -> str:
         )
         result = response_who_is_that.json()
     except Exception as exc:
-        print(f"Failed to extract output {exc!s}")
+        app.logger.info(f"Failed to extract output {exc!s}")
         result = "Unknown"
 
     if option == "who_is_that":

@@ -22,6 +22,7 @@ def api_who_is_that() -> Response:
     data = request.json
     character = data.get("character")
     context = data.get("context")
+    app.logger.info(f"Received 'who_is_that' request for {character} given {len(context)} characters of context.")
 
     # TODO: get the text of the book up to this point and the book name for Ed's function
     if not character or not context:

@@ -24,7 +24,7 @@ class Extractor:
 
     @staticmethod
     def get_metadata(epub_path: pathlib.Path, data_type: str) -> str:
-        book = epub.read_epub(epub_path)
+        book = epub.read_epub(epub_path, {"ignore_ncx": False})
         metadata = book.get_metadata("DC", data_type)
         if metadata:
             return [md[0] for md in metadata]
@@ -40,15 +40,12 @@ class Extractor:
 
     @staticmethod
     def process(epub_path: pathlib.Path) -> list[tuple[str, str]]:
-        print(f"Extracting text from EPUB {epub_path}")
-
         book = epub.read_epub(epub_path)
         text_content = []
 
         for item in book.get_items():
             if item.get_type() == ebooklib.ITEM_DOCUMENT:
-                soup = BeautifulSoup(item.get_content(), "lxml")
-
+                soup = BeautifulSoup(item.get_content(), features="lxml")
                 for container in soup.find_all(attrs={"epub:type": "chapter"}):
                     text_content.append((container["id"], container.get_text()))
 
@@ -57,7 +54,6 @@ class Extractor:
     @classmethod
     def from_bytes(cls: type[typing.Self], epub_contents: bytes) -> Extractor:
         tf = tempfile.NamedTemporaryFile()
-        print(f"Writing to {tf.name}")
         tf.write(epub_contents)
         return cls(
             text_content=cls.process(tf.name),
