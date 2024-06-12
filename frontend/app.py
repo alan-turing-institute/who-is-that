@@ -56,7 +56,7 @@ def load_file() -> str:
     )
 
     # Dummy Ollama query for the first time to load model into memory
-    BackendQuery.query("", "")
+    BackendQuery.query(selected_text="", context="no context", action="summarise")
     app.logger.info("Ollama model is ready")
 
     # Render the template with appropriate inputs
@@ -92,26 +92,19 @@ def summarise() -> str:
 
     # Who is that?
     if option == "who_is_that":
-        return render_template(
-            "process.html",
-            html_user_content=f"<h1>Who is {selected_text}?</h1><p>{result}</p>",
-            title=title,
-            author=author,
-        )
+        html_response=f"<h1>Who is {selected_text}?</h1><p>{result}</p>",
 
     # What is this?
-    if option == "what_is_this":
-        return render_template(
-            "process.html",
-            html_user_content=f"<h1>What is {selected_text}?</h1><p>{result}</p>",
-            title=title,
-            author=author,
-        )
+    elif option == "what_is_this":
+        html_response=f"<h1>What is {selected_text}?</h1><p>{result}</p>",
 
     # Summarise
+    else:
+        html_response=f"<h1>Summary</h1><p>{result}</p>",
+
     return render_template(
         "process.html",
-        html_user_content=f"<h1>Summary</h1><p>{result}</p>",
+        html_user_content=html_response,
         title=title,
         author=author,
     )
