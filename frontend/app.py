@@ -1,7 +1,7 @@
 import base64
 import io
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 from PIL import Image
 
 from .extract import Extractor
@@ -85,12 +85,14 @@ def summarise() -> str:
             context=selected_text_context,
             action=option,
         )["result"]
-        return render_template(
-            "process.html",
-            html_user_content=f"<h1>Who is {selected_text}</h1><p>{result}</p>",
-            title=title,
-            author=author,
-        )
+        # return render_template(
+        #     "process.html",
+        #     summary_modal = result,
+        #     title=title,
+        #     author=author,
+        # )
+        return jsonify({'summary': result})
+
 
     # What is this?
     if option == "what_is_this":

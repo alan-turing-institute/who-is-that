@@ -13,9 +13,17 @@
 {% endif %}
 
 <div id="dynamic-content">
+
 {% if html_user_content %}
     {{ html_user_content|safe }}
 {% endif %}
+</div>
+
+
+<div id="summary-modal">
+    <div id="summary-modal-content">
+        <!-- Summary content will be loaded here -->
+    </div>
 </div>
 
 <div id="dropdown">
@@ -35,6 +43,10 @@
 </form>
 
 <script>
+
+
+
+
 document.addEventListener("DOMContentLoaded", () => {
     // Load the DOM elements we want to manipulate later
     const dropdown = document.getElementById("dropdown");
@@ -78,9 +90,39 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
+// function summarise(option) {
+//     document.getElementById("option").value = option;
+//     document.getElementById("summary-form").submit();
+// }
+
 function summarise(option) {
+    
+    // Prevent the default form submission
+    event.preventDefault();
+
     document.getElementById("option").value = option;
-    document.getElementById("summary-form").submit();
+
+    // Gather form data
+    const formData = new FormData(document.getElementById("summary-form"));
+
+    console.log(formData);
+
+    fetch('/summarise', {
+        method: 'POST',
+        body: formData // Send the form data
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Assuming you have a modal or a placeholder for the summary
+        document.getElementById('summary-modal-content').innerHTML = data.summary;
+        // Code to show the modal
+    })
+    .catch(error => {
+        console.error('Error:', 'ChatGPT lied to me.\n' + error );
+    });
 }
+
+
+
 </script>
 {% endblock %}
