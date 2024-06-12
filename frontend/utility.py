@@ -5,18 +5,6 @@ import logging
 import os
 
 import requests
-from flask import Request
-
-
-def get_context(selected_text: str, request: Request) -> tuple[str, str]:
-    logger = logging.getLogger("frontend.app")
-    logger.info("Constructing context up to: '%s'", selected_text)
-    selected_text_start = int(request.form["selected_text_start"])
-    concatenated_text = request.form["concatenated_text"]
-    # Use the start position to slice the concatenated text
-    summary = concatenated_text[: selected_text_start + len(selected_text)]
-    logger.info("Constructed context of %s characters.", len(summary))
-    return summary, concatenated_text
 
 
 def query_backend(character: str, context: str, action: str = "who_is_that") -> dict:

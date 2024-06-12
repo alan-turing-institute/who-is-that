@@ -5,7 +5,7 @@ from flask import Flask, render_template, request
 from PIL import Image
 
 from .extract import Extractor
-from .utility import get_context, query_backend
+from .utility import query_backend
 
 app = Flask(__name__)
 
@@ -24,17 +24,13 @@ def load_file() -> str:
     filestream.seek(0)
     extractor = Extractor.from_bytes(filestream.read())
 
-    text_items = extractor.text_content  # This should be a list of tuples or strings
+    chapters = extractor.chapters
     authors_list = extractor.authors
     authors = ", ".join(authors_list)
     title = extractor.title
 
-    # If text_items is a list of tuples, extract the text
-    if isinstance(text_items[0], tuple):
-        text_items = [content for _, content in text_items]
-
     # Concatenate all text content into a single string
-    concatenated_text = "\n".join(text_items)
+    concatenated_html = "\n".join(chapter.html for chapter in chapters)
 
     cover_url = None
     if extractor.cover:
@@ -51,21 +47,17 @@ def load_file() -> str:
         "Identified %s as '%s' with %s chapters.",
         uploaded_file.filename,
         title,
-        len(text_items),
+        len(chapters),
     )
 
     # Dummy Ollama query for the first time to load model into memory
     _ = query_backend("", "")
     app.logger.info("Ollama model is ready")
 
-    # Pass concatenated text as a hidden form input
+    # Render the template with appropriate inputs
     return render_template(
         "process.html",
-        text_items=[
-            ("Chapter " + str(idx), content)
-            for idx, content in enumerate(text_items, start=1)
-        ],
-        concatenated_text=concatenated_text,
+        html_user_content=concatenated_html,
         title=title,
         author=authors,
         cover_url=cover_url,
@@ -74,36 +66,42 @@ def load_file() -> str:
 
 @app.route("/summarise", methods=["POST"])
 def summarise() -> str:
+    author = request.form["author"]
     option = request.form["option"]
     selected_text = request.form["selected_text"]
-    app.logger.info("Calling '%s' on '%s'", option, selected_text)
-
-    author = request.form["author"]
+    selected_text_context = request.form["selected_text_context"]
     title = request.form["title"]
-    summary, concatenated_text = get_context(selected_text, request)
+    app.logger.info(
+        "Calling '%s' on '%s' with a %s character context",
+        option,
+        selected_text,
+        len(selected_text_context),
+    )
 
     # Who is that?
     if option == "who_is_that":
-        result = query_backend(character=selected_text, context=summary, action=option)[
-            "result"
-        ]
+        result = query_backend(
+            character=selected_text,
+            context=selected_text_context,
+            action=option,
+        )["result"]
         return render_template(
             "process.html",
-            text_items=[(f"Who is {selected_text}", result)],
-            concatenated_text=concatenated_text,
+            html_user_content=f"<h1>Who is {selected_text}</h1><p>{result}</p>",
             title=title,
             author=author,
         )
 
     # What is this?
     if option == "what_is_this":
-        result = query_backend(character=selected_text, context=summary, action=option)[
-            "result"
-        ]
+        result = query_backend(
+            character=selected_text,
+            context=selected_text_context,
+            action=option,
+        )["result"]
         return render_template(
             "process.html",
-            text_items=[(f"What is {selected_text}?", result)],
-            concatenated_text=concatenated_text,
+            html_user_content=f"<h1>What is {selected_text}</h1><p>{result}</p>",
             title=title,
             author=author,
         )
@@ -111,14 +109,13 @@ def summarise() -> str:
     # Summarise
     result = query_backend(
         character=selected_text,
-        context=summary,
+        context=selected_text_context,
         action="summarise",
     )["result"]
 
     return render_template(
         "process.html",
-        text_items=[("Summary", result)],
-        concatenated_text=concatenated_text,
+        html_user_content=f"<h1>Summary</h1><p>{result}</p>",
         title=title,
         author=author,
     )

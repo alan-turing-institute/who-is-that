@@ -53,7 +53,7 @@ def who_is_that(context: str, prompt_template: str, character: str) -> str:
 def generate_summary(context: str) -> str:
     logger = logging.getLogger("backend.app")
     logger.info("Generating a summary for %s character context...", len(context))
-    prompt = f"CONTEXT: {context}. \n INSTRUCTIONS: Summarize the story so far in 100 words or less. Do not reveal spoilers for later sections of the story."
+    prompt = f"CONTEXT: {context}. \n INSTRUCTIONS: Summarize the story so far in 300 words or less. Do not reveal spoilers for later sections of the story."
     try:
         response = OllamaQuery.query(context=prompt)
         content = response["message"]["content"]
