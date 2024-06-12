@@ -46,6 +46,10 @@ def api_who_is_that() -> Response:
 def api_what_is_this() -> Response:
     data = request.json
     context = data.get("context")
+    app.logger.info(
+        "Received 'what_is_this' request for given %s tokens of context.",
+        len(context.split()),
+    )
 
     # TODO: get the text of the book up to this point and the book name for Ed's function
     if not context:
@@ -62,6 +66,10 @@ def api_what_is_this() -> Response:
 def api_summarise() -> Response:
     data = request.json
     context = data.get("context")
+    app.logger.info(
+        "Received 'summary' request for given %s tokens of context.",
+        len(context.split()),
+    )
 
     # TODO: get the text of the book up to this point and the book name for Ed's function
     if not context:
