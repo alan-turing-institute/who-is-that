@@ -51,7 +51,7 @@ def load_file() -> str:
 
     # Dummy Ollama query for the first time to load model into memory
     _ = query_ollama("", "")
-    print('Ollama model is ready', flush=True)
+    print("Ollama model is ready", flush=True)
 
     # Pass concatenated text as a hidden form input
     return render_template(
@@ -77,7 +77,7 @@ def summarise() -> str:
     title = request.form["title"]
     summary, concatenated_text = get_context(selected_text, request)
 
-    result = query_ollama(character=selected_text, context=summary)['result']
+    result = query_ollama(character=selected_text, context=summary)["result"]
 
     if option == "who_is_that":
         return render_template(
@@ -126,7 +126,7 @@ def query_ollama(character: str, context: str) -> dict:
         result = response_who_is_that.json()
     except Exception as exc:
         print(f"Failed to extract output {exc!s}")
-        result = {'result': "Unknown"}
+        result = {"result": "Unknown"}
 
     return result
 
