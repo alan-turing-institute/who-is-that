@@ -49,7 +49,7 @@ def load_file() -> str:
 
     # Finished loading file
     app.logger.info(
-        "Identified %s as '%s' with %s chapters.",
+        "Identified '%s' as '%s' with %s chapters.",
         uploaded_file.filename,
         title,
         len(chapters),
@@ -77,7 +77,7 @@ def summarise() -> str:
     selected_text_context = request.form["selected_text_context"]
     title = request.form["title"]
     app.logger.info(
-        "Calling '%s' on '%s' with %s tokens of context",
+        "Received '%s' request for '%s' given %s tokens of context.",
         option,
         selected_text,
         len(selected_text_context.split()),

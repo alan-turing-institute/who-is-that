@@ -5,11 +5,12 @@ from .ollama_query import OllamaQuery
 
 def generate_summary(context: str) -> str:
     logger = logging.getLogger("backend.app")
+    prompt = f"CONTEXT: {context}. \n INSTRUCTIONS: Summarize the story so far in 300 words or less. Do not reveal spoilers for later sections of the story."
     logger.info(
-        "Generating a summary using %s tokens of context...",
+        "Preparing 'summarise' request using %s tokens of context...",
         len(context.split()),
     )
-    prompt = f"CONTEXT: {context}. \n INSTRUCTIONS: Summarize the story so far in 300 words or less. Do not reveal spoilers for later sections of the story."
+
     try:
         response = OllamaQuery.query(context=prompt)
         content = response["message"]["content"]
