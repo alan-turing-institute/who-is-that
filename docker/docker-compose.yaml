@@ -7,7 +7,7 @@ services:
       dockerfile: docker/backend.Dockerfile
     environment:
       OLLAMA_HOST: "http://ollama"
-      OLLAMA_MODEL: "gemma"
+      OLLAMA_MODEL: "gemma:2b"
       OLLAMA_PORT: "11434"
     ports:
       - "127.0.0.1:3000:5000"
