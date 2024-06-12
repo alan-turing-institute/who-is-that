@@ -25,3 +25,22 @@ h1 {
   padding-left: 20px;
   padding-right: 20px;
 }  
+#dropdown {
+  display: none;
+  position: absolute;
+  background-color: white;
+  border: 1px solid #ccc;
+  z-index: 1000;
+}
+#dropdown ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+#dropdown ul li {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+#dropdown ul li:hover {
+  background-color: #eee;
+}
