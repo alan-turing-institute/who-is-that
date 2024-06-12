@@ -90,10 +90,11 @@ def summarise() -> str:
             html_user_content=f"<h1>Who is {selected_text}</h1><p>{result}</p>",
             title=title,
             author=author,
+            action=option,
         )
 
     # What is this?
-    if option == "what_is_this":
+    elif option == "what_is_this":
         result = query_backend(
             character=selected_text,
             context=selected_text_context,
@@ -106,19 +107,20 @@ def summarise() -> str:
             author=author,
         )
 
+    else:
     # Summarise
-    result = query_backend(
-        character=selected_text,
-        context=selected_text_context,
-        action="summarise",
-    )["result"]
+        result = query_backend(
+            character=selected_text,
+            context=selected_text_context,
+            action="summarise",
+        )["result"]
 
-    return render_template(
-        "process.html",
-        html_user_content=f"<h1>Summary</h1><p>{result}</p>",
-        title=title,
-        author=author,
-    )
+        return render_template(
+            "process.html",
+            html_user_content=f"<h1>Summary</h1><p>{result}</p>",
+            title=title,
+            author=author,
+        )
 
 
 if __name__ == "__main__":

@@ -62,7 +62,7 @@ def api_what_is_this() -> Response:
         return jsonify({"error": str(e)}), 500
 
 
-@app.route("/summarise", methods=["POST"])
+@app.route("/generate_summary", methods=["POST"])
 def api_summarise() -> Response:
     data = request.json
     context = data.get("context")

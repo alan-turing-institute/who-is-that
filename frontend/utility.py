@@ -18,7 +18,7 @@ def query_backend(character: str, context: str, action: str = "who_is_that") -> 
     elif action == "what_is_this":
         url = f"{backend_host}:{backend_port}/what_is_this"
     else:
-        url = f"{backend_host}:{backend_port}/summarise"
+        url = f"{backend_host}:{backend_port}/generate_summary"
 
     # Create the payload
     payload = {"character": character, "context": context}
