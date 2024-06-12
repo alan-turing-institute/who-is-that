@@ -26,8 +26,8 @@ If you want to use a native Ollama installation instead of a Dockerised version,
 
 ```shell
 $ ollama serve &
-$ ollama run gemma:2b
-$ docker compose -f docker/docker-compose-external-ollama.yaml up --build
+$ ollama pull gemma:2b & 
+$ docker compose -f docker/docker-compose-native-ollama.yaml up --build
 ```
 
 to run:
