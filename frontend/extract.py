@@ -45,7 +45,8 @@ class Extractor:
             if item.get_type() == ebooklib.ITEM_DOCUMENT:
                 with warnings.catch_warnings():
                     warnings.filterwarnings(
-                        action="ignore", category=XMLParsedAsHTMLWarning
+                        action="ignore",
+                        category=XMLParsedAsHTMLWarning,
                     )
                     soup = BeautifulSoup(item.get_content(), features="lxml")
                 for container in soup.find_all(attrs={"epub:type": "chapter"}):

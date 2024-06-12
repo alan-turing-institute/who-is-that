@@ -33,7 +33,9 @@ def who_is_that(context: str, prompt_template: str, character: str) -> str:
     prompt = prompt_template.replace("{character}", character)
     concat = f"CONTEXT: {context} \n INSTRUCTIONS: {prompt}"
     logger.info(
-        "Answer 'Who is %s?' using a %s character context...", character, len(concat)
+        "Answer 'Who is %s?' using a %s character context...",
+        character,
+        len(concat),
     )
     try:
         response = OllamaQuery.query(context=concat)

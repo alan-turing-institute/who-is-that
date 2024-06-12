@@ -39,18 +39,14 @@ class OllamaQuery:
                     },
                 ],
             )
-            cls.logger.info(
-                f"Loading the model: {response['load_duration']/1e9:.2f}s"
-            )  # noqa: G004
-            cls.logger.info(
-                f"Evaluating the prompt: {response['prompt_eval_duration']/1e9:.2f}s"
-            )  # noqa: G004
-            cls.logger.info(
-                f"Evaluating the response: {response['eval_duration']/1e9:.2f}s"
-            )  # noqa: G004
-            cls.logger.info(
-                f"Total time: {response['total_duration']/1e9:.2f}s"
-            )  # noqa: G004
+            load_duration = f"{response['load_duration'] / 1e9:.2f}s"
+            prompt_eval_duration = f"{response['prompt_eval_duration'] / 1e9:.2f}s"
+            eval_duration = f"{response['eval_duration'] / 1e9:.2f}s"
+            total_duration = f" {response['total_duration'] / 1e9:.2f}s"
+            cls.logger.info("Loading the model: %s", load_duration)
+            cls.logger.info("Evaluating the prompt: %s", prompt_eval_duration)
+            cls.logger.info("Evaluating the response: %s", eval_duration)
+            cls.logger.info("Total time: %s", total_duration)
         except ResponseError as exc:
             cls.logger.info("No response from Ollama server: '%s'", exc)
             response = {"message": {"content": "No response from Ollama server."}}
