@@ -5,13 +5,13 @@ import logging
 from flask import Flask, render_template, request
 from PIL import Image
 
-from .extract import Extractor
 from .backend_query import BackendQuery
+from .extract import Extractor
 
 app = Flask(__name__)
 for handler in app.logger.handlers:
     handler.setFormatter(
-        logging.Formatter(r"%(asctime)s %(message)s", r"[%d/%b/%Y %H:%M:%S]")
+        logging.Formatter(r"%(asctime)s %(message)s", r"[%d/%b/%Y %H:%M:%S]"),
     )
 
 
@@ -92,15 +92,15 @@ def query() -> str:
 
     # Who is that?
     if option == "who_is_that":
-        html_response=f"<h1>Who is {selected_text}?</h1><p>{result}</p>"
+        html_response = f"<h1>Who is {selected_text}?</h1><p>{result}</p>"
 
     # What is this?
     elif option == "what_is_this":
-        html_response=f"<h1>What is {selected_text}?</h1><p>{result}</p>"
+        html_response = f"<h1>What is {selected_text}?</h1><p>{result}</p>"
 
     # Summarise
     else:
-        html_response=f"<h1>Summary</h1><p>{result}</p>"
+        html_response = f"<h1>Summary</h1><p>{result}</p>"
 
     return render_template(
         "process.html",

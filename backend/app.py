@@ -4,12 +4,12 @@ import pathlib
 
 from flask import Flask, Response, jsonify, request
 
-from .helpers import summarise, who_is_that, what_is_this
+from .helpers import summarise, what_is_this, who_is_that
 
 app = Flask(__name__)
 for handler in app.logger.handlers:
     handler.setFormatter(
-        logging.Formatter(r"%(asctime)s %(message)s", r"[%d/%b/%Y %H:%M:%S]")
+        logging.Formatter(r"%(asctime)s %(message)s", r"[%d/%b/%Y %H:%M:%S]"),
     )
 
 

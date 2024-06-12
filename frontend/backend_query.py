@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import logging
 import os
-from typing import Any, Self
+from typing import Self
 
 import requests
 
@@ -15,7 +15,12 @@ class BackendQuery:
     base_url = f"{backend_host}:{backend_port}"
 
     @classmethod
-    def query(cls: type[Self], selected_text: str, context: str, action: str = "summarise") -> str:
+    def query(
+        cls: type[Self],
+        selected_text: str,
+        context: str,
+        action: str = "summarise",
+    ) -> str:
         logger = logging.getLogger("frontend.app")
 
         # Define the URL and payload for your API endpoint
