@@ -4,7 +4,7 @@ import pathlib
 
 from flask import Flask, Response, jsonify, request
 
-from .helpers import generate_summary, who_is_that
+from .helpers import summarise, who_is_that, what_is_this
 
 app = Flask(__name__)
 for handler in app.logger.handlers:
@@ -47,7 +47,7 @@ def api_who_is_that() -> Response:
 @app.route("/what_is_this", methods=["POST"])
 def api_what_is_this() -> Response:
     data = request.json
-    thing: str = data.get("character", "")
+    thing: str = data.get("thing", "")
     context: str = data.get("context", "")
     app.logger.info(
         "Received 'what_is_this' request for '%s' given %s tokens of context.",
@@ -77,7 +77,7 @@ def api_summarise() -> Response:
     if not context:
         return jsonify({"error": "Context is required"}), 400
     try:
-        result = generate_summary(context)
+        result = summarise(context, prompt_templates["summarise"])
         return jsonify({"result": result})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
