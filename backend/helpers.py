@@ -3,24 +3,6 @@ import logging
 from .ollama_query import OllamaQuery
 
 
-def generate_summary(context: str) -> str:
-    logger = logging.getLogger("backend.app")
-    logger.info(
-        "Generating a summary using %s tokens of context...",
-        len(context.split()),
-    )
-    prompt = f"CONTEXT: {context}. \n INSTRUCTIONS: Summarize the story so far in 300 words or less. Do not reveal spoilers for later sections of the story."
-    try:
-        response = OllamaQuery.query(context=prompt)
-        content = response["message"]["content"]
-
-    except Exception as exc:
-        logger.info("Failed to retrieve summary from Ollama %s", exc)
-        content = "Sorry, I could not answer your query."
-
-    return content
-
-
 def spoiler_check(book: str, character: str, summary: str) -> str:
     logger = logging.getLogger("backend.app")
     query = "I have written the following story: '" + book + "'.\n"
@@ -46,19 +28,38 @@ def spoiler_check(book: str, character: str, summary: str) -> str:
     raise ValueError("Unexpected response from spoiler detection: " + answer)
 
 
-def who_is_that(context: str, prompt_template: str, character: str) -> str:
+def summarise(context: str, prompt_template: str) -> str:
     logger = logging.getLogger("backend.app")
-    prompt = prompt_template.replace("{character}", character)
+    concat = f"CONTEXT: {context} \n INSTRUCTIONS: {prompt_template}"
+    logger.info(
+        "Sending 'summarise' request using %s tokens of context...",
+        len(concat.split()),
+    )
+    response = OllamaQuery.query(context=concat)
+    return response["message"]["content"]
+
+
+def what_is_this(context: str, prompt_template: str, thing: str) -> str:
+    logger = logging.getLogger("backend.app")
+    prompt = prompt_template.replace(r"{thing}", thing)
     concat = f"CONTEXT: {context} \n INSTRUCTIONS: {prompt}"
     logger.info(
-        "Preparing 'Who is %s?' request using %s tokens of context...",
+        "Sending 'What is %s?' request using %s tokens of context...",
+        thing,
+        len(concat.split()),
+    )
+    response = OllamaQuery.query(context=concat)
+    return response["message"]["content"]
+
+
+def who_is_that(context: str, prompt_template: str, character: str) -> str:
+    logger = logging.getLogger("backend.app")
+    prompt = prompt_template.replace(r"{character}", character)
+    concat = f"CONTEXT: {context} \n INSTRUCTIONS: {prompt}"
+    logger.info(
+        "Sending 'Who is %s?' request using %s tokens of context...",
         character,
         len(concat.split()),
     )
-    try:
-        response = OllamaQuery.query(context=concat)
-        content = response["message"]["content"]
-    except Exception as exc:
-        logger.info("Failed to retrieve summary from Ollama: %s", exc)
-        content = "Sorry, I could not answer your query."
-    return content
+    response = OllamaQuery.query(context=concat)
+    return response["message"]["content"]
