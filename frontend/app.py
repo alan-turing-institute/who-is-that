@@ -6,7 +6,7 @@ from flask import Flask, render_template, request
 from PIL import Image
 
 from .extract import Extractor
-from .utility import query_backend
+from .backend_query import BackendQuery
 
 app = Flask(__name__)
 for handler in app.logger.handlers:
@@ -56,7 +56,7 @@ def load_file() -> str:
     )
 
     # Dummy Ollama query for the first time to load model into memory
-    _ = query_backend("", "")
+    BackendQuery.query("", "")
     app.logger.info("Ollama model is ready")
 
     # Render the template with appropriate inputs
@@ -84,7 +84,7 @@ def summarise() -> str:
     )
 
     # Run the query against the backend
-    result = query_backend(
+    result = BackendQuery.query(
         selected_text=selected_text,
         context=selected_text_context,
         action=option,
