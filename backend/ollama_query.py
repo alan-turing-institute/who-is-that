@@ -24,14 +24,14 @@ class OllamaQuery:
         else:
             model = os.environ.get("OLLAMA_MODEL", "llama3:8b")
 
-        cls.logger.info("Querying Ollama using model '%s'", model)
-
         # Set up connection to Ollama
         ollama_host = os.environ.get("OLLAMA_HOST", "http://localhost")
         ollama_port = os.environ.get("OLLAMA_PORT", "11434")
         ollama_server = f"{ollama_host}:{ollama_port}"
         client = Client(host=ollama_server)
-        cls.logger.info("Using Ollama server at %s", ollama_server)
+        cls.logger.info("Preparing to query Ollama using:")
+        cls.logger.info("... model: %s", model)
+        cls.logger.info("... server: %s", ollama_server)
 
         # Query Ollama
         try:
