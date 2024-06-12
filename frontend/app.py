@@ -49,6 +49,10 @@ def load_file() -> str:
             f"data:image/jpeg;base64,{base64.b64encode(img_io.getvalue()).decode()}"
         )
 
+    # Dummy Ollama query for the first time to load model into memory
+    _ = query_backend("", "")
+    print("Ollama model is ready", flush=True)
+
     # Pass concatenated text as a hidden form input
     app.logger.info(f"Identified {uploaded_file.filename} as '{title}' with {len(text_items)} chapters.")
     return render_template(
@@ -94,6 +98,7 @@ def summarise() -> str:
     except Exception as exc:
         app.logger.info(f"Failed to extract output {exc!s}")
         result = "Unknown"
+    # result = query_backend(character=selected_text, context=summary)["result"]
 
     if option == "who_is_that":
         return render_template(
@@ -121,6 +126,30 @@ def summarise() -> str:
         author=author,
     )
 
+
+def query_backend(character: str, context: str) -> dict:
+    # Define the URL of your API endpoint
+    backend_host = os.environ.get("BACKEND_HOST", "http://localhost")
+    backend_port = os.environ.get("BACKEND_PORT", "3000")
+    url = f"{backend_host}:{backend_port}/who_is_that"
+
+    # Create the payload
+    payload = {"character": character, "context": context}
+
+    # Send the POST request
+    try:
+        app.logger.info(f"Sending request to backend at '{url}'...")
+        response = requests.post(
+            url,
+            headers={"Content-Type": "application/json"},
+            data=json.dumps(payload),
+        )
+        result = response.json()
+    except Exception as exc:
+        app.logger.warning(f"Failed to extract output {exc}.")
+        result = {"result": "Unknown"}
+
+    return result
 
 if __name__ == "__main__":
     app.run(debug=True)
