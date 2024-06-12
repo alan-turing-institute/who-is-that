@@ -6,13 +6,14 @@ FROM ollama/ollama as base
 FROM base as builder
 
 # Install requested models
-RUN /bin/ollama serve & \
-    sleep 5; \
+# Other models considered but no longer installed
+# - gemma:2b
+RUN /bin/ollama serve & sleep 5; \
     /bin/ollama run llama3:8b; \
-    /bin/ollama run gemma:2b;
+    /bin/ollama run phi3:14b;
 
 #
-# Stage 2: Run Ollama with the pre-downloaded model
+# Stage 2: Run Ollama with one of the pre-downloaded models
 #
 FROM base as final
 
