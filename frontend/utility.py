@@ -23,7 +23,7 @@ def query_backend(character: str, context: str, action: str = "who_is_that") -> 
 
     # Send the POST request
     try:
-        logger.info("Sending request to backend at '%s'", url)
+        logger.info("Sending '%s' request to backend at '%s'", action, url)
         response = requests.post(
             url,
             headers={"Content-Type": "application/json"},
