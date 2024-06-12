@@ -4,21 +4,28 @@ import pathlib
 import tempfile
 import typing
 import warnings
+from dataclasses import dataclass
 
 import ebooklib
 from bs4 import BeautifulSoup, XMLParsedAsHTMLWarning
 from ebooklib import epub
 
 
+@dataclass
+class Chapter:
+    name: str
+    html: str
+    text: str
+
 class Extractor:
     def __init__(
         self: typing.Self,
-        text_content: list[tuple[str, str]],
+        chapters: list[Chapter],
         cover: bytes | None = None,
         authors: list[str] | None = None,
         title: str | None = None,
     ) -> None:
-        self.text_content = text_content
+        self.chapters = chapters
         self.cover = cover
         self.authors = authors
         self.title = title
@@ -39,8 +46,8 @@ class Extractor:
         return None
 
     @staticmethod
-    def process(book: epub.EpubBook) -> list[tuple[str, str]]:
-        text_content = []
+    def process(book: epub.EpubBook) -> list[Chapter]:
+        chapters = []
         for item in book.get_items():
             if item.get_type() == ebooklib.ITEM_DOCUMENT:
                 with warnings.catch_warnings():
@@ -50,9 +57,12 @@ class Extractor:
                     )
                     soup = BeautifulSoup(item.get_content(), features="lxml")
                 for container in soup.find_all(attrs={"epub:type": "chapter"}):
-                    text_content.append((container["id"], container.get_text()))
-
-        return text_content
+                    chapters.append(
+                        Chapter(name=container["id"], html=container.prettify(), text=container.get_text())
+                    )
+        for chapter in chapters:
+            print(chapter)
+        return chapters
 
     @classmethod
     def from_bytes(cls: type[typing.Self], epub_contents: bytes) -> Extractor:
@@ -70,7 +80,7 @@ class Extractor:
 
         # Construct a book
         return cls(
-            text_content=cls.process(book),
+            chapters=cls.process(book),
             cover=cls.get_cover(book),
             authors=cls.get_metadata(book, "creator"),
             title=cls.get_metadata(book, "title")[0],

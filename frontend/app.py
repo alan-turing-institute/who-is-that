@@ -24,17 +24,14 @@ def load_file() -> str:
     filestream.seek(0)
     extractor = Extractor.from_bytes(filestream.read())
 
-    text_items = extractor.text_content  # This should be a list of tuples or strings
+    chapters = extractor.chapters
     authors_list = extractor.authors
     authors = ", ".join(authors_list)
     title = extractor.title
 
-    # If text_items is a list of tuples, extract the text
-    if isinstance(text_items[0], tuple):
-        text_items = [content for _, content in text_items]
-
     # Concatenate all text content into a single string
-    concatenated_text = "\n".join(text_items)
+    concatenated_text = "\n".join(chapter.text for chapter in chapters)
+    concatenated_html = "\n".join(chapter.html for chapter in chapters)
 
     cover_url = None
     if extractor.cover:
@@ -51,7 +48,7 @@ def load_file() -> str:
         "Identified %s as '%s' with %s chapters.",
         uploaded_file.filename,
         title,
-        len(text_items),
+        len(chapters),
     )
 
     # Dummy Ollama query for the first time to load model into memory
@@ -63,7 +60,7 @@ def load_file() -> str:
         "process.html",
         text_items=[
             ("Chapter " + str(idx), content)
-            for idx, content in enumerate(text_items, start=1)
+            for idx, content in enumerate(chapters, start=1)
         ],
         concatenated_text=concatenated_text,
         title=title,
