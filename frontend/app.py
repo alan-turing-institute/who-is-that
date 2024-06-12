@@ -69,8 +69,8 @@ def load_file() -> str:
     )
 
 
-@app.route("/summarise", methods=["POST"])
-def summarise() -> str:
+@app.route("/query", methods=["POST"])
+def query() -> str:
     author = request.form["author"]
     option = request.form["option"]
     selected_text = request.form["selected_text"]
