@@ -49,7 +49,7 @@ def api_summarise() -> Response:
 
     # TODO: get the text of the book up to this point and the book name for Ed's function
     if not context:
-        return jsonify({"error": "Character and context are required"}), 400
+        return jsonify({"error": "Context is required"}), 400
     try:
         # Fede func
         result = generate_summary(context)
