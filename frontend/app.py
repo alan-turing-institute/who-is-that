@@ -92,7 +92,7 @@ def summarise() -> str:
         )["result"]
         return render_template(
             "process.html",
-            html_user_content=f"<h1>Who is {selected_text}</h1><p>{result}</p>",
+            html_user_content=f"<h1>Who is {selected_text}?</h1><p>{result}</p>",
             title=title,
             author=author,
         )
@@ -106,7 +106,7 @@ def summarise() -> str:
         )["result"]
         return render_template(
             "process.html",
-            html_user_content=f"<h1>What is {selected_text}</h1><p>{result}</p>",
+            html_user_content=f"<h1>What is {selected_text}?</h1><p>{result}</p>",
             title=title,
             author=author,
         )

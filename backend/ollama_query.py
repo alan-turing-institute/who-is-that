@@ -45,14 +45,14 @@ class OllamaQuery:
                 ],
             )
             cls.logger.info("Received response from Ollama server")
-            load_duration = f"{response['load_duration'] / 1e9:.2f}s"
-            cls.logger.info(".. Loading the model: %s", load_duration)
-            prompt_eval_duration = f"{response['prompt_eval_duration'] / 1e9:.2f}s"
-            cls.logger.info(".. Evaluating the prompt: %s", prompt_eval_duration)
-            eval_duration = f"{response['eval_duration'] / 1e9:.2f}s"
-            cls.logger.info(".. Evaluating the response: %s", eval_duration)
-            total_duration = f" {response['total_duration'] / 1e9:.2f}s"
-            cls.logger.info("-> Total time: %s", total_duration)
+            load_duration = f"{(response['load_duration'] / 1e9):.2f}s"
+            cls.logger.info("... Loading the model: %s", load_duration)
+            prompt_eval_duration = f"{(response['prompt_eval_duration'] / 1e9):.2f}s"
+            cls.logger.info("... Evaluating the prompt: %s", prompt_eval_duration)
+            eval_duration = f"{(response['eval_duration'] / 1e9):.2f}s"
+            cls.logger.info("... Evaluating the response: %s", eval_duration)
+            total_duration = f" {(response['total_duration'] / 1e9):.2f}s"
+            cls.logger.info("--> Total time: %s", total_duration)
         except ResponseError as exc:
             cls.logger.info("No response from Ollama server: '%s'", exc)
             response = {"message": {"content": "No response from Ollama server."}}
