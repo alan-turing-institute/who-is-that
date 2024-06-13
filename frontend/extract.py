@@ -73,31 +73,27 @@ class Extractor:
             ):
                 element.decompose()
 
-            # List of chapters extracted from this item
-            item_chapters = []
-
-            # Look for elements marked as epub:type="chapter"
-            if not item_chapters:
-                for element in soup.find_all(attrs={"epub:type": "chapter"}):
-                    item_chapters.append(
-                        Chapter(
-                            name=element.get("id", ""),
-                            html=element.prettify(),
-                        ),
-                    )
-
-            # Otherwise we take the body content of each page
-            if not item_chapters:
+            # If no elements are marked epub:type="chapter" then we use the <body> element
+            if not soup.find_all(attrs={"epub:type": "chapter"}):
                 for element in soup.find_all("body"):
-                    item_chapters.append(
+                    element.name = "section"
+                    element["epub:type"] = "chapter"
+
+            # Extract all chapters
+            for element in soup.find_all(attrs={"epub:type": "chapter"}):
+                if element.get_text().strip():
+                    element["id"] = (
+                        element.get("id", None)
+                        or element.get("title", None)
+                        or f"chapter-{len(chapters) + 1}"
+                    )
+                    chapters.append(
                         Chapter(
-                            name=element.get("title", ""),
+                            name=element["id"],
                             html=element.prettify(),
                         ),
                     )
 
-            # Add extracted chapters to the main list
-            chapters += item_chapters
         return chapters
 
     @classmethod
