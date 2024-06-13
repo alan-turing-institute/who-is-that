@@ -66,6 +66,10 @@ class Extractor:
                     if soup.svg:
                         soup.svg.extract()
 
+                    # Remove navigation elements which are not part of the text
+                    if soup.nav:
+                        soup.nav.extract()
+
                     # Look for elements marked as epub:type="chapter"
                     elements = soup.find_all(attrs={"epub:type": "chapter"})
                     if len(elements) > 0:
