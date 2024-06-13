@@ -92,7 +92,6 @@ def query() -> str:
 
     # Who is that?
     if option == "who_is_that":
-
         # result = query_backend(
         #     character=selected_text,
         #     context=selected_text_context,
