@@ -71,7 +71,10 @@ class Extractor:
                         soup.nav.decompose()
 
                     # Remove Project Gutenberg boilerplate
-                    for element in soup.find_all(True, {"class": "pg-boilerplate"}):
+                    for element in soup.find_all(
+                        name=True,
+                        attrs={"class": "pg-boilerplate"},
+                    ):
                         element.decompose()
 
                     # Look for elements marked as epub:type="chapter"
