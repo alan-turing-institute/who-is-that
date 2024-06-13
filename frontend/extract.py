@@ -58,6 +58,14 @@ class Extractor:
                     )
                     soup = BeautifulSoup(item.get_content(), features="lxml")
 
+                    # Remove images which we will not try to display
+                    if soup.figure:
+                        soup.figure.extract()
+                    if soup.img:
+                        soup.img.extract()
+                    if soup.svg:
+                        soup.svg.extract()
+
                     # Look for elements marked as epub:type="chapter"
                     elements = soup.find_all(attrs={"epub:type": "chapter"})
                     if len(elements) > 0:
