@@ -2,9 +2,9 @@ function attachContextMenu() {
     const dynamicContent = document.getElementById("dynamic-content");
     if (dynamicContent) {
         // Add a context menu when the dynamic-content div is clicked
-        dynamicContent.addEventListener("contextmenu", (event) => showContextMenu(event));
+        dynamicContent.addEventListener("contextmenu", (event) => contextMenuEnable(event));
         // Disable the context menu when other clicks are made
-        document.addEventListener("click", (event) => hideContextMenu(event));
+        document.addEventListener("click", (event) => contextMenuDisable(event));
     }
 }
 
@@ -25,15 +25,22 @@ function attachUploadButton() {
     }
 }
 
-function showContextMenu(event) {
+function contextMenuDisable(event) {
+    const dropdown = document.getElementById("dropdown");
+    if (!dropdown.contains(event.target)) {
+        dropdown.style.display = "none";
+    }
+}
+
+function contextMenuEnable(event) {
     // Disable default event handling
     event.preventDefault();
 
     // Load elements that we want to manipulate
     const dropdown = document.getElementById("dropdown");
     const dynamicContent = document.getElementById("dynamic-content");
-    const elemSelectedText = document.getElementById("selected-text");
-    const elemSelectedTextContext = document.getElementById("selected-text-context");
+    const elemSelectedText = document.getElementById("query-selected-text");
+    const elemSelectedTextContext = document.getElementById("query-selected-text-context");
 
     // Extract and trim selected text
     const selectedRange = window.getSelection().getRangeAt(0);
@@ -56,13 +63,6 @@ function showContextMenu(event) {
         dropdown.style.left = `${event.pageX}px`;
         dropdown.style.top = `${event.pageY}px`;
     } else {
-        dropdown.style.display = "none";
-    }
-}
-
-function hideContextMenu(event) {
-    const dropdown = document.getElementById("dropdown");
-    if (!dropdown.contains(event.target)) {
         dropdown.style.display = "none";
     }
 }
@@ -133,12 +133,10 @@ function modalHelper(content) {
 // If we need to wait for the response, we can't go through the form submission
 // Using Fetch API instead
 function submitQuery(option) {
-    // Disable default event handling
-    event.preventDefault();
+    // Write option to the query form
+    document.getElementById("query-option").value = option;
 
-    document.getElementById("option").value = option;
-
-    // Gather form data
+    // Gather data from the query form
     const formData = new FormData(document.getElementById("query-form"));
     console.log(formData);
 
