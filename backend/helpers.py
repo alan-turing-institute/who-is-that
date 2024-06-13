@@ -3,22 +3,24 @@ import logging
 from .ollama_query import OllamaQuery
 
 
-def spoiler_check(context: str, summary: str) -> str:
+def spoiler_check(context: str, summary: str) -> bool:
     logger = logging.getLogger("backend.app")
-    query = "CONTEXT: " + context + "\n" + "SUMMARY: " + summary + "\n" + (
-        "INSTRUCTIONS: Check if the SUMMARY contains spoilers not containerd in CONTEXT. If so, provide a simple answer of '**TRUE**' or '**FALSE**'."
-        "Respond as boolean in this JSON format: { \"answer\": [True or False]}")
+    query = (
+        f"CONTEXT: {context}\n"
+        f"SUMMARY: {summary}\n"
+        "INSTRUCTIONS: Check if the SUMMARY contains spoilers not found in the CONTEXT.\n"
+        'Respond as a python boolean in this JSON format: { "answer": True/False }. No yapping!'
+    )
 
     logger.info("Check for spoilers using %s tokens of context...", len(query.split()))
-    response = OllamaQuery.query(context=query)
-    answer = bool(response["message"]["content"]['answer'])
-    logger.info("Response: %s", answer)
-    if answer == True:
+    response = OllamaQuery.query(context=query)["message"]["content"]
+    logger.info("Response: %s", response)
+    if '{"answer": True }' in response:
         logger.info("Spoiler detected! Regenerating new summary...")
+        return True
     else:
         logger.info("No spoilers detected.")
-    logger.info("Returning answer: %s", answer)
-    return answer
+        return False
 
 
 def summarise(context: str, prompt_template: str) -> str:
@@ -28,13 +30,13 @@ def summarise(context: str, prompt_template: str) -> str:
         "Sending 'summarise' request using %s tokens of context...",
         len(concat.split()),
     )
-    response = OllamaQuery.query(context=concat)
-    spoiler = spoiler_check(context, response["message"]["content"])
+    response = OllamaQuery.query(context=concat)["message"]["content"]
+    spoiler = spoiler_check(context, response)
 
-    if spoiler:
-        response = OllamaQuery.query(context=concat)
+    if spoiler == True:
+        response = OllamaQuery.query(context=concat)["message"]["content"]
 
-    return response["message"]["content"]
+    return response
 
 
 def what_is_this(context: str, prompt_template: str, thing: str) -> str:
@@ -46,17 +48,17 @@ def what_is_this(context: str, prompt_template: str, thing: str) -> str:
         thing,
         len(concat.split()),
     )
-    response = OllamaQuery.query(context=concat)
+    response = OllamaQuery.query(context=concat)["message"]["content"]
 
-    spoiler = spoiler_check(context, response["message"]["content"])
+    spoiler = spoiler_check(context, response)
 
-    print('The spoiler response', spoiler, flush=True)
-    print('The query response', response["message"]["content"], flush=True)
+    print("The spoiler response", spoiler, flush=True)
+    print("The query response", response, flush=True)
 
-    if spoiler:
-        response = OllamaQuery.query(context=concat)
+    if spoiler == True:
+        response = OllamaQuery.query(context=concat)["message"]["content"]
 
-    return response["message"]["content"]
+    return response
 
 
 def who_is_that(context: str, prompt_template: str, character: str) -> str:
@@ -68,11 +70,11 @@ def who_is_that(context: str, prompt_template: str, character: str) -> str:
         character,
         len(concat.split()),
     )
-    response = OllamaQuery.query(context=concat)
+    response = OllamaQuery.query(context=concat)["message"]["content"]
 
-    spoiler = spoiler_check(context, response["message"]["content"])
+    spoiler = spoiler_check(context, response)
 
-    if spoiler:
-        response = OllamaQuery.query(context=concat)
+    if spoiler == True:
+        response = OllamaQuery.query(context=concat)["message"]["content"]
 
-    return response["message"]["content"]
+    return response
