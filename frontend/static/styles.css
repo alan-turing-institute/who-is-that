@@ -16,6 +16,9 @@ body {
 h1 {
   font-family: 'Courier Prime', monospace;
   text-align: center;
+}      
+h1, h2, h3, h4, h5, h6 {
+  color: black !important;
 }
 .content {
   background-color: white;
@@ -57,4 +60,16 @@ h1 {
   padding: 10px;
   cursor: pointer;
   z-index: 1000; /* Ensure it's above other content */
+}
+
+.content h3 {
+  margin-top: 2em;
+}
+
+.content h2 {
+  margin-top: 2em;
+}
+
+.content h4 {
+  margin-top: 2em;
 }
