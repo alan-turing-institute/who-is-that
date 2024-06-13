@@ -13,9 +13,15 @@
 {% endif %}
 
 <div id="dynamic-content">
+
 {% if html_user_content %}
     {{ html_user_content|safe }}
 {% endif %}
+</div>
+
+
+<div id="summary-modal">
+
 </div>
 
 <div id="dropdown">
@@ -35,6 +41,10 @@
 </form>
 
 <script>
+
+
+
+
 document.addEventListener("DOMContentLoaded", () => {
     // Load the DOM elements we want to manipulate later
     const dropdown = document.getElementById("dropdown");
@@ -78,9 +88,98 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-function submitQuery(option) {
+// function summarise(option) {
+//     document.getElementById("option").value = option;
+//     document.getElementById("summary-form").submit();
+// }
+
+
+// If we need to wait for the response, we can't go through the form submission
+// Using Fetch API instead
+function summarise(option) {
+    
+    // Prevent the default form submission
+    event.preventDefault();
+
     document.getElementById("option").value = option;
-    document.getElementById("query-form").submit();
+
+    // Gather form data
+    const formData = new FormData(document.getElementById("summary-form"));
+
+    console.log(formData);
+
+    fetch('/summarise', {
+        method: 'POST',
+        body: formData // Send the form data
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);
+        // Assuming you have a modal or a placeholder for the summary
+        //document.getElementById('summary-modal-content').innerHTML = data.summary;
+        // Code to show the modal
+
+
+        // Resulting html should be the following:
+        // <div class="modal">
+        //   <div class="modal-background"></div>
+        //   <div class="modal-content">
+        //     <!-- Any other Bulma elements you want -->
+        //   </div>
+        //   <button class="modal-close is-large" aria-label="close"></button>
+        // </div>
+
+
+        let modal = document.getElementById('summary-modal');
+        // Check if the modal exists
+        if (!modal) {
+            // Create the modal if it doesn't exist
+            console.log('Creating modal')
+            modal = document.createElement('div');
+            modal.id = 'summary-modal';
+        }
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-background"></div>
+            <div class="modal-content">
+                <!-- Content will be inserted here -->
+            </div>
+            <button class="modal-close is-large" aria-label="close"></button>
+        `;
+        document.body.appendChild(modal);
+
+        // Add event listener to close button
+        modal.querySelector('.modal-close').addEventListener('click', () => {
+            modal.classList.remove('is-active');
+        });
+
+        // Update modal content
+        modal.querySelector('.modal-content').innerHTML = `<div class="box">${data.summary}</div>`;
+
+        // Create the Close button programmatically
+        let closeButton = document.createElement('button');
+        closeButton.className = 'button is-primary';
+        closeButton.textContent = 'Close';
+        closeButton.addEventListener('click', () => {
+            modal.classList.remove('is-active');
+        });
+
+        // Append the Close button to the modal content
+        modal.querySelector('.modal-content').appendChild(closeButton);
+
+        // Show the modal
+        modal.classList.add('is-active');
+
+
+
+
+    })
+    .catch(error => {
+        console.error('Error:', 'ChatGPT lied to me.\n' + error );
+    });
 }
+
+
+
 </script>
 {% endblock %}
