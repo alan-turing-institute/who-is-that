@@ -80,7 +80,7 @@ function modalHelper(content) {
         let progress = document.createElement('progress');
         progress.className = 'progress is-large is-warning';
         progress.max = 100;
-        modal.querySelector('.modal-content').appendChild(progress);        
+        modal.querySelector('.modal-content').appendChild(progress);
     } else {
         // Create the Close button programmatically
         let closeButton = document.createElement('button');
@@ -121,7 +121,6 @@ function submitQuery(option) {
     // TODO: Indicate loading
     modalHelper();
 
-
     fetch('/query', {
         method: 'POST',
         body: formData // Send the form data
@@ -132,6 +131,6 @@ function submitQuery(option) {
         modalHelper(data.summary);
     })
     .catch(error => {
-        console.error('Error:', 'ChatGPT lied to me.\n' + error );
+        console.error('Error:', 'Failed to get answer to query.\n' + error );
     });
 }

@@ -71,11 +71,9 @@ def load_file() -> str:
 
 @app.route("/query", methods=["POST"])
 def query() -> str:
-    author = request.form["author"]
     option = request.form["option"]
     selected_text = request.form["selected_text"]
     selected_text_context = request.form["selected_text_context"]
-    title = request.form["title"]
     app.logger.info(
         "Received '%s' request for '%s' given %s tokens of context.",
         option,
@@ -92,30 +90,11 @@ def query() -> str:
 
     # Who is that?
     if option == "who_is_that":
-        # result = query_backend(
-        #     character=selected_text,
-        #     context=selected_text_context,
-        #     action=option,
-        # )["result"]
-        # return render_template(
-        #     "process.html",
-        #     summary_modal = result,
-        #     title=title,
-        #     author=author,
-        # )
-        return jsonify({"summary": result})
+        return jsonify({"question": f"Who is {selected_text}?", "summary": result})
 
     # What is this?
     if option == "what_is_this":
-        html_response = f"<h1>What is {selected_text}?</h1><p>{result}</p>"
+        return jsonify({"question": f"What is {selected_text}?", "summary": result})
 
     # Summarise
-    else:
-        html_response = f"<h1>Summary</h1><p>{result}</p>"
-
-    return render_template(
-        "process.html",
-        html_user_content=html_response,
-        title=title,
-        author=author,
-    )
+    return jsonify({"question": "Summary", "summary": result})
