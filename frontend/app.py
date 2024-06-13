@@ -1,13 +1,18 @@
 import base64
 import io
+import logging
 
 from flask import Flask, render_template, request, jsonify
 from PIL import Image
 
+from .backend_query import BackendQuery
 from .extract import Extractor
-from .utility import query_backend
 
 app = Flask(__name__)
+for handler in app.logger.handlers:
+    handler.setFormatter(
+        logging.Formatter(r"%(asctime)s %(message)s", r"[%d/%b/%Y %H:%M:%S]"),
+    )
 
 
 @app.route("/")
@@ -44,14 +49,14 @@ def load_file() -> str:
 
     # Finished loading file
     app.logger.info(
-        "Identified %s as '%s' with %s chapters.",
+        "Identified '%s' as '%s' with %s chapters.",
         uploaded_file.filename,
         title,
         len(chapters),
     )
 
     # Dummy Ollama query for the first time to load model into memory
-    _ = query_backend("", "")
+    BackendQuery.query(selected_text="", context="no context", action="summarise")
     app.logger.info("Ollama model is ready")
 
     # Render the template with appropriate inputs
@@ -64,22 +69,30 @@ def load_file() -> str:
     )
 
 
-@app.route("/summarise", methods=["POST"])
-def summarise() -> str:
+@app.route("/query", methods=["POST"])
+def query() -> str:
     author = request.form["author"]
     option = request.form["option"]
     selected_text = request.form["selected_text"]
     selected_text_context = request.form["selected_text_context"]
     title = request.form["title"]
     app.logger.info(
-        "Calling '%s' on '%s' with a %s character context",
+        "Received '%s' request for '%s' given %s tokens of context.",
         option,
         selected_text,
-        len(selected_text_context),
+        len(selected_text_context.split()),
+    )
+
+    # Run the query against the backend
+    result = BackendQuery.query(
+        selected_text=selected_text,
+        context=selected_text_context,
+        action=option,
     )
 
     # Who is that?
     if option == "who_is_that":
+
         result = query_backend(
             character=selected_text,
             context=selected_text_context,
@@ -94,34 +107,18 @@ def summarise() -> str:
         return jsonify({'summary': result})
 
 
+
     # What is this?
-    if option == "what_is_this":
-        result = query_backend(
-            character=selected_text,
-            context=selected_text_context,
-            action=option,
-        )["result"]
-        return render_template(
-            "process.html",
-            html_user_content=f"<h1>What is {selected_text}</h1><p>{result}</p>",
-            title=title,
-            author=author,
-        )
+    elif option == "what_is_this":
+        html_response = f"<h1>What is {selected_text}?</h1><p>{result}</p>"
 
     # Summarise
-    result = query_backend(
-        character=selected_text,
-        context=selected_text_context,
-        action="summarise",
-    )["result"]
+    else:
+        html_response = f"<h1>Summary</h1><p>{result}</p>"
 
     return render_template(
         "process.html",
-        html_user_content=f"<h1>Summary</h1><p>{result}</p>",
+        html_user_content=html_response,
         title=title,
         author=author,
     )
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
