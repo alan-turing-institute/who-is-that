@@ -18,9 +18,8 @@ def spoiler_check(context: str, summary: str) -> bool:
     if '{"answer": True }' in response:
         logger.info("Spoiler detected! Regenerating new summary...")
         return True
-    else:
-        logger.info("No spoilers detected.")
-        return False
+    logger.info("No spoilers detected.")
+    return False
 
 
 def summarise(context: str, prompt_template: str) -> str:
@@ -33,7 +32,7 @@ def summarise(context: str, prompt_template: str) -> str:
     response = OllamaQuery.query(context=concat)["message"]["content"]
     spoiler = spoiler_check(context, response)
 
-    if spoiler == True:
+    if spoiler:
         response = OllamaQuery.query(context=concat)["message"]["content"]
 
     return response
@@ -55,7 +54,7 @@ def what_is_this(context: str, prompt_template: str, thing: str) -> str:
     print("The spoiler response", spoiler, flush=True)
     print("The query response", response, flush=True)
 
-    if spoiler == True:
+    if spoiler:
         response = OllamaQuery.query(context=concat)["message"]["content"]
 
     return response
@@ -74,7 +73,7 @@ def who_is_that(context: str, prompt_template: str, character: str) -> str:
 
     spoiler = spoiler_check(context, response)
 
-    if spoiler == True:
+    if spoiler:
         response = OllamaQuery.query(context=concat)["message"]["content"]
 
     return response
