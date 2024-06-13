@@ -16,9 +16,6 @@ body {
 h1 {
   font-family: 'Courier Prime', monospace;
   text-align: center;
-}      
-h1, h2, h3, h4, h5, h6 {
-  color: black !important;
 }
 .content {
   background-color: white;
