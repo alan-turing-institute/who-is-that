@@ -62,6 +62,7 @@ def load_file() -> str:
         context="no context",
         action="summarise",
         timeout=0.1,
+        check_spoilers=False,
     )
 
     # Render the template with appropriate inputs

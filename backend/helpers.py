@@ -24,7 +24,9 @@ def spoiler_check(context: str, summary: str, prompt_templates: dict[str, str]) 
     return False
 
 
-def summarise(context: str, prompt_templates: dict[str, str]) -> str:
+def summarise(
+    context: str, prompt_templates: dict[str, str], check_spoilers: bool
+) -> str:
     logger = logging.getLogger("backend.app")
     prompt = prompt_templates["summarise"]
     concat = f"CONTEXT: {context} \n INSTRUCTIONS: {prompt}"
@@ -34,14 +36,17 @@ def summarise(context: str, prompt_templates: dict[str, str]) -> str:
     )
 
     response = OllamaQuery.query(context=concat)["message"]["content"]
-    while spoiler_check(context, response, prompt_templates):
-        logger.warning("Found a spoiler, rerunning...")
-        response = OllamaQuery.query(context=concat)["message"]["content"]
+    if check_spoilers:
+        while spoiler_check(context, response, prompt_templates):
+            logger.warning("Found a spoiler, rerunning...")
+            response = OllamaQuery.query(context=concat)["message"]["content"]
 
     return response
 
 
-def what_is_this(context: str, prompt_templates: dict[str, str], thing: str) -> str:
+def what_is_this(
+    context: str, prompt_templates: dict[str, str], thing: str, check_spoilers: bool
+) -> str:
     logger = logging.getLogger("backend.app")
     prompt = prompt_templates["what_is_this"].replace(r"{thing}", thing)
     concat = f"CONTEXT: {context} \n INSTRUCTIONS: {prompt}"
@@ -52,14 +57,17 @@ def what_is_this(context: str, prompt_templates: dict[str, str], thing: str) -> 
     )
 
     response = OllamaQuery.query(context=concat)["message"]["content"]
-    while spoiler_check(context, response, prompt_templates):
-        logger.warning("Found a spoiler, rerunning...")
-        response = OllamaQuery.query(context=concat)["message"]["content"]
+    if check_spoilers:
+        while spoiler_check(context, response, prompt_templates):
+            logger.warning("Found a spoiler, rerunning...")
+            response = OllamaQuery.query(context=concat)["message"]["content"]
 
     return response
 
 
-def who_is_that(context: str, prompt_templates: dict[str, str], character: str) -> str:
+def who_is_that(
+    context: str, prompt_templates: dict[str, str], character: str, check_spoilers: bool
+) -> str:
     logger = logging.getLogger("backend.app")
     prompt = prompt_templates["who_is_that"].replace(r"{character}", character)
     concat = f"CONTEXT: {context} \n INSTRUCTIONS: {prompt}"
@@ -70,8 +78,9 @@ def who_is_that(context: str, prompt_templates: dict[str, str], character: str) 
     )
 
     response = OllamaQuery.query(context=concat)["message"]["content"]
-    while spoiler_check(context, response, prompt_templates):
-        logger.warning("Found a spoiler, rerunning...")
-        response = OllamaQuery.query(context=concat)["message"]["content"]
+    if check_spoilers:
+        while spoiler_check(context, response, prompt_templates):
+            logger.warning("Found a spoiler, rerunning...")
+            response = OllamaQuery.query(context=concat)["message"]["content"]
 
     return response

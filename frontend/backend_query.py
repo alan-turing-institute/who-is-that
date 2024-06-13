@@ -21,19 +21,20 @@ class BackendQuery:
         context: str,
         action: str = "summarise",
         timeout: float | None = None,
+        check_spoilers: bool = True,
     ) -> str:
         logger = logging.getLogger("frontend.app")
 
         # Define the URL and payload for your API endpoint
+        payload = {"context": context, "check_spoilers": check_spoilers}
         if action == "who_is_that":
             url = f"{cls.base_url}/who_is_that"
-            payload = {"character": selected_text, "context": context}
+            payload["character"] = selected_text
         elif action == "what_is_this":
             url = f"{cls.base_url}/what_is_this"
-            payload = {"thing": selected_text, "context": context}
+            payload["thing"] = selected_text
         else:
             url = f"{cls.base_url}/summarise"
-            payload = {"context": context}
 
         # Send the POST request
         try:
