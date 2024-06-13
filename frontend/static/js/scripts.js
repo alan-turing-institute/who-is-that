@@ -9,14 +9,13 @@ function attachContextMenu() {
 }
 
 function attachUploadButton() {
-    const fileInput = document.querySelector("#file-js-example input[type=file]");
-    console.log("Attaching upload button to", fileInput)
+    const fileInput = document.querySelector("#file-selector input[type=file]");
     if (fileInput) {
         fileInput.onchange = () => {
             const uploadButton = document.getElementById("upload-button");
             if (fileInput.files.length > 0) {
                 uploadButton.disabled = false;
-                const fileName = document.querySelector("#file-js-example .file-name");
+                const fileName = document.querySelector("#file-selector .file-name");
                 fileName.textContent = fileInput.files[0].name;
             } else {
                 uploadButton.disabled = true;
