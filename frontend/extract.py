@@ -38,14 +38,6 @@ class Extractor:
             return [md[0] for md in metadata]
         return [f"{data_type} not found"]
 
-    def _find_chapters(soup) -> list[str]:
-        containers = []
-        if len(soup.find_all(attrs={"epub:type": "chapter"})) != 0:
-            containers = soup.find_all(attrs={"epub:type": "chapter"})
-        elif len(soup.find_all(attrs={"class": "chapter"})) != 0:
-            containers = soup.find_all(attrs={"class": "chapter"})
-        return containers
-
     @staticmethod
     def get_cover(book: epub.EpubBook) -> None:
         # book = epub.read_epub(epub_path)
@@ -66,7 +58,7 @@ class Extractor:
                     )
                     soup = BeautifulSoup(item.get_content(), features="lxml")
 
-                    containers = Extractor._find_chapters(soup)
+                    containers = soup.find_all(attrs={"epub:type": "chapter"})
                     if len(containers) != 0:
                         for container in containers:
                             chapters.append(
