@@ -164,3 +164,32 @@ function submitQuery(option) {
         console.error('Error:', 'Failed to get answer to query.\n' + error );
     });
 }
+
+
+// attach event listener if scroll down arrow is present
+
+document.addEventListener("DOMContentLoaded", () => {
+    const scrollDownArrow = document.getElementById("scroll-down-arrow");
+    if (scrollDownArrow) {
+        scrollDownArrow.addEventListener("click", () => {
+            // Find all headings
+            const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+            // Get current scroll position
+            const currentScroll = window.pageYOffset;
+            for (let i = 0; i < headings.length; i++) {
+                // Get the heading's position
+                const elementPosition = headings[i].getBoundingClientRect().top + currentScroll;
+                // Check if this heading is below the current scroll position
+                if (elementPosition > currentScroll + 20) { // +20 to ensure it's clearly below
+                    // Scroll to the heading
+                    window.scrollTo({
+                        top: elementPosition,
+                        behavior: 'smooth'
+                    });
+                    break; // Stop after scrolling to the first heading below current position
+                }
+            }
+        });
+    }
+});
+
