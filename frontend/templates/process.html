@@ -88,27 +88,22 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-// function summarise(option) {
-//     document.getElementById("option").value = option;
-//     document.getElementById("summary-form").submit();
-// }
-
 
 // If we need to wait for the response, we can't go through the form submission
 // Using Fetch API instead
-function summarise(option) {
-    
+function submitQuery(option) {
+
     // Prevent the default form submission
     event.preventDefault();
 
     document.getElementById("option").value = option;
 
     // Gather form data
-    const formData = new FormData(document.getElementById("summary-form"));
+    const formData = new FormData(document.getElementById("query-form"));
 
     console.log(formData);
 
-    fetch('/summarise', {
+    fetch('/query', {
         method: 'POST',
         body: formData // Send the form data
     })
@@ -169,10 +164,6 @@ function summarise(option) {
 
         // Show the modal
         modal.classList.add('is-active');
-
-
-
-
     })
     .catch(error => {
         console.error('Error:', 'ChatGPT lied to me.\n' + error );
