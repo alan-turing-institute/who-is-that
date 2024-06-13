@@ -1,10 +1,39 @@
+function attachContextMenu() {
+    const dynamicContent = document.getElementById("dynamic-content");
+    if (dynamicContent) {
+        // Add a context menu when the dynamic-content div is clicked
+        dynamicContent.addEventListener("contextmenu", (event) => showContextMenu(event));
+        // Disable the context menu when other clicks are made
+        document.addEventListener("click", (event) => hideContextMenu(event));
+    }
+}
+
+function attachUploadButton() {
+    const fileInput = document.querySelector("#file-js-example input[type=file]");
+    console.log("Attaching upload button to", fileInput)
+    if (fileInput) {
+        fileInput.onchange = () => {
+            const uploadButton = document.getElementById("upload-button");
+            if (fileInput.files.length > 0) {
+                uploadButton.disabled = false;
+                const fileName = document.querySelector("#file-js-example .file-name");
+                fileName.textContent = fileInput.files[0].name;
+            } else {
+                uploadButton.disabled = true;
+            }
+        };
+    }
+}
+
 function showContextMenu(event) {
+    // Disable default event handling
+    event.preventDefault();
+
+    // Load elements that we want to manipulate
     const dropdown = document.getElementById("dropdown");
     const dynamicContent = document.getElementById("dynamic-content");
     const elemSelectedText = document.getElementById("selected-text");
     const elemSelectedTextContext = document.getElementById("selected-text-context");
-
-    event.preventDefault();
 
     // Extract and trim selected text
     const selectedRange = window.getSelection().getRangeAt(0);
@@ -39,7 +68,6 @@ function hideContextMenu(event) {
 }
 
 function modalHelper(content) {
-
     let modal = document.getElementById('summary-modal');
     // Check if the modal exists
     if (!modal) {
@@ -105,15 +133,13 @@ function modalHelper(content) {
 // If we need to wait for the response, we can't go through the form submission
 // Using Fetch API instead
 function submitQuery(option) {
-
-    // Prevent the default form submission
+    // Disable default event handling
     event.preventDefault();
 
     document.getElementById("option").value = option;
 
     // Gather form data
     const formData = new FormData(document.getElementById("query-form"));
-
     console.log(formData);
 
     // Remove the dropdown

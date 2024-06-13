@@ -14,24 +14,9 @@
     <h1 class="title is-large">Who is that?</h1>
     <h2>Upload an EPUB file</h2>
 
+    <!-- Wait for the DOM content is loaded before attaching scripts -->
     <script>
-        // Attach scripts after the DOM content is loaded
-        document.addEventListener("DOMContentLoaded", () => {
-            const fileInput = document.querySelector("#file-js-example input[type=file]");
-            // const uploadButton = document.getElementById("upload-button");
-            if (fileInput) {
-                fileInput.onchange = () => {
-                    const uploadButton = document.getElementById("upload-button");
-                    if (fileInput.files.length > 0) {
-                    uploadButton.disabled = false;
-                    const fileName = document.querySelector("#file-js-example .file-name");
-                    fileName.textContent = fileInput.files[0].name;
-                    } else {
-                    uploadButton.disabled = true;
-                    }
-                };
-            }
-        });
+        document.addEventListener("DOMContentLoaded", attachUploadButton);
     </script>
 
     <form action="/" method="post" enctype="multipart/form-data">

@@ -15,17 +15,9 @@
         <h2>{{ author }}</h2>
     {% endif %}
 
+    <!-- Wait for the DOM content is loaded before attaching scripts -->
     <script>
-        // Attach scripts after the DOM content is loaded
-        document.addEventListener("DOMContentLoaded", () => {
-            const dynamicContent = document.getElementById("dynamic-content");
-            if (dynamicContent) {
-                // Add a context menu when the dynamic-content div is clicked
-                dynamicContent.addEventListener("contextmenu", (event) => showContextMenu(event));
-                // Disable the context menu when other clicks are made
-                document.addEventListener("click", (event) => hideContextMenu(event));
-            }
-        });
+        document.addEventListener("DOMContentLoaded", attachContextMenu);
     </script>
 
     <div id="dynamic-content">
