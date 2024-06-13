@@ -1,46 +1,42 @@
-document.addEventListener("DOMContentLoaded", () => {
-    // Load the DOM elements we want to manipulate later
+function showContextMenu(event) {
     const dropdown = document.getElementById("dropdown");
     const dynamicContent = document.getElementById("dynamic-content");
     const elemSelectedText = document.getElementById("selected-text");
     const elemSelectedTextContext = document.getElementById("selected-text-context");
 
-    // Add a context menu to the dynamic-content div
-    dynamicContent.addEventListener("contextmenu", (event) => {
-        event.preventDefault();
+    event.preventDefault();
 
-        // Extract and trim selected text
-        const selectedRange = window.getSelection().getRangeAt(0);
-        const selectedText = selectedRange.toString().replace(/\s\s+/g, " ").trim()
-        if (selectedText) {
-            // Extract text up to selection
-            const preRange = document.createRange();
-            preRange.selectNodeContents(dynamicContent);
-            preRange.setEnd(selectedRange.startContainer, selectedRange.startOffset);
+    // Extract and trim selected text
+    const selectedRange = window.getSelection().getRangeAt(0);
+    const selectedText = selectedRange.toString().replace(/\s\s+/g, " ").trim()
+    if (selectedText) {
+        // Extract text up to selection
+        const preRange = document.createRange();
+        preRange.selectNodeContents(dynamicContent);
+        preRange.setEnd(selectedRange.startContainer, selectedRange.startOffset);
 
-            // Replace repeated whitespace with a single space and trim
-            const selectedTextContext = preRange.toString().replace(/\s\s+/g, " ").trim()
+        // Replace repeated whitespace with a single space and trim
+        const selectedTextContext = preRange.toString().replace(/\s\s+/g, " ").trim()
 
-            // Save the selection and context into hidden DOM elements
-            elemSelectedTextContext.value = selectedTextContext
-            elemSelectedText.value = selectedText
+        // Save the selection and context into hidden DOM elements
+        elemSelectedTextContext.value = selectedTextContext
+        elemSelectedText.value = selectedText
 
-            // Show the dropdown
-            dropdown.style.display = "block";
-            dropdown.style.left = `${event.pageX}px`;
-            dropdown.style.top = `${event.pageY}px`;
-        } else {
-            dropdown.style.display = "none";
-        }
-    });
+        // Show the dropdown
+        dropdown.style.display = "block";
+        dropdown.style.left = `${event.pageX}px`;
+        dropdown.style.top = `${event.pageY}px`;
+    } else {
+        dropdown.style.display = "none";
+    }
+}
 
-    document.addEventListener("click", (event) => {
-        if (!dropdown.contains(event.target)) {
-            dropdown.style.display = "none";
-        }
-    });
-});
-
+function hideContextMenu(event) {
+    const dropdown = document.getElementById("dropdown");
+    if (!dropdown.contains(event.target)) {
+        dropdown.style.display = "none";
+    }
+}
 
 function modalHelper(content) {
 
@@ -103,7 +99,6 @@ function modalHelper(content) {
 
     // Show the modal
     modal.classList.add('is-active');
-
 }
 
 

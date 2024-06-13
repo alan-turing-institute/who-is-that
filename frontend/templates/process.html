@@ -15,6 +15,19 @@
         <h2>{{ author }}</h2>
     {% endif %}
 
+    <script>
+        // Attach scripts after the DOM content is loaded
+        document.addEventListener("DOMContentLoaded", () => {
+            const dynamicContent = document.getElementById("dynamic-content");
+            if (dynamicContent) {
+                // Add a context menu when the dynamic-content div is clicked
+                dynamicContent.addEventListener("contextmenu", (event) => showContextMenu(event));
+                // Disable the context menu when other clicks are made
+                document.addEventListener("click", (event) => hideContextMenu(event));
+            }
+        });
+    </script>
+
     <div id="dynamic-content">
         {% if html_user_content %}
             {{ html_user_content|safe }}
@@ -34,15 +47,11 @@
     </div>
 
     <form id="query-form" method="POST" action="/query">
-    <input type="hidden" name="author" id="author" value="{{ author }}" />
-    <input type="hidden" name="option" id="option" />
-    <input
-        type="hidden"
-        name="selected_text_context"
-        id="selected-text-context"
-    />
-    <input type="hidden" name="selected_text" id="selected-text" />
-    <input type="hidden" name="title" id="title" value="{{ title }}" />
+        <input type="hidden" name="author" id="author" value="{{ author }}" />
+        <input type="hidden" name="option" id="option" />
+        <input type="hidden" name="selected_text_context" id="selected-text-context" />
+        <input type="hidden" name="selected_text" id="selected-text" />
+        <input type="hidden" name="title" id="title" value="{{ title }}" />
     </form>
 
 {% endblock %}
