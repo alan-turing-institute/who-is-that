@@ -60,15 +60,19 @@ class Extractor:
 
                     # Remove images which we will not try to display
                     if soup.figure:
-                        soup.figure.extract()
+                        soup.figure.decompose()
                     if soup.img:
-                        soup.img.extract()
+                        soup.img.decompose()
                     if soup.svg:
-                        soup.svg.extract()
+                        soup.svg.decompose()
 
                     # Remove navigation elements which are not part of the text
                     if soup.nav:
-                        soup.nav.extract()
+                        soup.nav.decompose()
+
+                    # Remove Project Gutenberg boilerplate
+                    for element in soup.find_all(True, {"class": "pg-boilerplate"}):
+                        element.decompose()
 
                     # Look for elements marked as epub:type="chapter"
                     elements = soup.find_all(attrs={"epub:type": "chapter"})
