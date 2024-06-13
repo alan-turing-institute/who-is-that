@@ -45,8 +45,11 @@ class BackendQuery:
                 timeout=timeout,
             )
             result = response.json()["result"]
+        except requests.exceptions.ReadTimeout:
+            logger.warning("Reached timeout of %ss while waiting for backend", timeout)
+            result = "Unknown"
         except Exception as exc:
-            logger.warning("Failed to extract output: %s", exc)
+            logger.warning("Failed to extract output: %s (%s)", exc, type(exc))
             result = "Unknown"
 
         return result

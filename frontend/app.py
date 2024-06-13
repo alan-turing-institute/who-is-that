@@ -56,13 +56,13 @@ def load_file() -> str:
     )
 
     # Dummy Ollama query for the first time to load model into memory
+    # Set a short timeout as we're not interested in the result
     BackendQuery.query(
         selected_text="",
         context="no context",
         action="summarise",
         timeout=0.1,
     )
-    app.logger.info("Ollama model is ready")
 
     # Render the template with appropriate inputs
     return render_template(
