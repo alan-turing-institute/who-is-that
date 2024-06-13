@@ -13,7 +13,7 @@ RUN pip install poetry
 RUN python -m venv /app/venv
 
 # Install dependencies into virtual environment
-COPY . .
+COPY pyproject.toml poetry.lock ./
 RUN poetry export -f requirements.txt | /app/venv/bin/pip install -r /dev/stdin
 
 #
