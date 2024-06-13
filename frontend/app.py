@@ -93,23 +93,21 @@ def query() -> str:
     # Who is that?
     if option == "who_is_that":
 
-        result = query_backend(
-            character=selected_text,
-            context=selected_text_context,
-            action=option,
-        )["result"]
+        # result = query_backend(
+        #     character=selected_text,
+        #     context=selected_text_context,
+        #     action=option,
+        # )["result"]
         # return render_template(
         #     "process.html",
         #     summary_modal = result,
         #     title=title,
         #     author=author,
         # )
-        return jsonify({'summary': result})
-
-
-
+        return jsonify({"summary": result})
+    
     # What is this?
-    elif option == "what_is_this":
+    if option == "what_is_this":
         html_response = f"<h1>What is {selected_text}?</h1><p>{result}</p>"
 
     # Summarise
