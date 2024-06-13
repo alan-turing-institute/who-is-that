@@ -42,6 +42,64 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
+function modalHelper(content) {
+
+    let modal = document.getElementById('summary-modal');
+    // Check if the modal exists
+    if (!modal) {
+        // Create the modal if it doesn't exist
+        console.log('Creating modal')
+        modal = document.createElement('div');
+        modal.id = 'summary-modal';
+    }
+    modal.className = 'modal';
+    modal.innerHTML = `
+        <div class="modal-background"></div>
+        <div class="modal-content">
+            <!-- Content will be inserted here -->
+        </div>
+        <button class="modal-close is-large" aria-label="close"></button>
+    `;
+    document.body.appendChild(modal);
+
+    // Add event listener to close button
+    modal.querySelector('.modal-close').addEventListener('click', () => {
+        modal.classList.remove('is-active');
+    });
+
+    if (content == null) {
+        text = 'Please wait while I read the book...';
+    } else {
+        text = content;
+    }
+    // Update modal content
+    modal.querySelector('.modal-content').innerHTML = `<div class="box">${text}</div>`;
+
+    if (content == null) {
+        // Show a progress bar
+        let progress = document.createElement('progress');
+        progress.className = 'progress is-large is-warning';
+        progress.max = 100;
+        modal.querySelector('.modal-content').appendChild(progress);        
+    } else {
+        // Create the Close button programmatically
+        let closeButton = document.createElement('button');
+        closeButton.className = 'button is-primary';
+        closeButton.textContent = 'Close';
+        closeButton.addEventListener('click', () => {
+            modal.classList.remove('is-active');
+        });
+
+        // Append the Close button to the modal content
+        modal.querySelector('.modal-content').appendChild(closeButton);
+    }
+
+    // Show the modal
+    modal.classList.add('is-active');
+
+}
+
+
 // If we need to wait for the response, we can't go through the form submission
 // Using Fetch API instead
 function submitQuery(option) {
@@ -56,6 +114,14 @@ function submitQuery(option) {
 
     console.log(formData);
 
+    // Remove the dropdown
+    const dropdown = document.getElementById("dropdown");
+    dropdown.style.display = "none";
+
+    // TODO: Indicate loading
+    modalHelper();
+
+
     fetch('/query', {
         method: 'POST',
         body: formData // Send the form data
@@ -63,46 +129,7 @@ function submitQuery(option) {
     .then(response => response.json())
     .then(data => {
         console.log(data);
-
-        let modal = document.getElementById('summary-modal');
-        // Check if the modal exists
-        if (!modal) {
-            // Create the modal if it doesn't exist
-            console.log('Creating modal')
-            modal = document.createElement('div');
-            modal.id = 'summary-modal';
-        }
-        modal.className = 'modal';
-        modal.innerHTML = `
-            <div class="modal-background"></div>
-            <div class="modal-content">
-                <!-- Content will be inserted here -->
-            </div>
-            <button class="modal-close is-large" aria-label="close"></button>
-        `;
-        document.body.appendChild(modal);
-
-        // Add event listener to close button
-        modal.querySelector('.modal-close').addEventListener('click', () => {
-            modal.classList.remove('is-active');
-        });
-
-        // Update modal content
-        modal.querySelector('.modal-content').innerHTML = `<div class="box">${data.summary}</div>`;
-
-        // Create the Close button programmatically
-        let closeButton = document.createElement('button');
-        closeButton.className = 'button is-primary';
-        closeButton.textContent = 'Close';
-        closeButton.addEventListener('click', () => {
-            modal.classList.remove('is-active');
-        });
-
-        // Append the Close button to the modal content
-        modal.querySelector('.modal-content').appendChild(closeButton);
-
-        // Show the modal
-        modal.classList.add('is-active');
+        modalHelper(data.summary);
     })
     .catch(error => {
         console.error('Error:', 'ChatGPT lied to me.\n' + error );
