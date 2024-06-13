@@ -58,26 +58,47 @@ class Extractor:
                     )
                     soup = BeautifulSoup(item.get_content(), features="lxml")
 
-                    containers = soup.find_all(attrs={"epub:type": "chapter"})
-                    if len(containers) != 0:
-                        for container in containers:
+                    # Remove images which we will not try to display
+                    if soup.figure:
+                        soup.figure.decompose()
+                    if soup.img:
+                        soup.img.decompose()
+                    if soup.svg:
+                        soup.svg.decompose()
+
+                    # Remove navigation elements which are not part of the text
+                    if soup.nav:
+                        soup.nav.decompose()
+
+                    # Remove Project Gutenberg boilerplate
+                    for element in soup.find_all(
+                        name=True,
+                        attrs={"class": "pg-boilerplate"},
+                    ):
+                        element.decompose()
+
+                    # Look for elements marked as epub:type="chapter"
+                    elements = soup.find_all(attrs={"epub:type": "chapter"})
+                    if len(elements) > 0:
+                        for element in elements:
                             chapters.append(
                                 Chapter(
-                                    name=container["id"],
-                                    html=container.prettify(),
-                                    text=container.get_text(),
+                                    name=element.get("id", ""),
+                                    html=element.prettify(),
+                                    text=element.get_text(),
                                 ),
                             )
-                    elif "START OF THE PROJECT GUTENBERG EBOOK" in soup.prettify():
-                        continue
-                    else:
-                        chapters.append(
-                            Chapter(
-                                name="all",
-                                html=soup.prettify(),
-                                text=soup.get_text(),
-                            ),
-                        )
+
+                    # Otherwise we take the body content of each page
+                    elif elements := soup.find_all("body"):
+                        for element in elements:
+                            chapters.append(
+                                Chapter(
+                                    name=element.get("title", ""),
+                                    html=element.prettify(),
+                                    text=element.get_text(),
+                                ),
+                            )
 
         return chapters
 
