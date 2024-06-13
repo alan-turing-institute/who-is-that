@@ -69,13 +69,16 @@ class Extractor:
                                 ),
                             )
                     else:
-                        chapters.append(
-                            Chapter(
-                                name="all",
-                                html=soup.prettify(),
-                                text=soup.get_text(),
-                            ),
-                        )
+                        if "START OF THE PROJECT GUTENBERG EBOOK" in soup.prettify():
+                            continue
+                        else:
+                            chapters.append(
+                                Chapter(
+                                    name="all",
+                                    html=soup.prettify(),
+                                    text=soup.get_text(),
+                                ),
+                            )
 
         return chapters
 
