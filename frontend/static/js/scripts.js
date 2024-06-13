@@ -1,49 +1,77 @@
-document.addEventListener("DOMContentLoaded", () => {
-    // Load the DOM elements we want to manipulate later
+function attachContextMenu() {
+    const dynamicContent = document.getElementById("dynamic-content");
+    if (dynamicContent) {
+        // Add a context menu when the dynamic-content div is clicked
+        dynamicContent.addEventListener("contextmenu", (event) => contextMenuEnable(event));
+        // Disable the context menu when other clicks are made
+        document.addEventListener("click", (event) => contextMenuDisableOnClick(event));
+    }
+}
+
+function attachUploadButton() {
+    const fileInput = document.querySelector("#file-selector input[type=file]");
+    if (fileInput) {
+        fileInput.onchange = () => {
+            const uploadButton = document.getElementById("upload-button");
+            if (fileInput.files.length > 0) {
+                uploadButton.disabled = false;
+                const fileName = document.querySelector("#file-selector .file-name");
+                fileName.textContent = fileInput.files[0].name;
+            } else {
+                uploadButton.disabled = true;
+            }
+        };
+    }
+}
+
+function contextMenuDisableOnClick(event) {
+    const dropdown = document.getElementById("dropdown");
+    if (!dropdown.contains(event.target)) {
+        contextMenuDisable();
+    }
+}
+
+function contextMenuDisable() {
+    const dropdown = document.getElementById("dropdown");
+    dropdown.style.display = "none";
+}
+
+function contextMenuEnable(event) {
+    // Disable default event handling
+    event.preventDefault();
+
+    // Load elements that we want to manipulate
     const dropdown = document.getElementById("dropdown");
     const dynamicContent = document.getElementById("dynamic-content");
-    const elemSelectedText = document.getElementById("selected-text");
-    const elemSelectedTextContext = document.getElementById("selected-text-context");
+    const elemSelectedText = document.getElementById("query-selected-text");
+    const elemSelectedTextContext = document.getElementById("query-selected-text-context");
 
-    // Add a context menu to the dynamic-content div
-    dynamicContent.addEventListener("contextmenu", (event) => {
-        event.preventDefault();
+    // Extract and trim selected text
+    const selectedRange = window.getSelection().getRangeAt(0);
+    const selectedText = selectedRange.toString().replace(/\s\s+/g, " ").trim()
+    if (selectedText) {
+        // Extract text up to selection
+        const preRange = document.createRange();
+        preRange.selectNodeContents(dynamicContent);
+        preRange.setEnd(selectedRange.startContainer, selectedRange.startOffset);
 
-        // Extract and trim selected text
-        const selectedRange = window.getSelection().getRangeAt(0);
-        const selectedText = selectedRange.toString().replace(/\s\s+/g, " ").trim()
-        if (selectedText) {
-            // Extract text up to selection
-            const preRange = document.createRange();
-            preRange.selectNodeContents(dynamicContent);
-            preRange.setEnd(selectedRange.startContainer, selectedRange.startOffset);
+        // Replace repeated whitespace with a single space and trim
+        const selectedTextContext = preRange.toString().replace(/\s\s+/g, " ").trim()
 
-            // Replace repeated whitespace with a single space and trim
-            const selectedTextContext = preRange.toString().replace(/\s\s+/g, " ").trim()
+        // Save the selection and context into hidden DOM elements
+        elemSelectedTextContext.value = selectedTextContext
+        elemSelectedText.value = selectedText
 
-            // Save the selection and context into hidden DOM elements
-            elemSelectedTextContext.value = selectedTextContext
-            elemSelectedText.value = selectedText
+        // Show the dropdown
+        dropdown.style.display = "block";
+        dropdown.style.left = `${event.pageX}px`;
+        dropdown.style.top = `${event.pageY}px`;
+    } else {
+        dropdown.style.display = "none";
+    }
+}
 
-            // Show the dropdown
-            dropdown.style.display = "block";
-            dropdown.style.left = `${event.pageX}px`;
-            dropdown.style.top = `${event.pageY}px`;
-        } else {
-            dropdown.style.display = "none";
-        }
-    });
-
-    document.addEventListener("click", (event) => {
-        if (!dropdown.contains(event.target)) {
-            dropdown.style.display = "none";
-        }
-    });
-});
-
-
-function modalHelper(content) {
-
+function modalHelperEnable(content) {
     let modal = document.getElementById('summary-modal');
     // Check if the modal exists
     if (!modal) {
@@ -103,30 +131,24 @@ function modalHelper(content) {
 
     // Show the modal
     modal.classList.add('is-active');
-
 }
 
 
 // If we need to wait for the response, we can't go through the form submission
 // Using Fetch API instead
 function submitQuery(option) {
+    // Write option to the query form
+    document.getElementById("query-option").value = option;
 
-    // Prevent the default form submission
-    event.preventDefault();
-
-    document.getElementById("option").value = option;
-
-    // Gather form data
+    // Gather data from the query form
     const formData = new FormData(document.getElementById("query-form"));
-
     console.log(formData);
 
     // Remove the dropdown
-    const dropdown = document.getElementById("dropdown");
-    dropdown.style.display = "none";
+    contextMenuDisable();
 
-    // TODO: Indicate loading
-    modalHelper();
+    // Generate modal helper
+    modalHelperEnable();
 
     fetch('/query', {
         method: 'POST',
@@ -134,8 +156,9 @@ function submitQuery(option) {
     })
     .then(response => response.json())
     .then(data => {
+        // Update the modal helper with the response data
         console.log(data);
-        modalHelper(data);
+        modalHelperEnable(data);
     })
     .catch(error => {
         console.error('Error:', 'Failed to get answer to query.\n' + error );

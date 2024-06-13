@@ -10,10 +10,17 @@
         alt="Logo"
         class="image"
     />
+
     <h1 class="title is-large">Who is that?</h1>
     <h2>Upload an EPUB file</h2>
+
+    <!-- Wait for the DOM content is loaded before attaching scripts -->
+    <script>
+        document.addEventListener("DOMContentLoaded", attachUploadButton);
+    </script>
+
     <form action="/" method="post" enctype="multipart/form-data">
-        <div id="file-js-example" class="file has-name">
+        <div id="file-selector" class="file has-name">
             <label class="file-label">
             <input class="file-input" type="file" name="file" />
             <span class="file-cta">
@@ -29,18 +36,4 @@
             Upload
         </button>
     </form>
-
-    <script>
-        const uploadButton = document.getElementById("upload-button");
-        const fileInput = document.querySelector("#file-js-example input[type=file]");
-        fileInput.onchange = () => {
-            if (fileInput.files.length > 0) {
-            uploadButton.disabled = false;
-            const fileName = document.querySelector("#file-js-example .file-name");
-            fileName.textContent = fileInput.files[0].name;
-            } else {
-            uploadButton.disabled = true;
-            }
-        };
-    </script>
 {% endblock %}
