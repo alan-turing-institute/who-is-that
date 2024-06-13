@@ -57,7 +57,7 @@ class Extractor:
                         category=XMLParsedAsHTMLWarning,
                     )
                     soup = BeautifulSoup(item.get_content(), features="lxml")
-                
+
                 containers = soup.find_all(attrs={"epub:type": "chapter"})
                 if len(containers) == 0:
                     containers = soup.find_all(attrs={"class": "chapter"})
