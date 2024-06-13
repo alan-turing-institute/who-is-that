@@ -78,9 +78,8 @@ class Extractor:
                         element.decompose()
 
                     # Look for elements marked as epub:type="chapter"
-                    elements = soup.find_all(attrs={"epub:type": "chapter"})
-                    if len(elements) > 0:
-                        for element in elements:
+                    if not chapters:
+                        for element in soup.find_all(attrs={"epub:type": "chapter"}):
                             chapters.append(
                                 Chapter(
                                     name=element.get("id", ""),
@@ -90,8 +89,8 @@ class Extractor:
                             )
 
                     # Otherwise we take the body content of each page
-                    elif elements := soup.find_all("body"):
-                        for element in elements:
+                    if not chapters:
+                        for element in soup.find_all("body"):
                             chapters.append(
                                 Chapter(
                                     name=element.get("title", ""),
