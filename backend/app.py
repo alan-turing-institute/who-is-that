@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import json
 import logging
 import pathlib
@@ -16,7 +18,7 @@ for handler in app.logger.handlers:
 # Load the prompt template once at the start of the application
 data_dir = pathlib.Path(__file__).parent.resolve()
 with pathlib.Path.open(data_dir / "prompts" / "input_prompts.json") as prompt_file:
-    prompt_templates = json.load(prompt_file)
+    prompt_templates: dict[str, str] = json.load(prompt_file)
 
 
 @app.route("/")
@@ -38,7 +40,7 @@ def api_who_is_that() -> Response:
         return jsonify({"error": "Character and context are required"}), 400
 
     try:
-        result = who_is_that(context, prompt_templates["who_is_that"], character)
+        result = who_is_that(context, prompt_templates, character)
         return jsonify({"result": result})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -59,7 +61,7 @@ def api_what_is_this() -> Response:
         return jsonify({"error": "Context is required"}), 400
 
     try:
-        result = what_is_this(context, prompt_templates["what_is_this"], thing)
+        result = what_is_this(context, prompt_templates, thing)
         return jsonify({"result": result})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -77,7 +79,7 @@ def api_summarise() -> Response:
     if not context:
         return jsonify({"error": "Context is required"}), 400
     try:
-        result = summarise(context, prompt_templates["summarise"])
+        result = summarise(context, prompt_templates)
         return jsonify({"result": result})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
