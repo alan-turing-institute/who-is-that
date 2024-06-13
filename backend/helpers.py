@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import logging
 
 from .ollama_query import OllamaQuery
@@ -11,9 +12,13 @@ def spoiler_check(context: str, summary: str, prompt_templates: dict[str, str]) 
     concat = f"CONTEXT: {context} \n SUMMARY: {summary} \n INSTRUCTIONS: {prompt}"
     logger.info("Check for spoilers using %s tokens of context...", len(concat.split()))
     response = OllamaQuery.query(context=concat)["message"]["content"]
-    logger.info("Response: %s", response)
-    if '{"answer": True }' in response:
-        logger.info("Spoiler detected! Regenerating new summary...")
+    try:
+        answer = json.loads(response)
+        if answer["answer"]:
+            logger.info("Spoiler detected! Regenerating new summary...")
+            return True
+    except json.decoder.JSONDecodeError:
+        logger.info("Malformed response: %s", response)
         return True
     logger.info("No spoilers detected.")
     return False

@@ -1,6 +1,6 @@
 {
     "summarise": "This CONTEXT is how far I have read in this book. I have not read any further than this. Summarize the story so far in 300 words or less. Do not reveal spoilers for later sections of the story.",
-    "spoilers":  "Check if the SUMMARY contains spoilers not found in the CONTEXT.\n Respond as a python boolean in this JSON format: { 'answer': True/False }. No yapping!",
+    "spoilers":  "Check if the SUMMARY contains spoilers not found in the CONTEXT.\n Respond as a python boolean in this JSON format: { \"answer\": true/false }. No yapping!",
     "who_is_that": "This CONTEXT is how far I have read in this book. I have not read any further than this. I need to write a summary of {character} in the book. The summary should only include facts about {character} that are explicitly known by this point in the story and should avoid any language that hints at uncertainty, future developments, or motives. Please focus solely on clear, established information without any speculation about intentions, motivations, or inner goals.",
     "what_is_this": "This CONTEXT is how far I have read in this book. I have not read any further than this. I need to write a summary of {thing} in the book. The summary should only include facts about {thing} that are explicitly known by this point in the story and should avoid any language that hints at uncertainty, future developments, or motives. Please focus solely on clear, established information."
 }
