@@ -26,6 +26,11 @@ If you want to use a native Ollama installation instead of a Dockerised version,
 
 ```shell
 $ ollama serve &
+```
+
+- [Optionally] install your desired models. If you do not do this, they will be installed on first use, although this may be slow!
+
+```shell
 $ ollama pull llama3:8b &
 $ ollama pull yarn-mistral:7b-128k &
 ```
