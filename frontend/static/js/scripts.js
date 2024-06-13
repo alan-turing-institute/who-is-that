@@ -4,7 +4,7 @@ function attachContextMenu() {
         // Add a context menu when the dynamic-content div is clicked
         dynamicContent.addEventListener("contextmenu", (event) => contextMenuEnable(event));
         // Disable the context menu when other clicks are made
-        document.addEventListener("click", (event) => contextMenuDisable(event));
+        document.addEventListener("click", (event) => contextMenuDisableOnClick(event));
     }
 }
 
@@ -25,11 +25,16 @@ function attachUploadButton() {
     }
 }
 
-function contextMenuDisable(event) {
+function contextMenuDisableOnClick(event) {
     const dropdown = document.getElementById("dropdown");
     if (!dropdown.contains(event.target)) {
-        dropdown.style.display = "none";
+        contextMenuDisable();
     }
+}
+
+function contextMenuDisable() {
+    const dropdown = document.getElementById("dropdown");
+    dropdown.style.display = "none";
 }
 
 function contextMenuEnable(event) {
@@ -67,7 +72,7 @@ function contextMenuEnable(event) {
     }
 }
 
-function modalHelper(content) {
+function modalHelperEnable(content) {
     let modal = document.getElementById('summary-modal');
     // Check if the modal exists
     if (!modal) {
@@ -141,11 +146,10 @@ function submitQuery(option) {
     console.log(formData);
 
     // Remove the dropdown
-    const dropdown = document.getElementById("dropdown");
-    dropdown.style.display = "none";
+    contextMenuDisable();
 
-    // TODO: Indicate loading
-    modalHelper();
+    // Generate modal helper
+    modalHelperEnable();
 
     fetch('/query', {
         method: 'POST',
@@ -153,8 +157,9 @@ function submitQuery(option) {
     })
     .then(response => response.json())
     .then(data => {
+        // Update the modal helper with the response data
         console.log(data);
-        modalHelper(data);
+        modalHelperEnable(data);
     })
     .catch(error => {
         console.error('Error:', 'Failed to get answer to query.\n' + error );
