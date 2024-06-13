@@ -68,6 +68,8 @@ class Extractor:
                                     text=container.get_text(),
                                 ),
                             )
+                    elif "START OF THE PROJECT GUTENBERG EBOOK" in soup.prettify():
+                        continue
                     else:
                         chapters.append(
                             Chapter(

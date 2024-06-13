@@ -68,12 +68,19 @@ function modalHelper(content) {
     });
 
     if (content == null) {
-        text = 'Please wait while I read the book...';
+        title = 'Please wait while I read the book...';
+        text = '';
     } else {
-        text = content;
+        title = content.question;
+        text = content.summary;
     }
     // Update modal content
-    modal.querySelector('.modal-content').innerHTML = `<div class="box">${text}</div>`;
+    modal.querySelector('.modal-content').innerHTML = `
+        <div class="box">
+            <h2 class="title">${title}</h2>
+            <p>${text}</p>
+        </div>
+    `;
 
     if (content == null) {
         // Show a progress bar
@@ -84,7 +91,7 @@ function modalHelper(content) {
     } else {
         // Create the Close button programmatically
         let closeButton = document.createElement('button');
-        closeButton.className = 'button is-primary';
+        closeButton.className = 'button is-warning is-centered';
         closeButton.textContent = 'Close';
         closeButton.addEventListener('click', () => {
             modal.classList.remove('is-active');
@@ -128,7 +135,7 @@ function submitQuery(option) {
     .then(response => response.json())
     .then(data => {
         console.log(data);
-        modalHelper(data.summary);
+        modalHelper(data);
     })
     .catch(error => {
         console.error('Error:', 'Failed to get answer to query.\n' + error );
