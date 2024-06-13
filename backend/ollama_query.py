@@ -20,7 +20,7 @@ class OllamaQuery:
         # Load the model
         context_length = len(context.split())
         if context_length > 8000:
-            model = os.environ.get("OLLAMA_MODEL", "yarn-mistral:7b-128k")
+            model = os.environ.get("OLLAMA_MODEL", "mistral:7b")
         else:
             model = os.environ.get("OLLAMA_MODEL", "llama3:8b")
 
