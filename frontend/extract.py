@@ -15,7 +15,6 @@ from ebooklib import epub
 class Chapter:
     name: str
     html: str
-    text: str
 
 
 class Extractor:
@@ -84,7 +83,6 @@ class Extractor:
                         Chapter(
                             name=element.get("id", ""),
                             html=element.prettify(),
-                            text=element.get_text(),
                         ),
                     )
 
@@ -95,7 +93,6 @@ class Extractor:
                         Chapter(
                             name=element.get("title", ""),
                             html=element.prettify(),
-                            text=element.get_text(),
                         ),
                     )
 
