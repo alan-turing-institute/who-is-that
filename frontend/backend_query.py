@@ -20,6 +20,7 @@ class BackendQuery:
         selected_text: str,
         context: str,
         action: str = "summarise",
+        timeout: float | None = None,
     ) -> str:
         logger = logging.getLogger("frontend.app")
 
@@ -41,10 +42,14 @@ class BackendQuery:
                 url,
                 headers={"Content-Type": "application/json"},
                 data=json.dumps(payload),
+                timeout=timeout,
             )
             result = response.json()["result"]
+        except requests.exceptions.ReadTimeout:
+            logger.warning("Reached timeout of %ss while waiting for backend", timeout)
+            result = "Unknown"
         except Exception as exc:
-            logger.warning("Failed to extract output: %s", exc)
+            logger.warning("Failed to extract output: %s (%s)", exc, type(exc))
             result = "Unknown"
 
         return result
