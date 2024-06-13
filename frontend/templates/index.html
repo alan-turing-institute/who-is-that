@@ -5,18 +5,17 @@
     <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap" rel="stylesheet">
-</head>
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+  </head>
 <body>
     <div class="columns">
         <div class="column is-3"> </div>
         <div class="column is-half-desktop is-full-mobile">
           <div class="container content">
-            
+
               {% block content %}
               {% endblock %}
 
