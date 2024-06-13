@@ -11,7 +11,7 @@ def spoiler_check(context: str, summary: str, prompt_templates: dict[str, str]) 
     prompt = prompt_templates["spoilers"]
     concat = f"CONTEXT: {context} \n SUMMARY: {summary} \n INSTRUCTIONS: {prompt}"
     logger.info(
-        "Sending 'check_spoilers' request using %s tokens of context...",
+        "Sending 'check_spoilers' request to Ollama using %s tokens of context...",
         len(concat.split()),
     )
     response = OllamaQuery.query(context=concat)["message"]["content"]
@@ -37,7 +37,7 @@ def summarise(
     prompt = prompt_templates["summarise"]
     concat = f"CONTEXT: {context} \n INSTRUCTIONS: {prompt}"
     logger.info(
-        "Sending 'summarise' request using %s tokens of context...",
+        "Sending 'summarise' request to Ollama using %s tokens of context...",
         len(concat.split()),
     )
     response = OllamaQuery.query(context=concat)["message"]["content"]
@@ -60,7 +60,7 @@ def what_is_this(
     prompt = prompt_templates["what_is_this"].replace(r"{thing}", thing)
     concat = f"CONTEXT: {context} \n INSTRUCTIONS: {prompt}"
     logger.info(
-        "Sending 'What is %s?' request using %s tokens of context...",
+        "Sending 'What is %s?' request to Ollama using %s tokens of context...",
         thing,
         len(concat.split()),
     )
@@ -84,7 +84,7 @@ def who_is_that(
     prompt = prompt_templates["who_is_that"].replace(r"{character}", character)
     concat = f"CONTEXT: {context} \n INSTRUCTIONS: {prompt}"
     logger.info(
-        "Sending 'Who is %s?' request using %s tokens of context...",
+        "Sending 'Who is %s?' request to Ollama using %s tokens of context...",
         character,
         len(concat.split()),
     )

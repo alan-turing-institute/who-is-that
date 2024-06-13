@@ -33,7 +33,7 @@ def api_who_is_that() -> Response:
     context: str = data.get("context", "")
     check_spoilers: bool = data.get("check_spoilers")
     app.logger.info(
-        "Received 'who_is_that' request for '%s' given %s tokens of context.",
+        "Received 'who_is_that' request for '%s' using %s tokens of context.",
         character,
         len(context.split()),
     )
@@ -59,7 +59,7 @@ def api_what_is_this() -> Response:
     context: str = data.get("context", "")
     check_spoilers: bool = data.get("check_spoilers")
     app.logger.info(
-        "Received 'what_is_this' request for '%s' given %s tokens of context.",
+        "Received 'what_is_this' request for '%s' using %s tokens of context.",
         thing,
         len(context.split()),
     )
@@ -85,7 +85,7 @@ def api_summarise() -> Response:
     context: str = data.get("context", "")
     check_spoilers: bool = data.get("check_spoilers")
     app.logger.info(
-        "Received 'summarise' request given %s tokens of context.",
+        "Received 'summarise' request using %s tokens of context.",
         len(context.split()),
     )
 

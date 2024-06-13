@@ -81,9 +81,8 @@ def query() -> str:
     selected_text = request.form["selected_text"]
     selected_text_context = request.form["selected_text_context"]
     app.logger.info(
-        "Received '%s' request for '%s' given %s tokens of context.",
+        "Received '%s' request using %s tokens of context.",
         option,
-        selected_text,
         len(selected_text_context.split()),
     )
 

@@ -29,9 +29,9 @@ class OllamaQuery:
 
         # Set up connection to Ollama
         cls.logger.info("Querying Ollama using:")
-        cls.logger.info("... model: %s", model)
-        cls.logger.info("... server: %s", cls.ollama_server)
-        cls.logger.info("... tokens %s", context_length)
+        cls.logger.debug("... model: %s", model)
+        cls.logger.debug("... server: %s", cls.ollama_server)
+        cls.logger.debug("... tokens: %s", context_length)
 
         # Query Ollama
         try:
@@ -44,19 +44,22 @@ class OllamaQuery:
                     },
                 ],
             )
-            cls.logger.info("Received response from Ollama server")
+            total_duration = f"{(response['total_duration'] / 1e9):.2f}s"
+            cls.logger.info(
+                "Received response from Ollama server after %s",
+                total_duration,
+            )
             load_duration = f"{(response['load_duration'] / 1e9):.2f}s"
-            cls.logger.info("... Loading the model: %s", load_duration)
+            cls.logger.debug("... Loading the model: %s", load_duration)
             prompt_eval_duration = f"{(response['prompt_eval_duration'] / 1e9):.2f}s"
-            cls.logger.info("... Evaluating the prompt: %s", prompt_eval_duration)
+            cls.logger.debug("... Evaluating the prompt: %s", prompt_eval_duration)
             eval_duration = f"{(response['eval_duration'] / 1e9):.2f}s"
-            cls.logger.info("... Evaluating the response: %s", eval_duration)
-            total_duration = f" {(response['total_duration'] / 1e9):.2f}s"
-            cls.logger.info("--> Total time: %s", total_duration)
+            cls.logger.debug("... Evaluating the response: %s", eval_duration)
         except ResponseError as exc:
-            cls.logger.info("No response from Ollama server: '%s'", exc)
+            msg = "No response from Ollama server."
+            cls.logger.warning("%s '%s'", msg, exc)
             response: ChatResponse = {
-                "message": {"content": "No response from Ollama server."},
+                "message": {"content": msg},
             }
         return response
 

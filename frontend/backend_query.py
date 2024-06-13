@@ -39,7 +39,11 @@ class BackendQuery:
 
         # Send the POST request
         try:
-            logger.info("Sending '%s' request to backend at '%s'", action, url)
+            logger.info(
+                "Sending '%s' request to backend using %s tokens of context...",
+                action,
+                len(context.split()),
+            )
             response = requests.post(
                 url,
                 headers={"Content-Type": "application/json"},
@@ -48,7 +52,7 @@ class BackendQuery:
             )
             result = response.json()["result"]
         except requests.exceptions.ReadTimeout:
-            logger.warning("Reached timeout of %ss while waiting for backend", timeout)
+            logger.warning("Reached timeout of %ss while waiting for backend.", timeout)
             result = "Unknown"
         except Exception as exc:
             logger.warning("Failed to extract output: %s (%s)", exc, type(exc))
