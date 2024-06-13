@@ -21,6 +21,7 @@ class BackendQuery:
         context: str,
         action: str = "summarise",
         timeout: float | None = None,
+        *,
         check_spoilers: bool = True,
     ) -> str:
         logger = logging.getLogger("frontend.app")

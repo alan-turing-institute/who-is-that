@@ -42,7 +42,10 @@ def api_who_is_that() -> Response:
 
     try:
         result = who_is_that(
-            context, prompt_templates, character, check_spoilers=check_spoilers
+            context,
+            prompt_templates,
+            character,
+            check_spoilers=check_spoilers,
         )
         return jsonify({"result": result})
     except Exception as e:
@@ -66,7 +69,10 @@ def api_what_is_this() -> Response:
 
     try:
         result = what_is_this(
-            context, prompt_templates, thing, check_spoilers=check_spoilers
+            context,
+            prompt_templates,
+            thing,
+            check_spoilers=check_spoilers,
         )
         return jsonify({"result": result})
     except Exception as e:
