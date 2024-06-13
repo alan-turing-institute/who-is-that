@@ -2,7 +2,7 @@ import base64
 import io
 import logging
 
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, jsonify, render_template, request
 from PIL import Image
 
 from .backend_query import BackendQuery
@@ -104,7 +104,7 @@ def query() -> str:
         #     author=author,
         # )
         return jsonify({"summary": result})
-    
+
     # What is this?
     if option == "what_is_this":
         html_response = f"<h1>What is {selected_text}?</h1><p>{result}</p>"
