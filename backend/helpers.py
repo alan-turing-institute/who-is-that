@@ -30,9 +30,9 @@ def summarise(context: str, prompt_template: str) -> str:
         len(concat.split()),
     )
     response = OllamaQuery.query(context=concat)["message"]["content"]
-    spoiler = spoiler_check(context, response)
 
-    if spoiler:
+    if spoiler_check(context, response):
+        logger.warning("Found a spoiler, rerunning...")
         response = OllamaQuery.query(context=concat)["message"]["content"]
 
     return response
@@ -49,12 +49,8 @@ def what_is_this(context: str, prompt_template: str, thing: str) -> str:
     )
     response = OllamaQuery.query(context=concat)["message"]["content"]
 
-    spoiler = spoiler_check(context, response)
-
-    print("The spoiler response", spoiler, flush=True)
-    print("The query response", response, flush=True)
-
-    if spoiler:
+    if spoiler_check(context, response):
+        logger.warning("Found a spoiler, rerunning...")
         response = OllamaQuery.query(context=concat)["message"]["content"]
 
     return response
@@ -71,9 +67,8 @@ def who_is_that(context: str, prompt_template: str, character: str) -> str:
     )
     response = OllamaQuery.query(context=concat)["message"]["content"]
 
-    spoiler = spoiler_check(context, response)
-
-    if spoiler:
+    if spoiler_check(context, response):
+        logger.warning("Found a spoiler, rerunning...")
         response = OllamaQuery.query(context=concat)["message"]["content"]
 
     return response
