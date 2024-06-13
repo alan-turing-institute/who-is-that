@@ -193,3 +193,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
+// Force Light Color Scheme
+function forceLightColorScheme() {
+    const style = document.createElement('style');
+    style.innerHTML = `
+        :root {
+            color-scheme: light;
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+// Call the function to force light color scheme
+document.addEventListener("DOMContentLoaded", forceLightColorScheme);
