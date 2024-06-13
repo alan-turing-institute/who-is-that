@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import logging
 import os
+import time
 from typing import Self
 
 import requests
@@ -23,8 +24,9 @@ class BackendQuery:
         timeout: float | None = None,
         *,
         check_spoilers: bool = True,
-    ) -> str:
+    ) -> dict[str, str]:
         logger = logging.getLogger("frontend.app")
+        start_time = time.monotonic()
 
         # Define the URL and payload for your API endpoint
         payload = {"context": context, "check_spoilers": check_spoilers}
@@ -58,4 +60,5 @@ class BackendQuery:
             logger.warning("Failed to extract output: %s (%s)", exc, type(exc))
             result = "Unknown"
 
-        return result
+        duration = time.monotonic() - start_time
+        return {"duration": duration, "result": result}

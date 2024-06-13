@@ -44,17 +44,22 @@ class OllamaQuery:
                     },
                 ],
             )
-            total_duration = f"{(response['total_duration'] / 1e9):.2f}s"
             cls.logger.info(
                 "Received response from Ollama server after %s",
-                total_duration,
+                f"{(response['total_duration'] / 1e9):.2f}s",
             )
-            load_duration = f"{(response['load_duration'] / 1e9):.2f}s"
-            cls.logger.debug("... Loading the model: %s", load_duration)
-            prompt_eval_duration = f"{(response['prompt_eval_duration'] / 1e9):.2f}s"
-            cls.logger.debug("... Evaluating the prompt: %s", prompt_eval_duration)
-            eval_duration = f"{(response['eval_duration'] / 1e9):.2f}s"
-            cls.logger.debug("... Evaluating the response: %s", eval_duration)
+            cls.logger.debug(
+                "... loading the model: %s",
+                f"{(response['load_duration'] / 1e9):.2f}s",
+            )
+            cls.logger.debug(
+                "... evaluating the prompt: %s",
+                f"{(response['prompt_eval_duration'] / 1e9):.2f}s",
+            )
+            cls.logger.debug(
+                "... evaluating the response: %s",
+                f"{(response['eval_duration'] / 1e9):.2f}s",
+            )
         except ResponseError as exc:
             msg = "No response from Ollama server."
             cls.logger.warning("%s '%s'", msg, exc)
