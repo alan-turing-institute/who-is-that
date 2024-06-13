@@ -19,22 +19,41 @@ to run:
 
 ## Native Ollama
 
-If you want to use a native Ollama installation instead of a Dockerised version, do the following (assuming `gemma:2b` is your desired model)
+If you want to use a native Ollama installation instead of a Dockerised version, do the following:
 
-- Install `ollama` (e.g. with `brew install ollama`).
+- Install `ollama` (e.g. with `brew install ollama`), run it and install your desired models.
 -
 
 ```shell
 $ ollama serve &
-$ ollama pull llama3:8b & 
-$ ollama pull yarn-mistral:7b-128k & 
+$ ollama pull llama3:8b &
+$ ollama pull yarn-mistral:7b-128k &
+```
+
+Now run the `frontend` and `backend` with `docker`:
+
+```shell
 $ docker compose -f docker/docker-compose-native-ollama.yaml up --build
 ```
 
-to run:
+this will deploy:
 
 - `backend` (exposed on `localhost:3000`)
 - `frontend` (exposed on `localhost:4000`)
+
+## [Advanced] Just the backend
+
+- Install and deploy `ollama` (as above)
+
+Run just the backend with
+
+```shell
+$ poetry run flask --app backend/app run --debug
+```
+
+this will deploy:
+
+- `backend` (exposed on `localhost:5000`)
 
 # Running notebooks
 
