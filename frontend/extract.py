@@ -32,11 +32,11 @@ class Extractor:
         self.title = title
 
     @staticmethod
-    def get_metadata(book: epub.EpubBook, data_type: str) -> str:
+    def get_metadata(book: epub.EpubBook, data_type: str) -> list[str]:
         metadata = book.get_metadata("DC", data_type)
         if metadata:
             return [md[0] for md in metadata]
-        return f"{data_type} not found"
+        return [f"{data_type} not found"]
 
     @staticmethod
     def get_cover(book: epub.EpubBook) -> None:
