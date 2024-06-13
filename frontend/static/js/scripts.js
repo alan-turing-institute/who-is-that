@@ -149,11 +149,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const scrollDownArrow = document.getElementById("scroll-down-arrow");
     if (scrollDownArrow) {
         scrollDownArrow.addEventListener("click", () => {
-            // window.scrollBy({
-            //     top: window.innerHeight,
-            //     behavior: 'smooth'
-            // });
-
             // Find all headings
             const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
             // Get current scroll position
