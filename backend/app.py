@@ -31,8 +31,9 @@ def api_who_is_that() -> Response:
     data = request.json
     character: str = data.get("character", "")
     context: str = data.get("context", "")
+    check_spoilers: bool = data.get("check_spoilers")
     app.logger.info(
-        "Received 'who_is_that' request for '%s' given %s tokens of context.",
+        "Received 'who_is_that' request for '%s' using %s tokens of context.",
         character,
         len(context.split()),
     )
@@ -40,7 +41,12 @@ def api_who_is_that() -> Response:
         return jsonify({"error": "Character and context are required"}), 400
 
     try:
-        result = who_is_that(context, prompt_templates, character)
+        result = who_is_that(
+            context,
+            prompt_templates,
+            character,
+            check_spoilers=check_spoilers,
+        )
         return jsonify({"result": result})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -51,8 +57,9 @@ def api_what_is_this() -> Response:
     data = request.json
     thing: str = data.get("thing", "")
     context: str = data.get("context", "")
+    check_spoilers: bool = data.get("check_spoilers")
     app.logger.info(
-        "Received 'what_is_this' request for '%s' given %s tokens of context.",
+        "Received 'what_is_this' request for '%s' using %s tokens of context.",
         thing,
         len(context.split()),
     )
@@ -61,7 +68,12 @@ def api_what_is_this() -> Response:
         return jsonify({"error": "Context is required"}), 400
 
     try:
-        result = what_is_this(context, prompt_templates, thing)
+        result = what_is_this(
+            context,
+            prompt_templates,
+            thing,
+            check_spoilers=check_spoilers,
+        )
         return jsonify({"result": result})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -71,15 +83,16 @@ def api_what_is_this() -> Response:
 def api_summarise() -> Response:
     data = request.json
     context: str = data.get("context", "")
+    check_spoilers: bool = data.get("check_spoilers")
     app.logger.info(
-        "Received 'summarise' request given %s tokens of context.",
+        "Received 'summarise' request using %s tokens of context.",
         len(context.split()),
     )
 
     if not context:
         return jsonify({"error": "Context is required"}), 400
     try:
-        result = summarise(context, prompt_templates)
+        result = summarise(context, prompt_templates, check_spoilers=check_spoilers)
         return jsonify({"result": result})
     except Exception as e:
         return jsonify({"error": str(e)}), 500

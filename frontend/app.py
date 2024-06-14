@@ -62,6 +62,7 @@ def load_file() -> str:
         context="no context",
         action="summarise",
         timeout=0.1,
+        check_spoilers=False,
     )
 
     # Render the template with appropriate inputs
@@ -80,26 +81,30 @@ def query() -> str:
     selected_text = request.form["selected_text"]
     selected_text_context = request.form["selected_text_context"]
     app.logger.info(
-        "Received '%s' request for '%s' given %s tokens of context.",
+        "Received '%s' request using %s tokens of context.",
         option,
-        selected_text,
         len(selected_text_context.split()),
     )
 
     # Run the query against the backend
-    result = BackendQuery.query(
+    response = BackendQuery.query(
         selected_text=selected_text,
         context=selected_text_context,
         action=option,
     )
+    app.logger.info(
+        "Received response from backend after %s",
+        f'{(response["duration"]):.2f}',
+    )
 
     # Who is that?
     if option == "who_is_that":
-        return jsonify({"question": f"Who is {selected_text}?", "summary": result})
-
+        question = f"Who is {selected_text}?"
     # What is this?
-    if option == "what_is_this":
-        return jsonify({"question": f"What is {selected_text}?", "summary": result})
-
+    elif option == "what_is_this":
+        question = f"What is {selected_text}?"
     # Summarise
-    return jsonify({"question": "Summary", "summary": result})
+    else:
+        question = "Summary"
+
+    return jsonify({"question": question, "summary": response["result"]})
