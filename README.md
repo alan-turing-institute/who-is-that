@@ -21,8 +21,7 @@ to run:
 
 If you want to use a native Ollama installation instead of a Dockerised version, do the following:
 
-- Install `ollama` (e.g. with `brew install ollama`), run it and install your desired models.
--
+- Install `ollama` (e.g. with `brew install ollama`), and run it in the background:
 
 ```shell
 $ ollama serve &
@@ -32,7 +31,7 @@ $ ollama serve &
 
 ```shell
 $ ollama pull llama3:8b &
-$ ollama pull yarn-mistral:7b-128k &
+$ ollama pull mistral:7b &
 ```
 
 Now run the `frontend` and `backend` with `docker`:
